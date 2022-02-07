@@ -4,7 +4,7 @@ import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.Argument;
 import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.extension.bukkit.chat.Plugin;
-import de.timesnake.library.basic.util.cmd.Arguments;
+import de.timesnake.library.extension.util.cmd.Arguments;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;

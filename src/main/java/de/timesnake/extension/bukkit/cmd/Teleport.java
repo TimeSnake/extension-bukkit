@@ -9,7 +9,8 @@ import de.timesnake.basic.bukkit.util.user.event.UserQuitEvent;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.extension.bukkit.chat.Plugin;
-import de.timesnake.library.basic.util.cmd.Arguments;
+import de.timesnake.library.extension.util.chat.Chat;
+import de.timesnake.library.extension.util.cmd.Arguments;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -26,7 +27,7 @@ import java.util.Stack;
 
 public class Teleport implements Listener {
 
-    private static final String senderPlugin = Server.getChat().getSenderPlugin(Plugin.BUKKIT);
+    private static final String senderPlugin = Chat.getSenderPlugin(Plugin.BUKKIT);
 
     private static final HashMap<User, Stack<User>> ask = new HashMap<>();
     private static final HashMap<User, Stack<User>> askHere = new HashMap<>();
@@ -79,7 +80,7 @@ public class Teleport implements Listener {
             Player p0 = args.get(0).toPlayer();
             Player p1 = args.get(1).toPlayer();
             p0.teleport(p1);
-            p0.sendMessage(Server.getChat().getSenderPlugin(Plugin.BUKKIT) + ChatColor.PERSONAL + "Teleported to " + ChatColor.VALUE + " " + Server.getUser(p1).getChatName());
+            p0.sendMessage(Chat.getSenderPlugin(Plugin.BUKKIT) + ChatColor.PERSONAL + "Teleported to " + ChatColor.VALUE + " " + Server.getUser(p1).getChatName());
             if (!sender.getName().equals(p0.getName()) && !sender.getName().equals(p1.getName())) {
                 sender.sendPluginMessage(ChatColor.PERSONAL + "Teleported " + ChatColor.VALUE + Server.getUser(p0).getChatName() + ChatColor.PERSONAL + " to " + ChatColor.VALUE + Server.getUser(p1).getChatName());
             }
@@ -171,7 +172,7 @@ public class Teleport implements Listener {
             p.getWorld().loadChunk(loc.getChunk());
             p.teleport(loc);
 
-            p.sendMessage(Server.getChat().getSenderPlugin(Plugin.BUKKIT) + ChatColor.PERSONAL + "Teleported to " + ChatColor.VALUE + x + " " + y + " " + z);
+            p.sendMessage(Chat.getSenderPlugin(Plugin.BUKKIT) + ChatColor.PERSONAL + "Teleported to " + ChatColor.VALUE + x + " " + y + " " + z);
             if (!sender.getName().equals(Server.getUser(p).getChatName())) {
                 sender.sendPluginMessage(ChatColor.PERSONAL + "Teleported " + ChatColor.VALUE + Server.getUser(p).getChatName() + ChatColor.PERSONAL + " to " + ChatColor.VALUE + x + " " + y + " " + z);
             }
@@ -227,7 +228,7 @@ public class Teleport implements Listener {
                 if (args.isLengthEquals(2, false)) {
                     user.teleport(world);
 
-                    user.sendMessage(Server.getChat().getSenderPlugin(Plugin.BUKKIT) + ChatColor.PERSONAL + "Teleported to " + ChatColor.VALUE + args.get(1).getString() + " spawn");
+                    user.sendMessage(Chat.getSenderPlugin(Plugin.BUKKIT) + ChatColor.PERSONAL + "Teleported to " + ChatColor.VALUE + args.get(1).getString() + " spawn");
                     if (!sender.getName().equals(user.getChatName())) {
                         sender.sendPluginMessage(ChatColor.PERSONAL + "Teleported " + ChatColor.VALUE + user.getChatName() + ChatColor.PERSONAL + " to " + ChatColor.VALUE + args.get(1).getString() + " spawn");
                     }
@@ -240,7 +241,7 @@ public class Teleport implements Listener {
                     world.loadChunk(loc.getChunk());
                     user.teleport(loc);
 
-                    user.sendMessage(Server.getChat().getSenderPlugin(Plugin.BUKKIT) + ChatColor.PERSONAL + "Teleported to " + ChatColor.VALUE + args.get(1).getString() + " " + args.get(2).getString() + " " + args.get(3).getString() + " " + args.get(4).getString());
+                    user.sendMessage(Chat.getSenderPlugin(Plugin.BUKKIT) + ChatColor.PERSONAL + "Teleported to " + ChatColor.VALUE + args.get(1).getString() + " " + args.get(2).getString() + " " + args.get(3).getString() + " " + args.get(4).getString());
                     if (!sender.getName().equals(user.getChatName())) {
                         sender.sendPluginMessage(ChatColor.PERSONAL + "Teleported " + ChatColor.VALUE + user.getChatName() + ChatColor.PERSONAL + " to " + ChatColor.VALUE + args.get(1).getString() + " " + args.get(2).getString() + " " + args.get(3).getString() + " " + args.get(4).getString());
                     }
@@ -471,8 +472,8 @@ public class Teleport implements Listener {
     private static void teleportUserToUser(User user, User teleporter) {
         teleporter.teleport(user);
 
-        user.sendMessage(Server.getChat().getSenderPlugin(Plugin.BUKKIT) + ChatColor.PERSONAL + "Teleported " + ChatColor.VALUE + teleporter.getChatName());
-        teleporter.sendMessage(Server.getChat().getSenderPlugin(Plugin.BUKKIT) + ChatColor.PERSONAL + "Teleported to " + ChatColor.VALUE + user.getChatName());
+        user.sendMessage(Chat.getSenderPlugin(Plugin.BUKKIT) + ChatColor.PERSONAL + "Teleported " + ChatColor.VALUE + teleporter.getChatName());
+        teleporter.sendMessage(Chat.getSenderPlugin(Plugin.BUKKIT) + ChatColor.PERSONAL + "Teleported to " + ChatColor.VALUE + user.getChatName());
     }
 
     public static void deny(Sender sender, Arguments<Argument> args) {
