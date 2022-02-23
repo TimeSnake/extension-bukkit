@@ -61,4 +61,7 @@ commands:
 
   mw:
     aliases: [ multiw, multiworlds, multiworld ]
+
+  chatcopy:
+    aliases: [ cc, ccopy ]
      

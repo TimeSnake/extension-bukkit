@@ -89,6 +89,8 @@ public class ExBukkit extends JavaPlugin {
         Server.getCommandManager().addCommand(this, "killall", new CmdKill(), Plugin.BUKKIT);
 
         Server.getCommandManager().addCommand(this, "mw", List.of("multiw", "multiworld", "multiworlds"), new CmdWorld(), Plugin.BUKKIT);
+
+        Server.getCommandManager().addCommand(this, "chatcopy", List.of("cc", "ccopy"), new CmdChatCopy(), Plugin.BUKKIT);
     }
 
     public static org.bukkit.plugin.Plugin getPlugin() {
