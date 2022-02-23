@@ -65,7 +65,7 @@ public class CmdWorld implements CommandListener {
                     }
                 }
 
-                WorldManager.Type worldType = WorldManager.Type.NORMAL;
+                WorldManager.Type worldType = WorldManager.Type.VOID;
 
                 if (args.isLengthEquals(3, false)) {
                     String typeName = args.getString(2).toUpperCase();
