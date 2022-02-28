@@ -2,6 +2,7 @@ package de.timesnake.extension.bukkit.cmd;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.Argument;
+import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.chat.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
@@ -29,7 +30,7 @@ public class CmdChatCopy implements CommandListener {
 
         for (User user : Server.getUsers()) {
             TextComponent tc = new TextComponent();
-            tc.setText(Server.getChatManager().getSender(sender) + args.toMessage());
+            tc.setText(Server.getChatManager().getSender(sender) + ChatColor.UNDERLINE + args.toMessage());
             tc.setClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, args.toMessage()));
             tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click to copy to clipboard")));
             user.sendMessage(tc);
