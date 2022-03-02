@@ -121,7 +121,7 @@ public class CmdKill implements CommandListener {
             case "animals":
             case "animal":
                 for (Entity entity : w.getLivingEntities()) {
-                    if (!entity.getType().equals(EntityType.PLAYER) || !this.monsters.contains(entity.getType())) {
+                    if (!entity.getType().equals(EntityType.PLAYER) && !this.monsters.contains(entity.getType())) {
                         entity.remove();
                         i++;
                     }
