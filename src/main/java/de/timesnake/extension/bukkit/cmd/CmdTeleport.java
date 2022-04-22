@@ -14,52 +14,27 @@ public class CmdTeleport implements CommandListener {
     @Override
     public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
         switch (cmd.getName().toLowerCase()) {
-            case "tp":
-            case "teleport":
-                Teleport.teleport(sender, args);
-                break;
+            case "tp", "teleport" -> Teleport.teleport(sender, args);
+            case "tph", "tphere", "teleporthere" -> Teleport.teleportHere(sender, args);
 
-            case "tph":
-            case "tphere":
-            case "teleporthere":
-                Teleport.teleportHere(sender, args);
-                break;
             //tpa
-            case "tpa":
-            case "call":
-            case "tpask":
-            case "teleportask":
-                Teleport.teleportAsk(sender, args);
-                break;
-            //tpahere
-            case "tpahere":
-            case "tpaskhere":
-            case "tpah":
-            case "tpaskh":
-            case "teleportaskhere":
-                Teleport.teleportHereAsk(sender, args);
-                break;
-            //tpa settings
-            case "tpaccept":
-                Teleport.accept(sender, args);
-                break;
+            case "tpa", "call", "tpask", "teleportask" -> Teleport.teleportAsk(sender, args);
 
-            case "tpdeny":
-                Teleport.deny(sender, args);
-                break;
+            //tpahere
+            case "tpahere", "tpaskhere", "tpah", "tpaskh", "teleportaskhere" -> Teleport.teleportHereAsk(sender, args);
+
+            //tpa settings
+            case "tpaccept" -> Teleport.accept(sender, args);
+            case "tpdeny" -> Teleport.deny(sender, args);
+
 
             //spawn
-            case "spawn":
-                Teleport.teleportSpawn(sender);
-                break;
+            case "spawn" -> Teleport.teleportSpawn(sender);
+            case "setspawn" -> Teleport.setSpawn(sender, args);
+            case "back" -> Teleport.back(sender, args);
 
-            case "setspawn":
-                Teleport.setSpawn(sender, args);
-                break;
-
-            case "back":
-                Teleport.back(sender, args);
-                break;
+            // tphall
+            case "tphall", "tphereall" -> Teleport.teleportHereAll(sender);
         }
 
     }
