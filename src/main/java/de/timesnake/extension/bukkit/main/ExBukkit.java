@@ -46,6 +46,9 @@ public class ExBukkit extends JavaPlugin {
         Server.getCommandManager().addCommand(this, "spawn", new CmdTeleport(), Plugin.BUKKIT);
         Server.getCommandManager().addCommand(this, "setspawn", new CmdTeleport(), Plugin.BUKKIT);
 
+        // tphall
+        Server.getCommandManager().addCommand(this, "tphall", List.of("tphereall"), new CmdTeleport(), Plugin.BUKKIT);
+
         //speed
         Server.getCommandManager().addCommand(this, "speed", new CmdSpeed(), Plugin.BUKKIT);
         Server.getCommandManager().addCommand(this, "speedfly", new CmdSpeed(), Plugin.BUKKIT);

@@ -606,10 +606,32 @@ public class Teleport implements Listener {
             if (sender.hasPermission("exbukkit.teleport.back.other", 946)) {
                 User user = args.get(0).toUser();
                 user.teleport(user.getLastLocation());
-                sender.sendPluginMessage(ChatColor.PERSONAL + "Teleported " + ChatColor.VALUE + user.getChatName() + " to last location");
+                sender.sendPluginMessage(ChatColor.PERSONAL + "Teleported " + ChatColor.VALUE + user.getChatName() +
+                        " to last location");
                 user.sendPluginMessage(Plugin.BUKKIT, ChatColor.PERSONAL + "Teleported to last location");
             }
         }
+    }
+
+    public static void teleportHereAll(Sender sender) {
+        if (!sender.hasPermission("exbukkit.teleport.all.here")) {
+            return;
+        }
+
+        if (!sender.isPlayer(true)) {
+            return;
+        }
+
+        User senderUser = sender.getUser();
+
+        for (User user : Server.getUsers()) {
+            if (!user.equals(senderUser)) {
+                user.teleport(senderUser);
+                user.sendPluginMessage(Plugin.BUKKIT, ChatColor.PERSONAL + "Teleported to " + senderUser.getChatName());
+            }
+        }
+
+        sender.sendPluginMessage(ChatColor.PERSONAL + "Teleported " + ChatColor.VALUE + "all");
     }
 
 }
