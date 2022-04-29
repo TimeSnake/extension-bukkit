@@ -155,7 +155,7 @@ public class CmdKill implements CommandListener {
                     return;
                 }
 
-                for (Entity entity : w.getLivingEntities()) {
+                for (Entity entity : w.getEntities()) {
                     if (entity.getType().equals(type)) {
                         entity.remove();
                         i++;
