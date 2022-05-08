@@ -18,6 +18,10 @@ commands:
   tpaccept:
   tpdeny:
   tpatoggle:
+
+  tphall:
+    aliases: [ tphereall ]
+
   spawn:
   setspawn:
 
