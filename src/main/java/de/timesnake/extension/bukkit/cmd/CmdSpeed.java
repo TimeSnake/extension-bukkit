@@ -99,15 +99,17 @@ public class CmdSpeed implements CommandListener {
                 return;
             }
 
-            user.sendPluginMessage(Plugin.BUKKIT, ChatColor.PERSONAL + "Updated " + mode + "speed to " + ChatColor.VALUE + speed);
+            user.sendPluginMessage(Plugin.BUKKIT, ChatColor.PERSONAL + "Updated " + mode.name().toLowerCase() +
+                    "speed to " + ChatColor.VALUE + speed);
         } else {
             if (sender.hasPermission("exbukkit.speed." + mode + ".other", 917)) {
                 if (setWithPermission(sender, user, speed, mode)) {
                     return;
                 }
 
-                sender.sendPluginMessage(ChatColor.PERSONAL + "Updated " + mode + "speed from " + ChatColor.VALUE + user.getChatName() + ChatColor.PERSONAL + " to " + ChatColor.VALUE + speed);
-                user.sendPluginMessage(Plugin.BUKKIT, ChatColor.PERSONAL + "Updated " + mode + "speed by " + ChatColor.VALUE + sender.getChatName() + ChatColor.PERSONAL + " to " + ChatColor.VALUE + speed);
+                sender.sendPluginMessage(ChatColor.PERSONAL + "Updated " + mode.name().toLowerCase() + "speed from " + ChatColor.VALUE + user.getChatName() + ChatColor.PERSONAL + " to " + ChatColor.VALUE + speed);
+                user.sendPluginMessage(Plugin.BUKKIT, ChatColor.PERSONAL + "Updated " + mode.name().toLowerCase() +
+                        "speed by " + ChatColor.VALUE + sender.getChatName() + ChatColor.PERSONAL + " to " + ChatColor.VALUE + speed);
             }
 
         }
