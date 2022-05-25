@@ -82,7 +82,8 @@ public class CmdAfk implements CommandListener {
 
         this.users.remove(user);
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            Server.broadcastMessage(Plugin.BUKKIT, ChatColor.VALUE + user.getChatName() + ChatColor.PUBLIC + " is no longer afk");
+            Server.broadcastMessage(Plugin.BUKKIT, ChatColor.VALUE + user.getChatName() + ChatColor.PUBLIC + " is no " +
+                    "longer afk");
         }
 
     }

@@ -13,6 +13,10 @@ public class ExBukkit extends JavaPlugin {
 
     private static ExBukkit plugin;
 
+    public static org.bukkit.plugin.Plugin getPlugin() {
+        return plugin;
+    }
+
     @Override
     public void onEnable() {
 
@@ -24,16 +28,20 @@ public class ExBukkit extends JavaPlugin {
         pm.registerEvents(new CmdInventory(), plugin);
 
         //gamemode
-        Server.getCommandManager().addCommand(this, "gm", List.of("gamemode", "gmode"), new CmdGamemode(), Plugin.BUKKIT);
+        Server.getCommandManager().addCommand(this, "gm", List.of("gamemode", "gmode"), new CmdGamemode(),
+                Plugin.BUKKIT);
 
         //teleport
         Server.getCommandManager().addCommand(this, "tp", List.of("teleport"), new CmdTeleport(), Plugin.BUKKIT);
         //tphere
-        Server.getCommandManager().addCommand(this, "teleporthere", List.of("tphere", "tph"), new CmdTeleport(), Plugin.BUKKIT);
+        Server.getCommandManager().addCommand(this, "teleporthere", List.of("tphere", "tph"), new CmdTeleport(),
+                Plugin.BUKKIT);
         //tpa
-        Server.getCommandManager().addCommand(this, "teleportask", List.of("call", "tpask", "teleporta", "tpa"), new CmdTeleport(), Plugin.BUKKIT);
+        Server.getCommandManager().addCommand(this, "teleportask", List.of("call", "tpask", "teleporta", "tpa"),
+                new CmdTeleport(), Plugin.BUKKIT);
         //tphereask
-        Server.getCommandManager().addCommand(this, "teleportaskhere", List.of("tpahere", "tpaskhere", "tpaskh", "tpah"), new CmdTeleport(), Plugin.BUKKIT);
+        Server.getCommandManager().addCommand(this, "teleportaskhere", List.of("tpahere", "tpaskhere", "tpaskh",
+                "tpah"), new CmdTeleport(), Plugin.BUKKIT);
         //back
         Server.getCommandManager().addCommand(this, "back", new CmdTeleport(), Plugin.BUKKIT);
 
@@ -69,7 +77,8 @@ public class ExBukkit extends JavaPlugin {
 
         //inventory
         Server.getCommandManager().addCommand(this, "invclear", new CmdInventory(), Plugin.BUKKIT);
-        Server.getCommandManager().addCommand(this, "inventory", List.of("inv", "invsee"), new CmdInventory(), Plugin.BUKKIT);
+        Server.getCommandManager().addCommand(this, "inventory", List.of("inv", "invsee"), new CmdInventory(),
+                Plugin.BUKKIT);
 
         //fly
         Server.getCommandManager().addCommand(this, "fly", new CmdFly(), Plugin.BUKKIT);
@@ -91,13 +100,11 @@ public class ExBukkit extends JavaPlugin {
         Server.getCommandManager().addCommand(this, "kill", new CmdKill(), Plugin.BUKKIT);
         Server.getCommandManager().addCommand(this, "killall", new CmdKill(), Plugin.BUKKIT);
 
-        Server.getCommandManager().addCommand(this, "mw", List.of("multiw", "multiworld", "multiworlds"), new CmdWorld(), Plugin.BUKKIT);
+        Server.getCommandManager().addCommand(this, "mw", List.of("multiw", "multiworld", "multiworlds"),
+                new CmdWorld(), Plugin.BUKKIT);
 
-        Server.getCommandManager().addCommand(this, "chatcopy", List.of("cc", "ccopy"), new CmdChatCopy(), Plugin.BUKKIT);
-    }
-
-    public static org.bukkit.plugin.Plugin getPlugin() {
-        return plugin;
+        Server.getCommandManager().addCommand(this, "chatcopy", List.of("cc", "ccopy"), new CmdChatCopy(),
+                Plugin.BUKKIT);
     }
 
 }

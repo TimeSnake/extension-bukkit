@@ -40,10 +40,12 @@ public class CmdGod implements CommandListener {
 
         user.setInvulnerable(!user.isInvulnerable());
         if (!sender.isPlayer(false) || !sender.getUser().equals(user)) {
-            sender.sendPluginMessage(ChatColor.PERSONAL + (user.isInvulnerable() ? "Enabled" : "Disabled") + " god mode for " + ChatColor.VALUE + user.getChatName());
+            sender.sendPluginMessage(ChatColor.PERSONAL + (user.isInvulnerable() ? "Enabled" : "Disabled") + " god " +
+                    "mode for " + ChatColor.VALUE + user.getChatName());
         }
 
-        user.sendPluginMessage(Plugin.BUKKIT, ChatColor.PERSONAL + (user.isInvulnerable() ? "Enabled" : "Disabled") + " god mode");
+        user.sendPluginMessage(Plugin.BUKKIT,
+                ChatColor.PERSONAL + (user.isInvulnerable() ? "Enabled" : "Disabled") + " god mode");
     }
 
     @Override
