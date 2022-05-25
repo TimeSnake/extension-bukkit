@@ -32,22 +32,6 @@ public class Teleport implements Listener {
     private static final HashMap<User, Stack<User>> ask = new HashMap<>();
     private static final HashMap<User, Stack<User>> askHere = new HashMap<>();
 
-    @EventHandler
-    public void onUserQuit(UserQuitEvent e) {
-        User user = e.getUser();
-        Teleport.ask.remove(user);
-        Teleport.askHere.remove(user);
-
-        for (Stack<User> users : ask.values()) {
-            users.remove(user);
-        }
-
-        for (Stack<User> users : askHere.values()) {
-            users.remove(user);
-        }
-    }
-
-
     public static void teleport(Sender sender, Arguments<Argument> args) {
         if (args.isLengthEquals(1, false)) {
             if (!sender.hasPermission("exbukkit.teleport.toother", 901)) {
@@ -203,7 +187,8 @@ public class Teleport implements Listener {
         User user = sender.getUser();
         User other = args.get(0).toUser();
         other.teleport(user);
-        other.sendPluginMessage(Plugin.BUKKIT, ChatColor.PERSONAL + "Teleported to " + ChatColor.VALUE + user.getChatName());
+        other.sendPluginMessage(Plugin.BUKKIT,
+                ChatColor.PERSONAL + "Teleported to " + ChatColor.VALUE + user.getChatName());
         sender.sendPluginMessage(ChatColor.PERSONAL + "Teleported " + ChatColor.VALUE + other.getChatName());
     }
 
@@ -334,16 +319,19 @@ public class Teleport implements Listener {
         Teleport.ask.put(user, users);
 
         //user msg
-        user.sendPluginMessage(Plugin.BUKKIT, ChatColor.VALUE + sender.getChatName() + ChatColor.PERSONAL + " requests a teleport");
+        user.sendPluginMessage(Plugin.BUKKIT, ChatColor.VALUE + sender.getChatName() + ChatColor.PERSONAL + " " +
+                "requests a teleport");
 
         TextComponent tc0 = new TextComponent();
         tc0.setText(senderPlugin + ChatColor.PERSONAL + "Use " + ChatColor.VALUE + "/tpaccept " + sender.getUser().getChatName() + ChatColor.PERSONAL + " to accept the teleport");
-        tc0.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(ChatColor.PERSONAL + "Click to accept the teleport")));
+        tc0.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(ChatColor.PERSONAL + "Click to accept " +
+                "the teleport")));
         tc0.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpaccept " + sender.getUser().getName()));
 
         TextComponent tc1 = new TextComponent();
         tc1.setText(senderPlugin + ChatColor.PERSONAL + "Use " + ChatColor.VALUE + "/tpdeny " + sender.getUser().getChatName() + ChatColor.PERSONAL + " to deny the teleport");
-        tc1.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(ChatColor.PERSONAL + "Click to deny the teleport")));
+        tc1.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(ChatColor.PERSONAL + "Click to deny " +
+                "the teleport")));
         tc1.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpdeny " + sender.getUser().getName()));
 
         user.sendMessage(tc0);
@@ -386,16 +374,19 @@ public class Teleport implements Listener {
         Teleport.askHere.put(user, users);
 
         //user msg
-        user.sendMessage(senderPlugin + ChatColor.VALUE + sender.getChatName() + ChatColor.PERSONAL + " requests a teleporthere");
+        user.sendMessage(senderPlugin + ChatColor.VALUE + sender.getChatName() + ChatColor.PERSONAL + " requests a " +
+                "teleporthere");
 
         TextComponent tc0 = new TextComponent();
         tc0.setText(senderPlugin + ChatColor.PERSONAL + "Use " + ChatColor.VALUE + "/tpaccept " + sender.getUser().getChatName() + ChatColor.PERSONAL + " to accept the teleporthere");
-        tc0.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(ChatColor.PERSONAL + "Click to accept the teleporthere")));
+        tc0.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(ChatColor.PERSONAL + "Click to accept " +
+                "the teleporthere")));
         tc0.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpaccept " + sender.getUser().getName()));
 
         TextComponent tc1 = new TextComponent();
         tc1.setText(senderPlugin + ChatColor.PERSONAL + "Use " + ChatColor.VALUE + "/tpdeny " + sender.getUser().getChatName() + ChatColor.PERSONAL + " to deny the teleporthere");
-        tc1.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(ChatColor.PERSONAL + "Click to deny the teleporthere")));
+        tc1.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(ChatColor.PERSONAL + "Click to deny " +
+                "the teleporthere")));
         tc1.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpdeny " + sender.getUser().getName()));
 
         user.sendMessage(tc0);
@@ -496,7 +487,8 @@ public class Teleport implements Listener {
             if (args.isLengthEquals(0, false)) {
                 User enquirer = users.pop();
                 sender.sendPluginMessage(ChatColor.PERSONAL + "Denied teleporthere request by " + enquirer.getChatName());
-                enquirer.sendPluginMessage(Plugin.BUKKIT, ChatColor.VALUE + user.getChatName() + ChatColor.PERSONAL + " denied your teleport request");
+                enquirer.sendPluginMessage(Plugin.BUKKIT,
+                        ChatColor.VALUE + user.getChatName() + ChatColor.PERSONAL + " denied your teleport request");
                 return;
             }
 
@@ -513,7 +505,8 @@ public class Teleport implements Listener {
 
             users.pop();
             sender.sendPluginMessage(ChatColor.PERSONAL + "Denied teleport request by " + argUser.getChatName());
-            argUser.sendPluginMessage(Plugin.BUKKIT, ChatColor.VALUE + user.getChatName() + ChatColor.PERSONAL + " denied your teleport request");
+            argUser.sendPluginMessage(Plugin.BUKKIT, ChatColor.VALUE + user.getChatName() + ChatColor.PERSONAL + " " +
+                    "denied your teleport request");
 
         } else if (Teleport.askHere.containsKey(user)) {
             Stack<User> users = Teleport.askHere.get(user);
@@ -525,7 +518,9 @@ public class Teleport implements Listener {
             if (args.isLengthEquals(0, false)) {
                 User enquirer = users.pop();
                 sender.sendPluginMessage(ChatColor.PERSONAL + "Denied teleporthere request by " + enquirer.getChatName());
-                enquirer.sendPluginMessage(Plugin.BUKKIT, ChatColor.VALUE + user.getChatName() + ChatColor.PERSONAL + " denied your teleporthere request");
+                enquirer.sendPluginMessage(Plugin.BUKKIT,
+                        ChatColor.VALUE + user.getChatName() + ChatColor.PERSONAL + " denied your teleporthere " +
+                                "request");
                 return;
             }
 
@@ -542,7 +537,8 @@ public class Teleport implements Listener {
 
             users.pop();
             sender.sendPluginMessage(ChatColor.PERSONAL + "Denied teleporthere request by " + argUser.getChatName());
-            argUser.sendPluginMessage(Plugin.BUKKIT, ChatColor.VALUE + user.getChatName() + ChatColor.PERSONAL + " denied your teleporthere request");
+            argUser.sendPluginMessage(Plugin.BUKKIT, ChatColor.VALUE + user.getChatName() + ChatColor.PERSONAL + " " +
+                    "denied your teleporthere request");
 
         } else sender.sendPluginMessage(ChatColor.WARNING + "You haven't open requests");
     }
@@ -560,7 +556,8 @@ public class Teleport implements Listener {
                     sender.sendMessageCommandHelp("Set world spawn", "setspawn <x> <y> <z>");
                 }
 
-                p.getWorld().setSpawnLocation(new Location(p.getWorld(), args.get(0).toInt(), args.get(1).toInt(), args.get(2).toInt()));
+                p.getWorld().setSpawnLocation(new Location(p.getWorld(), args.get(0).toInt(), args.get(1).toInt(),
+                        args.get(2).toInt()));
                 sender.sendPluginMessage(ChatColor.PERSONAL + "Set spawn in " + ChatColor.VALUE + p.getWorld().getName() + ChatColor.PERSONAL + " to: " + ChatColor.VALUE + args.get(0).getString() + " " + args.get(1).getString() + " " + args.get(2).getString());
 
             } else if (args.isLengthEquals(0, false)) {
@@ -589,7 +586,8 @@ public class Teleport implements Listener {
                 return;
             }
 
-            world.setSpawnLocation(new ExLocation(world, args.get(1).toInt(), args.get(2).toInt(), args.get(3).toInt()));
+            world.setSpawnLocation(new ExLocation(world, args.get(1).toInt(), args.get(2).toInt(),
+                    args.get(3).toInt()));
             sender.sendPluginMessage(ChatColor.PERSONAL + "Set spawn in " + ChatColor.VALUE + world.getName() + ChatColor.PERSONAL + "to: " + ChatColor.VALUE + args.get(1).getString() + " " + args.get(2).getString() + " " + args.get(3).getString());
         }
 
@@ -632,6 +630,21 @@ public class Teleport implements Listener {
         }
 
         sender.sendPluginMessage(ChatColor.PERSONAL + "Teleported " + ChatColor.VALUE + "all");
+    }
+
+    @EventHandler
+    public void onUserQuit(UserQuitEvent e) {
+        User user = e.getUser();
+        Teleport.ask.remove(user);
+        Teleport.askHere.remove(user);
+
+        for (Stack<User> users : ask.values()) {
+            users.remove(user);
+        }
+
+        for (Stack<User> users : askHere.values()) {
+            users.remove(user);
+        }
     }
 
 }

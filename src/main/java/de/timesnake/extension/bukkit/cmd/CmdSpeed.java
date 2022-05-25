@@ -14,10 +14,6 @@ import java.util.List;
 
 public class CmdSpeed implements CommandListener {
 
-    enum Type {
-        FLY, WALK
-    }
-
     @Override
     public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
         switch (cmd.getName().toLowerCase()) {
@@ -132,5 +128,10 @@ public class CmdSpeed implements CommandListener {
         }
 
         return false;
+    }
+
+    enum Type {
+        FLY,
+        WALK
     }
 }

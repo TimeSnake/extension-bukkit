@@ -45,7 +45,8 @@ public class CmdFly implements CommandListener {
         user.setFlying(fly);
 
         if (!sender.getUser().equals(user)) {
-            user.sendPluginMessage(Plugin.BUKKIT, ChatColor.PERSONAL + (fly ? "Enabled" : "Disabled") + " flying by " + ChatColor.VALUE + sender.getChatName());
+            user.sendPluginMessage(Plugin.BUKKIT,
+                    ChatColor.PERSONAL + (fly ? "Enabled" : "Disabled") + " flying by " + ChatColor.VALUE + sender.getChatName());
             sender.sendPluginMessage(ChatColor.PERSONAL + (fly ? "Enabled" : "Disabled") + " flying for " + ChatColor.VALUE + user.getChatName());
         } else {
             sender.sendPluginMessage(ChatColor.PERSONAL + (fly ? "Enabled" : "Disabled") + " flying");

@@ -104,7 +104,8 @@ public class CmdTime implements CommandListener {
                             if (args.get(1).isInt(false)) {
                                 this.set(sender, new Argument(sender, world.getName()), args.get(1));
                             } else if (args.get(1).isTime(true)) {
-                                this.set(sender, new Argument(sender, world.getName()), new Argument(sender, String.valueOf(args.get(1).toTicks())));
+                                this.set(sender, new Argument(sender, world.getName()), new Argument(sender,
+                                        String.valueOf(args.get(1).toTicks())));
                             }
                     }
                 } else {

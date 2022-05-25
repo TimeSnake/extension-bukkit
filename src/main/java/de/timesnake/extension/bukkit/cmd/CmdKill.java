@@ -181,7 +181,8 @@ public class CmdKill implements CommandListener {
                 i++;
             }
         }
-        sender.sendPluginMessage(ChatColor.PERSONAL + "Removed " + ChatColor.VALUE + i + ChatColor.PERSONAL + " entities from" + " world " + ChatColor.VALUE + w.getName());
+        sender.sendPluginMessage(ChatColor.PERSONAL + "Removed " + ChatColor.VALUE + i + ChatColor.PERSONAL + " " +
+                "entities from" + " world " + ChatColor.VALUE + w.getName());
     }
 
 }

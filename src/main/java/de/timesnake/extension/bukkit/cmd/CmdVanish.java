@@ -31,8 +31,7 @@ public class CmdVanish implements CommandListener, Listener {
                 return;
             }
             user = sender.getUser();
-        }
-        else if (args.isLengthEquals(1, true)) {
+        } else if (args.isLengthEquals(1, true)) {
             if (!sender.hasPermission("exbukkit.fly.other", 934)) {
                 return;
             }
@@ -42,8 +41,7 @@ public class CmdVanish implements CommandListener, Listener {
             }
 
             user = args.get(0).toUser();
-        }
-        else {
+        } else {
             sender.sendMessageTooManyArguments();
             return;
         }
