@@ -11,11 +11,10 @@ import java.util.List;
 
 public class ExBukkit extends JavaPlugin {
 
-    private static ExBukkit plugin;
-
     public static org.bukkit.plugin.Plugin getPlugin() {
         return plugin;
     }
+    private static ExBukkit plugin;
 
     @Override
     public void onEnable() {
@@ -104,6 +103,9 @@ public class ExBukkit extends JavaPlugin {
                 new CmdWorld(), Plugin.BUKKIT);
 
         Server.getCommandManager().addCommand(this, "chatcopy", List.of("cc", "ccopy"), new CmdChatCopy(),
+                Plugin.BUKKIT);
+
+        Server.getCommandManager().addCommand(this, "nightvision", List.of("nivi"), new CmdNightVision(),
                 Plugin.BUKKIT);
     }
 

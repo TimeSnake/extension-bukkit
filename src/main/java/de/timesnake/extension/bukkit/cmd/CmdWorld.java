@@ -11,7 +11,9 @@ import de.timesnake.basic.bukkit.util.world.WorldManager;
 import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
+import org.bukkit.Bukkit;
 
+import java.io.File;
 import java.util.List;
 
 public class CmdWorld implements CommandListener {
@@ -114,7 +116,7 @@ public class CmdWorld implements CommandListener {
                 }
             }
             case "unload" -> {
-                if (!sender.hasPermission("exbukkit.world.unload", 955)) {
+                if (!sender.hasPermission("exbukkit.world.unload", 956)) {
                     return;
                 }
                 if (world == null) {
@@ -152,6 +154,42 @@ public class CmdWorld implements CommandListener {
                     sender.sendPluginMessage(ChatColor.PERSONAL + "Teleported " + ChatColor.VALUE + user.getChatName() + ChatColor.PERSONAL + " to world " + ChatColor.VALUE + worldName);
                 }
             }
+            case "rename" -> {
+                if (!sender.hasPermission("exbukkit.world.rename", 957)) {
+                    return;
+                }
+
+                if (!args.isLengthEquals(3, true)) {
+                    sender.sendMessageCommandHelp("Rename a world", "mw rename <world> <newName>");
+                    return;
+                }
+
+                if (world == null) {
+                    sender.sendMessageWorldNotExist(worldName);
+                    return;
+                }
+
+                String newName = args.getString(2);
+
+                if (Server.getWorld(newName) != null) {
+                    sender.sendMessageWorldAlreadyExist(worldName);
+                    return;
+                }
+
+                File worldFolder = world.getWorldFolder();
+
+                boolean result = Server.getWorldManager().unloadWorld(world, true);
+
+                if (!result) {
+                    sender.sendPluginMessage(ChatColor.WARNING + "Can not unload world " + world.getName());
+                    return;
+                }
+
+                worldFolder.renameTo(new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator +
+                        newName));
+
+                Server.getWorldManager().createWorld(newName);
+            }
             default -> this.sendCmdMessages(sender);
         }
     }
@@ -172,6 +210,9 @@ public class CmdWorld implements CommandListener {
         if (sender.hasPermission("exbukkit.world.clone")) {
             sender.sendMessageCommandHelp("Clone a world", "mw clone <source> <world>");
         }
+        if (sender.hasPermission("exbukkit.world.rename")) {
+            sender.sendMessageCommandHelp("Rename a world", "mw rename <world> <newName>");
+        }
         if (sender.hasPermission("exbukkit.world.list")) {
             sender.sendMessageCommandHelp("List the worlds", "mw list");
         }
@@ -181,7 +222,7 @@ public class CmdWorld implements CommandListener {
     public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
         if (args.getLength() >= 1) {
             if (args.getLength() == 1) {
-                return List.of("create", "tp", "delete", "clone", "list", "unload");
+                return List.of("create", "tp", "delete", "clone", "list", "unload", "rename");
             }
             switch (args.getString(0).toLowerCase()) {
                 case "create":
@@ -196,6 +237,7 @@ public class CmdWorld implements CommandListener {
                 case "delete":
                 case "unload":
                 case "clone":
+                case "rename":
                     if (args.getLength() == 2) {
                         return Server.getCommandManager().getTabCompleter().getWorldNames();
                     }
