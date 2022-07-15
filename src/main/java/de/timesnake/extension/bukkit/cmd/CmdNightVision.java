@@ -30,10 +30,10 @@ public class CmdNightVision implements CommandListener {
 
             if (user.hasPotionEffect(PotionEffectType.NIGHT_VISION)) {
                 user.removePotionEffect(PotionEffectType.NIGHT_VISION);
-                sender.sendPluginMessage(ChatColor.PERSONAL + "Enabled night vision");
+                sender.sendPluginMessage(ChatColor.PERSONAL + "Disabled night vision");
             } else {
                 user.addPotionEffect(PotionEffectType.NIGHT_VISION, 1);
-                sender.sendPluginMessage(ChatColor.PERSONAL + "Disabled night vision");
+                sender.sendPluginMessage(ChatColor.PERSONAL + "Enabled night vision");
             }
         } else if (args.isLengthEquals(1, true)) {
             if (!sender.hasPermission("exbukkit.nightvision.other", 959)) {
@@ -48,12 +48,12 @@ public class CmdNightVision implements CommandListener {
 
             if (other.hasPotionEffect(PotionEffectType.NIGHT_VISION)) {
                 other.removePotionEffect(PotionEffectType.NIGHT_VISION);
-                other.sendPluginMessage(Plugin.BUKKIT, ChatColor.PERSONAL + "Enabled night vision");
-                sender.sendPluginMessage(ChatColor.PERSONAL + "Enabled night vision for " + other.getChatName());
-            } else {
-                other.addPotionEffect(PotionEffectType.NIGHT_VISION, 1);
                 other.sendPluginMessage(Plugin.BUKKIT, ChatColor.PERSONAL + "Disabled night vision");
                 sender.sendPluginMessage(ChatColor.PERSONAL + "Disabled night vision for " + other.getChatName());
+            } else {
+                other.addPotionEffect(PotionEffectType.NIGHT_VISION, 1);
+                other.sendPluginMessage(Plugin.BUKKIT, ChatColor.PERSONAL + "Enabled night vision");
+                sender.sendPluginMessage(ChatColor.PERSONAL + "Enabled night vision for " + other.getChatName());
             }
         }
     }
