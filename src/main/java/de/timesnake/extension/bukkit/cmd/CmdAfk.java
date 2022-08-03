@@ -9,8 +9,6 @@ import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 import java.util.HashSet;
 import java.util.List;
@@ -81,10 +79,8 @@ public class CmdAfk implements CommandListener {
         }
 
         this.users.remove(user);
-        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            Server.broadcastMessage(Plugin.BUKKIT, ChatColor.VALUE + user.getChatName() + ChatColor.PUBLIC + " is no " +
-                    "longer afk");
-        }
+        Server.broadcastMessage(Plugin.BUKKIT, ChatColor.VALUE + user.getChatName() + ChatColor.PUBLIC + " is no " +
+                "longer afk");
 
     }
 
