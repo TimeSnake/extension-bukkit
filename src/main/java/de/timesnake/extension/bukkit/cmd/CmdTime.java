@@ -17,7 +17,6 @@ public class CmdTime implements CommandListener {
     @Override
     public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
         switch (cmd.getName()) {
-
             case "time":
                 this.handleCmdTime(sender, args);
                 break;
@@ -54,7 +53,7 @@ public class CmdTime implements CommandListener {
     }
 
     public void handleCmdTime(Sender sender, Arguments<Argument> args) {
-        if (!args.isLengthHigherEquals(1, true)) {
+        if (!args.isLengthHigherEquals(1, false)) {
             if (sender.isPlayer(false)) {
                 long ticks = sender.getPlayer().getWorld().getTime();
                 sender.sendPluginMessage(ChatColor.PERSONAL + "Current time: " + ChatColor.VALUE + ticks + ChatColor.PERSONAL + " ticks, " + ChatColor.VALUE + new Argument(sender, String.valueOf(ticks)).toTime());
@@ -66,16 +65,14 @@ public class CmdTime implements CommandListener {
         }
 
         switch (args.getString(0).toLowerCase()) {
-            case "set":
+            case "set" -> {
                 if (!args.isLengthHigherEquals(2, true)) {
                     sender.sendMessageCommandHelp("Set time in world", "time set <time> [world]");
                     return;
                 }
-
                 if (!sender.hasPermission("exbukkit.time.set", 921)) {
                     return;
                 }
-
                 if (args.isLengthHigherEquals(3, false)) {
                     if (args.get(1).equalsIgnoreCase("day")) {
                         this.setDay(sender, args.get(2));
@@ -112,12 +109,11 @@ public class CmdTime implements CommandListener {
                     sender.sendMessageTooFewManyArguments();
                     sender.sendMessageCommandHelp("Set time in world", "time set <time> [world]");
                 }
-                break;
-            case "day":
+            }
+            case "day" -> {
                 if (!sender.hasPermission("exbukkit.time.day", 922)) {
                     return;
                 }
-
                 if (args.isLengthHigherEquals(3, false)) {
                     this.setDay(sender, args.get(2));
                 } else if (sender.isPlayer(false)) {
@@ -126,12 +122,11 @@ public class CmdTime implements CommandListener {
                     sender.sendMessageTooFewManyArguments();
                     sender.sendMessageCommandHelp("Set time in world", "time set <time> [world]");
                 }
-                break;
-            case "night":
+            }
+            case "night" -> {
                 if (!sender.hasPermission("exbukkit.time.night", 923)) {
                     return;
                 }
-
                 if (args.isLengthHigherEquals(3, false)) {
                     this.setNight(sender, args.get(2));
                 } else if (sender.isPlayer(false)) {
@@ -140,12 +135,11 @@ public class CmdTime implements CommandListener {
                     sender.sendMessageTooFewManyArguments();
                     sender.sendMessageCommandHelp("Set time in world", "time set <time> [world]");
                 }
-                break;
-            case "noon":
+            }
+            case "noon" -> {
                 if (!sender.hasPermission("exbukkit.time.noon", 924)) {
                     return;
                 }
-
                 if (args.isLengthHigherEquals(3, false)) {
                     this.setNoon(sender, args.get(2));
                 } else if (sender.isPlayer(false)) {
@@ -154,9 +148,8 @@ public class CmdTime implements CommandListener {
                     sender.sendMessageTooFewManyArguments();
                     sender.sendMessageCommandHelp("Set time in world", "time set <time> [world]");
                 }
-                break;
-            default:
-                sender.sendMessageCommandHelp("Set time in world", "time set <time> [world]");
+            }
+            default -> sender.sendMessageCommandHelp("Set time in world", "time set <time> [world]");
         }
     }
 
@@ -196,14 +189,6 @@ public class CmdTime implements CommandListener {
 
     public void setNoon(Sender sender, Argument arg) {
         this.set(sender, arg, new Argument(sender, "3000"));
-    }
-
-    public int getCurrentTime(Sender sender, Argument arg) {
-        if (arg.isWorldName(true)) {
-            return (int) arg.toWorld().getTime();
-        }
-        sender.sendMessageWorldNotExist(arg.getString());
-        return 0;
     }
 
 }
