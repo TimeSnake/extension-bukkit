@@ -2,13 +2,14 @@ package de.timesnake.extension.bukkit.cmd;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.Argument;
-import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.chat.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.extension.bukkit.chat.Plugin;
+import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
+import net.kyori.adventure.text.Component;
 
 import java.util.List;
 
@@ -40,12 +41,11 @@ public class CmdGod implements CommandListener {
 
         user.setInvulnerable(!user.isInvulnerable());
         if (!sender.isPlayer(false) || !sender.getUser().equals(user)) {
-            sender.sendPluginMessage(ChatColor.PERSONAL + (user.isInvulnerable() ? "Enabled" : "Disabled") + " god " +
-                    "mode for " + ChatColor.VALUE + user.getChatName());
+            sender.sendPluginMessage(Component.text((user.isInvulnerable() ? "Enabled" : "Disabled") + " god " +
+                    "mode for ", ExTextColor.PERSONAL).append(user.getChatNameComponent()));
         }
 
-        user.sendPluginMessage(Plugin.BUKKIT,
-                ChatColor.PERSONAL + (user.isInvulnerable() ? "Enabled" : "Disabled") + " god mode");
+        user.sendPluginMessage(Plugin.BUKKIT, Component.text((user.isInvulnerable() ? "Enabled" : "Disabled") + " god mode", ExTextColor.PERSONAL));
     }
 
     @Override

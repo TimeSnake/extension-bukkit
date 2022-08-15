@@ -2,12 +2,13 @@ package de.timesnake.extension.bukkit.cmd;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.Argument;
-import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.chat.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
+import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
+import net.kyori.adventure.text.Component;
 import org.bukkit.World;
 
 import java.util.List;
@@ -62,18 +63,12 @@ public class CmdWeather implements CommandListener {
         }
 
         switch (args.get(0).toLowerCase()) {
-            case "clear":
-            case "sun":
-                this.sun(sender, world);
-                break;
-            case "rain":
-            case "storm":
-            case "thunder":
-                this.rain(sender, world);
-                break;
-            default:
+            case "clear", "sun" -> this.sun(sender, world);
+            case "rain", "storm", "thunder" -> this.rain(sender, world);
+            default -> {
                 sender.sendMessageWeatherTypeNotExist(args.get(0).getString());
                 sender.sendMessageCommandHelp("Change weather in world", "weather <clear/rain/sun> " + "[world]");
+            }
         }
     }
 
@@ -100,12 +95,18 @@ public class CmdWeather implements CommandListener {
             if (arg.isWorldName(true)) {
                 ExWorld world = arg.toWorld();
                 world.setStorm(false);
-                sender.sendPluginMessage(ChatColor.PERSONAL + "Changed weather to " + ChatColor.VALUE + "sun " + ChatColor.PERSONAL + "in world " + ChatColor.VALUE + world.getName());
+                sender.sendPluginMessage(Component.text("Changed weather to ", ExTextColor.PERSONAL)
+                        .append(Component.text("sun ", ExTextColor.PERSONAL))
+                        .append(Component.text("in world ", ExTextColor.PERSONAL))
+                        .append(Component.text(world.getName(), ExTextColor.VALUE)));
             }
         } else if (sender.isPlayer(false)) {
             World world = sender.getPlayer().getWorld();
             world.setStorm(false);
-            sender.sendPluginMessage(ChatColor.PERSONAL + "Changed weather to " + ChatColor.VALUE + "sun " + ChatColor.PERSONAL + "in world " + ChatColor.VALUE + world.getName());
+            sender.sendPluginMessage(Component.text("Changed weather to ", ExTextColor.PERSONAL)
+                    .append(Component.text("sun ", ExTextColor.VALUE))
+                    .append(Component.text("in world ", ExTextColor.PERSONAL))
+                    .append(Component.text(world.getName(), ExTextColor.VALUE)));
         } else {
             sender.sendMessageCommandHelp("Set sun in world", "sun <world>");
         }
@@ -120,12 +121,18 @@ public class CmdWeather implements CommandListener {
             if (arg.isWorldName(true)) {
                 ExWorld world = arg.toWorld();
                 world.setStorm(true);
-                sender.sendPluginMessage(ChatColor.PERSONAL + "Changed weather to " + ChatColor.VALUE + "rain " + ChatColor.PERSONAL + "in world " + ChatColor.VALUE + world.getName());
+                sender.sendPluginMessage(Component.text("Changed weather to ", ExTextColor.PERSONAL)
+                        .append(Component.text("rain ", ExTextColor.VALUE))
+                        .append(Component.text("in world ", ExTextColor.PERSONAL))
+                        .append(Component.text(world.getName(), ExTextColor.VALUE)));
             }
         } else if (sender.isPlayer(false)) {
             World world = sender.getPlayer().getWorld();
             world.setStorm(true);
-            sender.sendPluginMessage(ChatColor.PERSONAL + "Changed weather to " + ChatColor.VALUE + "rain " + ChatColor.PERSONAL + "in world " + ChatColor.VALUE + world.getName());
+            sender.sendPluginMessage(Component.text("Changed weather to ", ExTextColor.PERSONAL)
+                    .append(Component.text("rain ", ExTextColor.PERSONAL))
+                    .append(Component.text("in world ", ExTextColor.PERSONAL))
+                    .append(Component.text(world.getName(), ExTextColor.VALUE)));
         } else {
             sender.sendMessageCommandHelp("Set rain in world", "rain <world>");
         }

@@ -2,16 +2,13 @@ package de.timesnake.extension.bukkit.cmd;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.Argument;
-import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.chat.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.Sender;
-import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.hover.content.Text;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.List;
 
@@ -28,15 +25,11 @@ public class CmdChatCopy implements CommandListener {
             return;
         }
 
-        for (User user : Server.getUsers()) {
-            TextComponent tc = new TextComponent();
-            tc.setText(Server.getChatManager().getSender(sender) + ChatColor.UNDERLINE + args.toMessage());
-            tc.setClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, args.toMessage()));
-            tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click to copy to clipboard")));
-            user.sendMessage(tc);
+        String msg = args.toMessage();
 
-            Server.sendChatMessageToConsole(Server.getChatManager().getSender(sender) + args.toMessage());
-        }
+        Server.broadcastClickableMessage(Server.getChatManager().getSender(sender).append(
+                        LegacyComponentSerializer.legacyAmpersand().deserialize(msg).decorate(TextDecoration.UNDERLINED)),
+                msg, Component.text("Click to copy to clipboard"), net.kyori.adventure.text.event.ClickEvent.Action.COPY_TO_CLIPBOARD);
     }
 
     @Override

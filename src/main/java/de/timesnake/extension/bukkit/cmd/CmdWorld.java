@@ -2,15 +2,20 @@ package de.timesnake.extension.bukkit.cmd;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.Argument;
-import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.chat.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.basic.bukkit.util.world.WorldManager;
 import de.timesnake.extension.bukkit.chat.Plugin;
+import de.timesnake.library.basic.util.chat.ExTextColor;
+import de.timesnake.library.extension.util.chat.Chat;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 
 import java.io.File;
@@ -30,14 +35,9 @@ public class CmdWorld implements CommandListener {
                 return;
             }
 
-            StringBuilder sb = new StringBuilder(ChatColor.PERSONAL + "Worlds:");
-            for (String wn : Server.getCommandManager().getTabCompleter().getWorldNames()) {
-                sb.append(" ");
-                sb.append(ChatColor.VALUE).append(wn);
-                sb.append(ChatColor.PERSONAL).append(",");
-            }
-            sb.deleteCharAt(sb.length() - 1);
-            sender.sendPluginMessage(sb.toString());
+            sender.sendPluginMessage(Component.text("Worlds: ", ExTextColor.PERSONAL)
+                    .append(Chat.listToComponent(Server.getCommandManager().getTabCompleter().getWorldNames(),
+                            ExTextColor.VALUE, ExTextColor.PERSONAL)));
             return;
         }
 
@@ -60,7 +60,8 @@ public class CmdWorld implements CommandListener {
                 }
                 for (String s : WorldManager.UNSUPPORTED_SYMBOLS) {
                     if (worldName.contains(s)) {
-                        sender.sendPluginMessage(ChatColor.WARNING + "World name contains an unsupported symbol: " + ChatColor.VALUE + s);
+                        sender.sendPluginMessage(Component.text("World name contains an unsupported symbol: ", ExTextColor.WARNING)
+                                .append(Component.text(s, ExTextColor.VALUE)));
                         return;
                     }
                 }
@@ -70,16 +71,23 @@ public class CmdWorld implements CommandListener {
                     try {
                         worldType = WorldManager.Type.valueOf(typeName);
                     } catch (IllegalArgumentException e) {
-                        sender.sendPluginMessage(ChatColor.WARNING + "World-Type " + ChatColor.VALUE + typeName + ChatColor.WARNING + " does not exist");
+                        sender.sendPluginMessage(Component.text("World-Type ", ExTextColor.WARNING)
+                                .append(Component.text(typeName, ExTextColor.VALUE))
+                                .append(Component.text(" does not exist", ExTextColor.WARNING)));
                         return;
                     }
                 } else if (args.isLengthHigherEquals(4, true)) {
                     sender.sendMessageTooManyArguments();
                     return;
                 }
-                sender.sendPluginMessage(ChatColor.PERSONAL + "Creating world " + ChatColor.VALUE + worldName + ChatColor.PERSONAL + " with type " + ChatColor.VALUE + worldType.name());
+                sender.sendPluginMessage(Component.text("Creating world ", ExTextColor.PERSONAL)
+                        .append(Component.text(worldName, ExTextColor.VALUE, TextDecoration.UNDERLINED)
+                                .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to teleport to world")))
+                                .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/mw tp " + worldName)))
+                        .append(Component.text(" with type ", ExTextColor.PERSONAL))
+                        .append(Component.text(worldType.name(), ExTextColor.VALUE)));
                 Server.getWorldManager().createWorld(worldName, worldType);
-                sender.sendPluginMessage(ChatColor.PERSONAL + "Complete");
+                sender.sendPluginMessage(Component.text("Complete", ExTextColor.PERSONAL));
             }
             case "clone" -> {
                 if (!sender.hasPermission("exbukkit.world.clone", 1)) {
@@ -97,9 +105,12 @@ public class CmdWorld implements CommandListener {
                     sender.sendMessageWorldAlreadyExist(worldName);
                     return;
                 }
-                sender.sendPluginMessage(ChatColor.PERSONAL + "Cloning world " + ChatColor.VALUE + worldName + ChatColor.PERSONAL + " to " + ChatColor.VALUE + clonedName.getString());
+                sender.sendPluginMessage(Component.text("Cloning world ", ExTextColor.PERSONAL)
+                        .append(Component.text(worldName, ExTextColor.VALUE))
+                        .append(Component.text(" to ", ExTextColor.PERSONAL))
+                        .append(Component.text(clonedName.getString(), ExTextColor.VALUE)));
                 Server.getWorldManager().cloneWorld(clonedName.getString(), world);
-                sender.sendPluginMessage(ChatColor.PERSONAL + "Complete");
+                sender.sendPluginMessage(Component.text("Complete", ExTextColor.PERSONAL));
             }
             case "delete" -> {
                 if (!sender.hasPermission("exbukkit.world.delete", 951)) {
@@ -110,9 +121,11 @@ public class CmdWorld implements CommandListener {
                     return;
                 }
                 if (Server.getWorldManager().deleteWorld(world, true)) {
-                    sender.sendPluginMessage(ChatColor.PERSONAL + "Deleted world " + ChatColor.VALUE + worldName);
+                    sender.sendPluginMessage(Component.text("Deleted world ", ExTextColor.PERSONAL)
+                            .append(Component.text(worldName, ExTextColor.VALUE)));
                 } else {
-                    sender.sendPluginMessage(ChatColor.WARNING + "Failed to delete world " + ChatColor.VALUE + worldName);
+                    sender.sendPluginMessage(Component.text("Failed to delete world ", ExTextColor.WARNING)
+                            .append(Component.text(worldName, ExTextColor.VALUE)));
                 }
             }
             case "unload" -> {
@@ -124,9 +137,11 @@ public class CmdWorld implements CommandListener {
                     return;
                 }
                 if (Server.getWorldManager().unloadWorld(world, true)) {
-                    sender.sendPluginMessage(ChatColor.PERSONAL + "Unloaded world " + ChatColor.VALUE + worldName);
+                    sender.sendPluginMessage(Component.text("Unloaded world ", ExTextColor.PERSONAL)
+                            .append(Component.text(worldName, ExTextColor.VALUE)));
                 } else {
-                    sender.sendPluginMessage(ChatColor.WARNING + "Failed to unload world " + ChatColor.VALUE + worldName);
+                    sender.sendPluginMessage(Component.text("Failed to unload world ", ExTextColor.WARNING)
+                            .append(Component.text(worldName, ExTextColor.VALUE)));
                 }
             }
             case "teleport", "tp" -> {
@@ -142,16 +157,20 @@ public class CmdWorld implements CommandListener {
                         return;
                     }
                     sender.getUser().teleport(world);
-                    sender.sendPluginMessage(ChatColor.PERSONAL + "Teleported to world " + ChatColor.VALUE + worldName);
+                    sender.sendPluginMessage(Component.text("Teleported to world ", ExTextColor.PERSONAL)
+                            .append(Component.text(worldName, ExTextColor.VALUE)));
                 } else if (args.isLengthEquals(3, true)) {
                     if (!args.get(2).isPlayerName(true)) {
                         return;
                     }
                     User user = args.get(2).toUser();
                     user.teleport(world);
-                    user.sendPluginMessage(Plugin.BUKKIT,
-                            ChatColor.PERSONAL + "Teleported to world " + ChatColor.VALUE + worldName);
-                    sender.sendPluginMessage(ChatColor.PERSONAL + "Teleported " + ChatColor.VALUE + user.getChatName() + ChatColor.PERSONAL + " to world " + ChatColor.VALUE + worldName);
+                    user.sendPluginMessage(Plugin.BUKKIT, Component.text("Teleported to world ", ExTextColor.PERSONAL)
+                            .append(Component.text(worldName, ExTextColor.VALUE)));
+                    sender.sendPluginMessage(Component.text("Teleported ", ExTextColor.PERSONAL)
+                            .append(user.getChatNameComponent())
+                            .append(Component.text(" to world ", ExTextColor.PERSONAL))
+                            .append(Component.text(worldName, ExTextColor.VALUE)));
                 }
             }
             case "rename" -> {
@@ -181,7 +200,8 @@ public class CmdWorld implements CommandListener {
                 boolean result = Server.getWorldManager().unloadWorld(world, true);
 
                 if (!result) {
-                    sender.sendPluginMessage(ChatColor.WARNING + "Can not unload world " + world.getName());
+                    sender.sendPluginMessage(Component.text("Can not unload world ", ExTextColor.WARNING)
+                            .append(Component.text(world.getName(), ExTextColor.VALUE)));
                     return;
                 }
 

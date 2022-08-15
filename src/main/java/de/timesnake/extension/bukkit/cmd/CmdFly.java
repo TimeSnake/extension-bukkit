@@ -2,13 +2,14 @@ package de.timesnake.extension.bukkit.cmd;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.Argument;
-import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.chat.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.extension.bukkit.chat.Plugin;
+import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
+import net.kyori.adventure.text.Component;
 
 import java.util.List;
 
@@ -46,10 +47,12 @@ public class CmdFly implements CommandListener {
 
         if (!sender.getUser().equals(user)) {
             user.sendPluginMessage(Plugin.BUKKIT,
-                    ChatColor.PERSONAL + (fly ? "Enabled" : "Disabled") + " flying by " + ChatColor.VALUE + sender.getChatName());
-            sender.sendPluginMessage(ChatColor.PERSONAL + (fly ? "Enabled" : "Disabled") + " flying for " + ChatColor.VALUE + user.getChatName());
+                    Component.text((fly ? "Enabled" : "Disabled") + " flying by ", ExTextColor.PERSONAL)
+                            .append(sender.getChatName()));
+            sender.sendPluginMessage(Component.text((fly ? "Enabled" : "Disabled") + " flying for ", ExTextColor.PERSONAL)
+                    .append(user.getChatNameComponent()));
         } else {
-            sender.sendPluginMessage(ChatColor.PERSONAL + (fly ? "Enabled" : "Disabled") + " flying");
+            sender.sendPluginMessage(Component.text((fly ? "Enabled" : "Disabled") + " flying", ExTextColor.PERSONAL));
         }
     }
 
