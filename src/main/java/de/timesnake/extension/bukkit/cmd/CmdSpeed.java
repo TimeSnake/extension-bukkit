@@ -2,13 +2,14 @@ package de.timesnake.extension.bukkit.cmd;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.Argument;
-import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.chat.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.extension.bukkit.chat.Plugin;
+import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
+import net.kyori.adventure.text.Component;
 
 import java.util.List;
 
@@ -95,17 +96,22 @@ public class CmdSpeed implements CommandListener {
                 return;
             }
 
-            user.sendPluginMessage(Plugin.BUKKIT, ChatColor.PERSONAL + "Updated " + mode.name().toLowerCase() +
-                    "speed to " + ChatColor.VALUE + speed);
+            user.sendPluginMessage(Plugin.BUKKIT, Component.text("Updated " + mode.name().toLowerCase() + "speed to ", ExTextColor.PERSONAL)
+                    .append(Component.text(speed, ExTextColor.VALUE)));
         } else {
             if (sender.hasPermission("exbukkit.speed." + mode + ".other", 917)) {
                 if (setWithPermission(sender, user, speed, mode)) {
                     return;
                 }
 
-                sender.sendPluginMessage(ChatColor.PERSONAL + "Updated " + mode.name().toLowerCase() + "speed from " + ChatColor.VALUE + user.getChatName() + ChatColor.PERSONAL + " to " + ChatColor.VALUE + speed);
-                user.sendPluginMessage(Plugin.BUKKIT, ChatColor.PERSONAL + "Updated " + mode.name().toLowerCase() +
-                        "speed by " + ChatColor.VALUE + sender.getChatName() + ChatColor.PERSONAL + " to " + ChatColor.VALUE + speed);
+                sender.sendPluginMessage(Component.text("Updated " + mode.name().toLowerCase() + "speed from ", ExTextColor.PERSONAL)
+                        .append(user.getChatNameComponent())
+                        .append(Component.text(" to ", ExTextColor.PERSONAL))
+                        .append(Component.text(speed, ExTextColor.VALUE)));
+                user.sendPluginMessage(Plugin.BUKKIT, Component.text("Updated " + mode.name().toLowerCase() + "speed by ", ExTextColor.PERSONAL)
+                        .append(sender.getChatName())
+                        .append(Component.text(" to ", ExTextColor.PERSONAL))
+                        .append(Component.text(speed, ExTextColor.VALUE)));
             }
 
         }
@@ -113,7 +119,7 @@ public class CmdSpeed implements CommandListener {
 
     private boolean setWithPermission(Sender sender, User user, float speed, Type mode) {
         if (!(speed <= 5 || speed > 0)) {
-            sender.sendPluginMessage(ChatColor.WARNING + "Top speed is 5");
+            sender.sendPluginMessage(Component.text("Top speed is 5", ExTextColor.WARNING));
             return true;
         }
 

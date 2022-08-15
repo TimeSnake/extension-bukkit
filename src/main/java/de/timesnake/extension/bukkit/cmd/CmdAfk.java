@@ -2,13 +2,14 @@ package de.timesnake.extension.bukkit.cmd;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.Argument;
-import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.chat.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.extension.bukkit.chat.Plugin;
+import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
+import net.kyori.adventure.text.Component;
 
 import java.util.HashSet;
 import java.util.List;
@@ -69,7 +70,8 @@ public class CmdAfk implements CommandListener {
         }
 
         this.users.add(user);
-        Server.broadcastMessage(Plugin.BUKKIT, ChatColor.VALUE + user.getChatName() + ChatColor.PUBLIC + " is now afk");
+        Server.broadcastMessage(Plugin.BUKKIT, user.getChatNameComponent()
+                .append(Component.text(" is now afk", ExTextColor.PUBLIC)));
 
     }
 
@@ -79,8 +81,8 @@ public class CmdAfk implements CommandListener {
         }
 
         this.users.remove(user);
-        Server.broadcastMessage(Plugin.BUKKIT, ChatColor.VALUE + user.getChatName() + ChatColor.PUBLIC + " is no " +
-                "longer afk");
+        Server.broadcastMessage(Plugin.BUKKIT, user.getChatNameComponent()
+                .append(Component.text(" is no longer afk", ExTextColor.PUBLIC)));
 
     }
 
@@ -90,7 +92,7 @@ public class CmdAfk implements CommandListener {
         }
 
         this.toggledUsers.add(user);
-        user.sendPluginMessage(Plugin.BUKKIT, ChatColor.PERSONAL + " disabled auto-afk");
+        user.sendPluginMessage(Plugin.BUKKIT, Component.text(" disabled auto-afk", ExTextColor.PERSONAL));
     }
 
     public void unToggleAfk(User user) {
@@ -99,6 +101,6 @@ public class CmdAfk implements CommandListener {
         }
 
         this.toggledUsers.remove(user);
-        user.sendPluginMessage(Plugin.BUKKIT, ChatColor.PERSONAL + " enabled auto-afk");
+        user.sendPluginMessage(Plugin.BUKKIT, Component.text(" enabled auto-afk", ExTextColor.PERSONAL));
     }
 }

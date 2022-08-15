@@ -2,12 +2,13 @@ package de.timesnake.extension.bukkit.cmd;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.Argument;
-import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.chat.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
+import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
+import net.kyori.adventure.text.Component;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -100,8 +101,10 @@ public class CmdKill implements CommandListener {
                         i++;
                     }
                 }
-                sender.sendPluginMessage(ChatColor.PERSONAL + "Removed " + ChatColor.VALUE + i + ChatColor.PERSONAL +
-                        " drops from world " + ChatColor.VALUE + w.getName());
+                sender.sendPluginMessage(Component.text("Removed ", ExTextColor.PERSONAL)
+                        .append(Component.text(i, ExTextColor.VALUE))
+                        .append(Component.text(" drops from world ", ExTextColor.PERSONAL))
+                        .append(Component.text(w.getName(), ExTextColor.VALUE)));
             }
             case "mobs" -> {
                 for (Entity entity : w.getLivingEntities()) {
@@ -110,8 +113,10 @@ public class CmdKill implements CommandListener {
                         i++;
                     }
                 }
-                sender.sendPluginMessage(ChatColor.PERSONAL + "Removed " + ChatColor.VALUE + i + ChatColor.PERSONAL +
-                        " mobs from world " + ChatColor.VALUE + w.getName());
+                sender.sendPluginMessage(Component.text("Removed ", ExTextColor.PERSONAL)
+                        .append(Component.text(i, ExTextColor.VALUE))
+                        .append(Component.text(" mobs from world ", ExTextColor.PERSONAL))
+                        .append(Component.text(w.getName(), ExTextColor.VALUE)));
             }
             case "monsters", "monster" -> {
                 for (Entity entity : w.getLivingEntities()) {
@@ -120,8 +125,10 @@ public class CmdKill implements CommandListener {
                         i++;
                     }
                 }
-                sender.sendPluginMessage(ChatColor.PERSONAL + "Removed " + ChatColor.VALUE + i + ChatColor.PERSONAL +
-                        " monsters from world " + ChatColor.VALUE + w.getName());
+                sender.sendPluginMessage(Component.text("Removed ", ExTextColor.PERSONAL)
+                        .append(Component.text(i, ExTextColor.VALUE))
+                        .append(Component.text(" monsters from world ", ExTextColor.PERSONAL))
+                        .append(Component.text(w.getName(), ExTextColor.VALUE)));
             }
             case "xps", "xp" -> {
                 for (Entity entity : w.getEntities()) {
@@ -130,8 +137,10 @@ public class CmdKill implements CommandListener {
                         i++;
                     }
                 }
-                sender.sendPluginMessage(ChatColor.PERSONAL + "Removed " + ChatColor.VALUE + i + ChatColor.PERSONAL +
-                        " xps from world " + ChatColor.VALUE + w.getName());
+                sender.sendPluginMessage(Component.text("Removed ", ExTextColor.PERSONAL)
+                        .append(Component.text(i, ExTextColor.VALUE))
+                        .append(Component.text(" xps from world ", ExTextColor.PERSONAL))
+                        .append(Component.text(w.getName(), ExTextColor.VALUE)));
             }
             case "animals", "animal" -> {
                 for (Entity entity : w.getLivingEntities()) {
@@ -140,8 +149,10 @@ public class CmdKill implements CommandListener {
                         i++;
                     }
                 }
-                sender.sendPluginMessage(ChatColor.PERSONAL + "Removed " + ChatColor.VALUE + i + ChatColor.PERSONAL +
-                        " animals from world " + ChatColor.VALUE + w.getName());
+                sender.sendPluginMessage(Component.text("Removed ", ExTextColor.PERSONAL)
+                        .append(Component.text(i, ExTextColor.VALUE))
+                        .append(Component.text(" animals from world ", ExTextColor.PERSONAL))
+                        .append(Component.text(w.getName(), ExTextColor.VALUE)));
             }
             case "all" -> this.killTypeAll(sender);
             default -> {
@@ -162,8 +173,11 @@ public class CmdKill implements CommandListener {
                     }
                 }
 
-                sender.sendPluginMessage(ChatColor.PERSONAL + "Removed " + ChatColor.VALUE + i + ChatColor.PERSONAL +
-                        " " + arg.toLowerCase() + " from world " + ChatColor.VALUE + w.getName());
+                sender.sendPluginMessage(Component.text("Removed ", ExTextColor.PERSONAL)
+                        .append(Component.text(i, ExTextColor.VALUE))
+                        .append(Component.text(" " + arg.toLowerCase(), ExTextColor.VALUE))
+                        .append(Component.text(" from world ", ExTextColor.PERSONAL))
+                        .append(Component.text(w.getName(), ExTextColor.VALUE)));
             }
         }
     }
@@ -181,8 +195,10 @@ public class CmdKill implements CommandListener {
                 i++;
             }
         }
-        sender.sendPluginMessage(ChatColor.PERSONAL + "Removed " + ChatColor.VALUE + i + ChatColor.PERSONAL + " " +
-                "entities from" + " world " + ChatColor.VALUE + w.getName());
+        sender.sendPluginMessage(Component.text("Removed ", ExTextColor.PERSONAL)
+                .append(Component.text(i, ExTextColor.VALUE))
+                .append(Component.text(" entities from world ", ExTextColor.PERSONAL))
+                .append(Component.text(w.getName(), ExTextColor.VALUE)));
     }
 
 }

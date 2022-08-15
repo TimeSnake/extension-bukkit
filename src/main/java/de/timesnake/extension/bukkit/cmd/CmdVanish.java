@@ -2,14 +2,15 @@ package de.timesnake.extension.bukkit.cmd;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.Argument;
-import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.chat.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserJoinEvent;
 import de.timesnake.extension.bukkit.chat.Plugin;
+import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
+import net.kyori.adventure.text.Component;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -55,9 +56,10 @@ public class CmdVanish implements CommandListener, Listener {
             this.users.remove(user);
 
             if (!sender.getUser().equals(user)) {
-                sender.sendPluginMessage(ChatColor.PERSONAL + "Disabled vanish for " + ChatColor.VALUE + user.getChatName());
+                sender.sendPluginMessage(Component.text("Disabled vanish for ", ExTextColor.PERSONAL)
+                        .append(user.getChatNameComponent()));
             }
-            user.sendPluginMessage(Plugin.BUKKIT, ChatColor.PERSONAL + "Disabled vanish");
+            user.sendPluginMessage(Plugin.BUKKIT, Component.text("Disabled vanish", ExTextColor.PERSONAL));
         } else {
 
             for (User u : Server.getUsers()) {
@@ -69,9 +71,10 @@ public class CmdVanish implements CommandListener, Listener {
             this.users.add(user);
 
             if (!sender.getUser().equals(user)) {
-                sender.sendPluginMessage(ChatColor.PERSONAL + "Enabled vanish for " + ChatColor.VALUE + user.getChatName());
+                sender.sendPluginMessage(Component.text("Enabled vanish for ", ExTextColor.PERSONAL)
+                        .append(user.getChatNameComponent()));
             }
-            user.sendPluginMessage(Plugin.BUKKIT, ChatColor.PERSONAL + "Enabled vanish");
+            user.sendPluginMessage(Plugin.BUKKIT, Component.text("Enabled vanish", ExTextColor.PERSONAL));
 
         }
     }

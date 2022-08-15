@@ -2,15 +2,16 @@ package de.timesnake.extension.bukkit.cmd;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.Argument;
-import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.chat.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.bukkit.util.user.ExItemStack;
 import de.timesnake.basic.bukkit.util.user.ExcludedInventoryHolder;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.extension.bukkit.chat.Plugin;
+import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -173,7 +174,8 @@ public class CmdInventory implements CommandListener, Listener {
 
         User user = arg.toUser();
         user.clearInventory();
-        sender.sendPluginMessage(ChatColor.PERSONAL + "Cleared inventory from " + ChatColor.VALUE + user.getChatName());
+        sender.sendPluginMessage(Component.text("Cleared inventory from ", ExTextColor.PERSONAL)
+                .append(user.getChatNameComponent()));
     }
 
     private static class VirtuellInventoryHolder implements ExcludedInventoryHolder {

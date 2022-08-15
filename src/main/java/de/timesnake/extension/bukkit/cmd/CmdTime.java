@@ -2,12 +2,13 @@ package de.timesnake.extension.bukkit.cmd;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.Argument;
-import de.timesnake.basic.bukkit.util.chat.ChatColor;
 import de.timesnake.basic.bukkit.util.chat.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
+import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
+import net.kyori.adventure.text.Component;
 import org.bukkit.World;
 
 import java.util.List;
@@ -56,7 +57,10 @@ public class CmdTime implements CommandListener {
         if (!args.isLengthHigherEquals(1, false)) {
             if (sender.isPlayer(false)) {
                 long ticks = sender.getPlayer().getWorld().getTime();
-                sender.sendPluginMessage(ChatColor.PERSONAL + "Current time: " + ChatColor.VALUE + ticks + ChatColor.PERSONAL + " ticks, " + ChatColor.VALUE + new Argument(sender, String.valueOf(ticks)).toTime());
+                sender.sendPluginMessage(Component.text("Current time: ", ExTextColor.PERSONAL)
+                        .append(Component.text(ticks, ExTextColor.VALUE))
+                        .append(Component.text(" ticks, ", ExTextColor.PERSONAL))
+                        .append(Component.text(new Argument(sender, String.valueOf(ticks)).toTime(), ExTextColor.VALUE)));
                 return;
             } else {
                 sender.sendMessageCommandHelp("Set time in world", "time set <time> [world]");
@@ -174,7 +178,12 @@ public class CmdTime implements CommandListener {
             if (arg0.isWorldName(true) && arg1.isInt(true)) {
                 ExWorld world = arg0.toWorld();
                 world.setTime(arg1.toInt());
-                sender.sendPluginMessage(ChatColor.PERSONAL + "Updated time in world " + ChatColor.VALUE + world.getName() + " " + ChatColor.PERSONAL + "to " + ChatColor.VALUE + arg1.toInt() + " " + ChatColor.PERSONAL + "ticks, " + ChatColor.VALUE + arg1.toTime());
+                sender.sendPluginMessage(Component.text("Updated time in world ", ExTextColor.PERSONAL)
+                        .append(Component.text(world.getName(), ExTextColor.VALUE))
+                        .append(Component.text(" to ", ExTextColor.PERSONAL))
+                        .append(Component.text(arg1.toInt(), ExTextColor.VALUE))
+                        .append(Component.text(" " + "ticks, ", ExTextColor.PERSONAL))
+                        .append(Component.text(arg1.toTime(), ExTextColor.VALUE)));
             }
         }
     }
