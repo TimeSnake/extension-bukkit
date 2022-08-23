@@ -76,7 +76,7 @@ public class CmdWorld implements CommandListener {
                                 .append(Component.text(" does not exist", ExTextColor.WARNING)));
                         return;
                     }
-                } else if (args.isLengthHigherEquals(4, true)) {
+                } else if (args.isLengthHigherEquals(4, false)) {
                     sender.sendMessageTooManyArguments();
                     return;
                 }
@@ -86,8 +86,14 @@ public class CmdWorld implements CommandListener {
                                 .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/mw tp " + worldName)))
                         .append(Component.text(" with type ", ExTextColor.PERSONAL))
                         .append(Component.text(worldType.name(), ExTextColor.VALUE)));
-                Server.getWorldManager().createWorld(worldName, worldType);
-                sender.sendPluginMessage(Component.text("Complete", ExTextColor.PERSONAL));
+                ExWorld createdWorld = Server.getWorldManager().createWorld(worldName, worldType);
+
+                if (createdWorld != null) {
+                    sender.sendPluginMessage(Component.text("Complete", ExTextColor.PERSONAL));
+                } else {
+                    sender.sendPluginMessage(Component.text("Failed to load world ", ExTextColor.WARNING)
+                            .append(Component.text(worldName, ExTextColor.VALUE)));
+                }
             }
             case "clone" -> {
                 if (!sender.hasPermission("exbukkit.world.clone", 1)) {
