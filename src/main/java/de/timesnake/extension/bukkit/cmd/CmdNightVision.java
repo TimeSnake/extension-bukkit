@@ -7,6 +7,7 @@ import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.basic.util.chat.ExTextColor;
+import de.timesnake.library.extension.util.chat.Code;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
 import net.kyori.adventure.text.Component;
@@ -16,10 +17,13 @@ import java.util.List;
 
 public class CmdNightVision implements CommandListener {
 
+    private Code.Permission perm;
+    private Code.Permission otherPerm;
+
     @Override
     public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
         if (args.isLengthEquals(0, false)) {
-            if (!sender.hasPermission("exbukkit.nightvision", 958)) {
+            if (!sender.hasPermission(this.perm)) {
                 return;
             }
 
@@ -37,7 +41,7 @@ public class CmdNightVision implements CommandListener {
                 sender.sendPluginMessage(Component.text("Enabled night vision", ExTextColor.PERSONAL));
             }
         } else if (args.isLengthEquals(1, true)) {
-            if (!sender.hasPermission("exbukkit.nightvision.other", 959)) {
+            if (!sender.hasPermission(this.otherPerm)) {
                 return;
             }
 
@@ -67,5 +71,11 @@ public class CmdNightVision implements CommandListener {
             return Server.getCommandManager().getTabCompleter().getPlayerNames();
         }
         return List.of();
+    }
+
+    @Override
+    public void loadCodes(de.timesnake.library.extension.util.chat.Plugin plugin) {
+        this.perm = plugin.createPermssionCode("cnv", "exbukkit.nightvision");
+        this.otherPerm = plugin.createPermssionCode("cnv", "exbukkit.nightvision.other");
     }
 }

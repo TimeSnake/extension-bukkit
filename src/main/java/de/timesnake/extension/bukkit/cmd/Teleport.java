@@ -9,6 +9,7 @@ import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.basic.util.chat.ExTextColor;
+import de.timesnake.library.extension.util.chat.Code;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -25,7 +26,7 @@ public class Teleport implements Listener {
 
     public static void teleport(Sender sender, Arguments<Argument> args) {
         if (args.isLengthEquals(1, false)) {
-            if (!sender.hasPermission("exbukkit.teleport.toother", 901)) {
+            if (!sender.hasPermission(teleportToOtherPerm)) {
                 return;
             }
 
@@ -45,7 +46,9 @@ public class Teleport implements Listener {
 
         } else if (args.isLengthEquals(2, false)) {
 
-            if (!((sender.hasPermission("exbukkit.teleport.toother") && sender.isPlayer(false) && sender.getPlayer().getName().equals(args.getString(0))) || sender.hasPermission("exbukkit.teleport.toother.other", 902))) {
+            if (!((sender.hasPermission(teleportToOtherPerm.getPermission()) && sender.isPlayer(false)
+                    && sender.getPlayer().getName().equals(args.getString(0)))
+                    || sender.hasPermission(teleportToOtherOtherPerm))) {
                 return;
             }
 
@@ -65,7 +68,7 @@ public class Teleport implements Listener {
                         .append(user2.getChatNameComponent()));
             }
         } else if (args.isLengthEquals(3, false)) {
-            if (!sender.hasPermission("exbukkit.teleport.location", 904)) {
+            if (!sender.hasPermission(teleportLocationPerm)) {
                 return;
             }
 
@@ -111,7 +114,7 @@ public class Teleport implements Listener {
                     .append(Component.text(x + " " + y + " " + z, ExTextColor.VALUE)));
 
         } else if (args.isLengthEquals(4, false)) {
-            if (!sender.hasPermission("exbukkit.teleport.location.other", 905)) {
+            if (!sender.hasPermission(teleportLocationOtherPerm)) {
                 return;
             }
 
@@ -155,7 +158,7 @@ public class Teleport implements Listener {
 
             user.sendPluginMessage(Plugin.BUKKIT, Component.text("Teleported to ", ExTextColor.PERSONAL)
                     .append(Component.text(x + " " + y + " " + z, ExTextColor.VALUE)));
-            if (!sender.getName().equals(Server.getUser(user).getChatName())) {
+            if (!sender.getName().equals(Server.getUser(user).getName())) {
                 sender.sendPluginMessage(Component.text("Teleported ", ExTextColor.PERSONAL)
                         .append(user.getChatNameComponent())
                         .append(Component.text(" to ", ExTextColor.PERSONAL))
@@ -177,7 +180,7 @@ public class Teleport implements Listener {
             return;
         }
 
-        if (!sender.hasPermission("exbukkit.teleport.here", 903)) {
+        if (!sender.hasPermission(teleportHerePerm)) {
             return;
         }
 
@@ -197,7 +200,7 @@ public class Teleport implements Listener {
     public static void teleportWorld(Sender sender, Arguments<Argument> args) {
         if (args.isLengthHigherEquals(1, true)) {
             if (args.get(0).isPlayerName(false)) {
-                if (!sender.hasPermission("exbukkit.teleport.world.other", 944)) {
+                if (!sender.hasPermission(teleportWorldOtherPerm)) {
                     return;
                 }
 
@@ -218,7 +221,7 @@ public class Teleport implements Listener {
                     user.sendPluginMessage(Plugin.BUKKIT, Component.text("Teleported to ", ExTextColor.PERSONAL)
                             .append(Component.text(world.getName(), ExTextColor.VALUE))
                             .append(Component.text(" spawn", ExTextColor.PERSONAL)));
-                    if (!sender.getName().equals(user.getChatName())) {
+                    if (!sender.getName().equals(user.getName())) {
                         sender.sendPluginMessage(Component.text("Teleported ", ExTextColor.PERSONAL)
                                 .append(user.getChatNameComponent())
                                 .append(Component.text(" to ", ExTextColor.PERSONAL))
@@ -241,7 +244,7 @@ public class Teleport implements Listener {
                     user.sendPluginMessage(Plugin.BUKKIT, Component.text("Teleported to ", ExTextColor.PERSONAL)
                             .append(Component.text(world.getName(), ExTextColor.VALUE))
                             .append(Component.text(x + " " + y + " " + z, ExTextColor.VALUE)));
-                    if (!sender.getName().equals(user.getChatName())) {
+                    if (!sender.getName().equals(user.getName())) {
                         sender.sendPluginMessage(Component.text("Teleported ", ExTextColor.PERSONAL)
                                 .append(user.getChatNameComponent())
                                 .append(Component.text(" to ", ExTextColor.PERSONAL))
@@ -255,7 +258,7 @@ public class Teleport implements Listener {
                 }
             } else if (args.get(0).isWorldName(false)) {
 
-                if (!sender.hasPermission("exbukkit.teleport.world", 943)) {
+                if (!sender.hasPermission(teleportWorldPerm)) {
                     return;
                 }
 
@@ -304,7 +307,7 @@ public class Teleport implements Listener {
     }
 
     public static void teleportSpawn(Sender sender) {
-        if (sender.hasPermission("exbukkit.teleport.spawn", 906)) {
+        if (sender.hasPermission(teleportSpawnPerm)) {
             if (sender.isPlayer(true)) {
                 sender.getPlayer().teleport(sender.getPlayer().getWorld().getSpawnLocation());
             }
@@ -317,7 +320,7 @@ public class Teleport implements Listener {
             return;
         }
 
-        if (!(sender.hasPermission("exbukkit.teleport.ask", 907) && sender.isPlayer(true))) {
+        if (!(sender.hasPermission(teleportAskPerm) && sender.isPlayer(true))) {
             return;
         }
 
@@ -377,7 +380,7 @@ public class Teleport implements Listener {
             return;
         }
 
-        if (!(sender.hasPermission("exbukkit.teleport.ask", 907) && sender.isPlayer(true))) {
+        if (!(sender.hasPermission(teleportAskPerm) && sender.isPlayer(true))) {
             return;
         }
 
@@ -432,7 +435,7 @@ public class Teleport implements Listener {
     }
 
     public static void accept(Sender sender, Arguments<Argument> args) {
-        if (!sender.hasPermission("exbukkit.teleport.ask.accept", 908)) {
+        if (!sender.hasPermission(teleportAskAcceptPerm)) {
             return;
         }
 
@@ -509,7 +512,7 @@ public class Teleport implements Listener {
     }
 
     public static void deny(Sender sender, Arguments<Argument> args) {
-        if (!sender.hasPermission("exbukkit.teleport.ask.deny", 908)) {
+        if (!sender.hasPermission(teleportAskDenyPerm)) {
             return;
         }
 
@@ -592,7 +595,7 @@ public class Teleport implements Listener {
     }
 
     public static void setSpawn(Sender sender, Arguments<Argument> args) {
-        if (!sender.hasPermission("exbukkit.teleport.setspawn", 912)) {
+        if (!sender.hasPermission(teleportSetSpawnPerm)) {
             return;
         }
 
@@ -650,13 +653,13 @@ public class Teleport implements Listener {
 
     public static void back(Sender sender, Arguments<Argument> args) {
         if (args.isLengthEquals(0, false) && sender.isPlayer(true)) {
-            if (sender.hasPermission("exbukkit.teleport.back", 945)) {
+            if (sender.hasPermission(teleportBackPerm)) {
                 User user = sender.getUser();
                 user.teleport(user.getLastLocation());
                 sender.sendPluginMessage(Component.text("Teleported to last location", ExTextColor.PERSONAL));
             }
         } else if (args.isLengthEquals(1, true) && args.get(0).isPlayerName(true)) {
-            if (sender.hasPermission("exbukkit.teleport.back.other", 946)) {
+            if (sender.hasPermission(teleportBackOtherPerm)) {
                 User user = args.get(0).toUser();
                 user.teleport(user.getLastLocation());
                 sender.sendPluginMessage(Component.text("Teleported ", ExTextColor.PERSONAL)
@@ -690,8 +693,40 @@ public class Teleport implements Listener {
                 .append(Component.text("all", ExTextColor.VALUE)));
     }
 
+    public static void loadCodes(Plugin plugin) {
+        teleportToOtherPerm = plugin.createPermssionCode("tlp", "exbukkit.teleport.toother");
+        teleportToOtherOtherPerm = plugin.createPermssionCode("tlp", "exbukkit.teleport.toother.other");
+        teleportLocationPerm = plugin.createPermssionCode("tlp", "exbukkit.teleport.location");
+        teleportLocationOtherPerm = plugin.createPermssionCode("tlp", "exbukkit.teleport.location.other");
+        teleportHerePerm = plugin.createPermssionCode("tlp", "exbukkit.teleport.here");
+        teleportWorldPerm = plugin.createPermssionCode("tlp", "exbukkit.teleport.world");
+        teleportWorldOtherPerm = plugin.createPermssionCode("tlp", "exbukkit.teleport.world.other");
+        teleportSpawnPerm = plugin.createPermssionCode("tlp", "exbukkit.teleport.spawn");
+        teleportSetSpawnPerm = plugin.createPermssionCode("tlp", "exbukkit.teleport.setspawn");
+        teleportAskPerm = plugin.createPermssionCode("tlp", "exbukkit.teleport.ask");
+        teleportAskAcceptPerm = plugin.createPermssionCode("tlp", "exbukkit.teleport.ask.accept");
+        teleportAskDenyPerm = plugin.createPermssionCode("tlp", "exbukkit.teleport.ask.deny");
+        teleportBackPerm = plugin.createPermssionCode("tlp", "exbukkit.teleport.back");
+        teleportBackOtherPerm = plugin.createPermssionCode("tlp", "exbukkit.teleport.back.other");
+    }
+
     private static final HashMap<User, Stack<User>> ask = new HashMap<>();
     private static final HashMap<User, Stack<User>> askHere = new HashMap<>();
+
+    private static Code.Permission teleportToOtherPerm;
+    private static Code.Permission teleportToOtherOtherPerm;
+    private static Code.Permission teleportLocationPerm;
+    private static Code.Permission teleportLocationOtherPerm;
+    private static Code.Permission teleportHerePerm;
+    private static Code.Permission teleportWorldPerm;
+    private static Code.Permission teleportWorldOtherPerm;
+    private static Code.Permission teleportSpawnPerm;
+    private static Code.Permission teleportSetSpawnPerm;
+    private static Code.Permission teleportAskPerm;
+    private static Code.Permission teleportAskAcceptPerm;
+    private static Code.Permission teleportAskDenyPerm;
+    private static Code.Permission teleportBackPerm;
+    private static Code.Permission teleportBackOtherPerm;
 
     @EventHandler
     public void onUserQuit(UserQuitEvent e) {

@@ -8,6 +8,7 @@ import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserJoinEvent;
 import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.basic.util.chat.ExTextColor;
+import de.timesnake.library.extension.util.chat.Code;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
 import net.kyori.adventure.text.Component;
@@ -22,18 +23,22 @@ public class CmdVanish implements CommandListener, Listener {
 
     private final Set<User> users = new HashSet<>();
 
+    private Code.Permission perm;
+    private Code.Permission otherPerm;
+    private Code.Permission seePerm;
+
     @Override
     public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
 
         User user;
 
         if (args.isLengthEquals(0, false) && sender.isPlayer(true)) {
-            if (!sender.hasPermission("exbukkit.vanish", 933)) {
+            if (!sender.hasPermission(this.perm)) {
                 return;
             }
             user = sender.getUser();
         } else if (args.isLengthEquals(1, true)) {
-            if (!sender.hasPermission("exbukkit.fly.other", 934)) {
+            if (!sender.hasPermission(this.otherPerm)) {
                 return;
             }
 
@@ -63,7 +68,7 @@ public class CmdVanish implements CommandListener, Listener {
         } else {
 
             for (User u : Server.getUsers()) {
-                if (!u.hasPermission("exbukkit.vanish.see")) { //code: 935
+                if (!u.hasPermission(this.seePerm.getPermission())) {
                     u.hideUser(user);
                 }
             }
@@ -85,6 +90,13 @@ public class CmdVanish implements CommandListener, Listener {
             return Server.getCommandManager().getTabCompleter().getPlayerNames();
         }
         return List.of();
+    }
+
+    @Override
+    public void loadCodes(de.timesnake.library.extension.util.chat.Plugin plugin) {
+        this.perm = plugin.createPermssionCode("van", "exbukkit.vanish");
+        this.otherPerm = plugin.createPermssionCode("van", "exbukkit.vanish.other");
+        this.seePerm = plugin.createPermssionCode("van", "exbukkit.vanish.see");
     }
 
     @EventHandler

@@ -10,6 +10,7 @@ import de.timesnake.basic.bukkit.util.world.WorldManager;
 import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Chat;
+import de.timesnake.library.extension.util.chat.Code;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
 import net.kyori.adventure.text.Component;
@@ -23,6 +24,14 @@ import java.util.List;
 
 public class CmdWorld implements CommandListener {
 
+    private Code.Permission listPerm;
+    private Code.Permission createPerm;
+    private Code.Permission clonePerm;
+    private Code.Permission deletePerm;
+    private Code.Permission unloadPerm;
+    private Code.Permission teleportPerm;
+    private Code.Permission renamePerm;
+
     @Override
     public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
         if (!args.isLengthHigherEquals(1, true)) {
@@ -31,7 +40,7 @@ public class CmdWorld implements CommandListener {
         }
 
         if (args.get(0).equalsIgnoreCase("list")) {
-            if (!sender.hasPermission("exbukkit.world.list", 954)) {
+            if (!sender.hasPermission(this.listPerm)) {
                 return;
             }
 
@@ -51,7 +60,7 @@ public class CmdWorld implements CommandListener {
 
         switch (args.getString(0)) {
             case "create" -> {
-                if (!sender.hasPermission("exbukkit.world.create", 949)) {
+                if (!sender.hasPermission(this.createPerm)) {
                     return;
                 }
                 if (world != null) {
@@ -96,7 +105,7 @@ public class CmdWorld implements CommandListener {
                 }
             }
             case "clone" -> {
-                if (!sender.hasPermission("exbukkit.world.clone", 1)) {
+                if (!sender.hasPermission(this.clonePerm)) {
                     return;
                 }
                 if (world == null) {
@@ -119,7 +128,7 @@ public class CmdWorld implements CommandListener {
                 sender.sendPluginMessage(Component.text("Complete", ExTextColor.PERSONAL));
             }
             case "delete" -> {
-                if (!sender.hasPermission("exbukkit.world.delete", 951)) {
+                if (!sender.hasPermission(this.deletePerm)) {
                     return;
                 }
                 if (world == null) {
@@ -135,7 +144,7 @@ public class CmdWorld implements CommandListener {
                 }
             }
             case "unload" -> {
-                if (!sender.hasPermission("exbukkit.world.unload", 956)) {
+                if (!sender.hasPermission(this.unloadPerm)) {
                     return;
                 }
                 if (world == null) {
@@ -151,7 +160,7 @@ public class CmdWorld implements CommandListener {
                 }
             }
             case "teleport", "tp" -> {
-                if (!sender.hasPermission("exbukkit.world.teleport", 952)) {
+                if (!sender.hasPermission(this.teleportPerm)) {
                     return;
                 }
                 if (world == null) {
@@ -180,7 +189,7 @@ public class CmdWorld implements CommandListener {
                 }
             }
             case "rename" -> {
-                if (!sender.hasPermission("exbukkit.world.rename", 957)) {
+                if (!sender.hasPermission(this.renamePerm)) {
                     return;
                 }
 
@@ -271,5 +280,16 @@ public class CmdWorld implements CommandListener {
             }
         }
         return List.of();
+    }
+
+    @Override
+    public void loadCodes(de.timesnake.library.extension.util.chat.Plugin plugin) {
+        this.listPerm = plugin.createPermssionCode("wol", "exbukkit.world.list");
+        this.createPerm = plugin.createPermssionCode("wol", "exbukkit.world.create");
+        this.clonePerm = plugin.createPermssionCode("wol", "exbukkit.world.clone");
+        this.deletePerm = plugin.createPermssionCode("wol", "exbukkit.world.delete");
+        this.unloadPerm = plugin.createPermssionCode("wol", "exbukkit.world.unload");
+        this.teleportPerm = plugin.createPermssionCode("wol", "exbukkit.world.teleport");
+        this.renamePerm = plugin.createPermssionCode("wol", "exbukkit.world.rename");
     }
 }

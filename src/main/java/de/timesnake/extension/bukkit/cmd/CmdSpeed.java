@@ -7,6 +7,7 @@ import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.basic.util.chat.ExTextColor;
+import de.timesnake.library.extension.util.chat.Code;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
 import net.kyori.adventure.text.Component;
@@ -14,6 +15,9 @@ import net.kyori.adventure.text.Component;
 import java.util.List;
 
 public class CmdSpeed implements CommandListener {
+
+    private Code.Permission perm;
+    private Code.Permission otherPerm;
 
     @Override
     public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
@@ -86,9 +90,15 @@ public class CmdSpeed implements CommandListener {
         return null;
     }
 
+    @Override
+    public void loadCodes(de.timesnake.library.extension.util.chat.Plugin plugin) {
+        this.perm = plugin.createPermssionCode("spe", "exbukkit.speed.<mode>");
+        this.otherPerm = plugin.createPermssionCode("spe", "exbukkit.speed.<mode>.other");
+    }
+
     private void set(Sender sender, User user, float speed, Type mode) {
         if (sender.getName().equals(user.getName())) {
-            if (!sender.hasPermission("exbukkit.speed." + mode, 915)) {
+            if (!sender.hasPermission(this.perm)) {
                 return;
             }
 
@@ -96,10 +106,10 @@ public class CmdSpeed implements CommandListener {
                 return;
             }
 
-            user.sendPluginMessage(Plugin.BUKKIT, Component.text("Updated " + mode.name().toLowerCase() + "speed to ", ExTextColor.PERSONAL)
-                    .append(Component.text(speed, ExTextColor.VALUE)));
+            user.sendPluginMessage(Plugin.BUKKIT, Component.text("Updated " + mode.name().toLowerCase() +
+                    "speed to ", ExTextColor.PERSONAL).append(Component.text(speed, ExTextColor.VALUE)));
         } else {
-            if (sender.hasPermission("exbukkit.speed." + mode + ".other", 917)) {
+            if (sender.hasPermission(this.otherPerm)) {
                 if (setWithPermission(sender, user, speed, mode)) {
                     return;
                 }
@@ -108,7 +118,8 @@ public class CmdSpeed implements CommandListener {
                         .append(user.getChatNameComponent())
                         .append(Component.text(" to ", ExTextColor.PERSONAL))
                         .append(Component.text(speed, ExTextColor.VALUE)));
-                user.sendPluginMessage(Plugin.BUKKIT, Component.text("Updated " + mode.name().toLowerCase() + "speed by ", ExTextColor.PERSONAL)
+                user.sendPluginMessage(Plugin.BUKKIT, Component.text("Updated " + mode.name().toLowerCase() +
+                                "speed by ", ExTextColor.PERSONAL)
                         .append(sender.getChatName())
                         .append(Component.text(" to ", ExTextColor.PERSONAL))
                         .append(Component.text(speed, ExTextColor.VALUE)));
