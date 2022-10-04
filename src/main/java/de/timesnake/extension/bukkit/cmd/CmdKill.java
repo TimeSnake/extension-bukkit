@@ -6,6 +6,8 @@ import de.timesnake.basic.bukkit.util.chat.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.library.basic.util.chat.ExTextColor;
+import de.timesnake.library.extension.util.chat.Code;
+import de.timesnake.library.extension.util.chat.Plugin;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
 import net.kyori.adventure.text.Component;
@@ -33,6 +35,10 @@ public class CmdKill implements CommandListener {
             EntityType.MINECART_CHEST, EntityType.MINECART_COMMAND, EntityType.MINECART_HOPPER,
             EntityType.MINECART_MOB_SPAWNER,
             EntityType.MINECART_TNT);
+
+    private Code.Permission playerPerm;
+    private Code.Permission typePerm;
+    private Code.Permission allPerm;
 
     @Override
     public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
@@ -63,13 +69,20 @@ public class CmdKill implements CommandListener {
 
     }
 
+    @Override
+    public void loadCodes(Plugin plugin) {
+        this.playerPerm = plugin.createPermssionCode("kil", "exbukkit.kill.player");
+        this.typePerm = plugin.createPermssionCode("kil", "exbukkit.kill.type");
+        this.allPerm = plugin.createPermssionCode("kil", "exbukkit.kill.all");
+    }
+
     public void killPlayer(Sender sender, Arguments<Argument> args) {
         if (!args.isLengthEquals(1, true)) {
             sender.sendMessageCommandHelp("Kill a player", "kill <player>");
             return;
         }
 
-        if (!sender.hasPermission("exbukkit.kill.player", 940)) {
+        if (!sender.hasPermission(this.playerPerm)) {
             return;
         }
 
@@ -86,7 +99,7 @@ public class CmdKill implements CommandListener {
     }
 
     public void killType(Sender sender, Argument arg) {
-        if (!sender.hasPermission("exbukkit.kill.type", 941)) {
+        if (!sender.hasPermission(this.typePerm)) {
             return;
         }
 
@@ -183,7 +196,7 @@ public class CmdKill implements CommandListener {
     }
 
     public void killTypeAll(Sender sender) {
-        if (!sender.hasPermission("exbukkit.kill.all", 942)) {
+        if (!sender.hasPermission(this.allPerm)) {
             return;
         }
 

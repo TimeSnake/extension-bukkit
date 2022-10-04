@@ -6,6 +6,8 @@ import de.timesnake.basic.bukkit.util.chat.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.library.basic.util.chat.ExTextColor;
+import de.timesnake.library.extension.util.chat.Code;
+import de.timesnake.library.extension.util.chat.Plugin;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
 import net.kyori.adventure.text.Component;
@@ -15,6 +17,11 @@ import java.util.List;
 
 public class CmdTime implements CommandListener {
 
+    private Code.Permission dayPerm;
+    private Code.Permission nightPerm;
+    private Code.Permission noonPerm;
+    private Code.Permission setPerm;
+
     @Override
     public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
         switch (cmd.getName()) {
@@ -22,7 +29,7 @@ public class CmdTime implements CommandListener {
                 this.handleCmdTime(sender, args);
                 break;
             case "day":
-                if (sender.hasPermission("exbukkit.time.day", 922)) {
+                if (sender.hasPermission(this.dayPerm)) {
                     if (args.isLengthEquals(1, false)) {
                         this.setDay(sender, args.get(0));
                     } else if (sender.isPlayer(false)) {
@@ -31,7 +38,7 @@ public class CmdTime implements CommandListener {
                 }
                 break;
             case "night":
-                if (sender.hasPermission("exbukkit.time.night", 923)) {
+                if (sender.hasPermission(this.nightPerm)) {
                     if (args.isLengthEquals(1, false)) {
                         this.setNight(sender, args.get(0));
                     } else if (sender.isPlayer(false)) {
@@ -41,7 +48,7 @@ public class CmdTime implements CommandListener {
 
                 break;
             case "noon":
-                if (sender.hasPermission("exbukkit.time.noon", 924)) {
+                if (sender.hasPermission(this.noonPerm)) {
                     if (args.isLengthEquals(1, false)) {
                         this.setNoon(sender, args.get(0));
                     } else if (sender.isPlayer(false)) {
@@ -74,7 +81,7 @@ public class CmdTime implements CommandListener {
                     sender.sendMessageCommandHelp("Set time in world", "time set <time> [world]");
                     return;
                 }
-                if (!sender.hasPermission("exbukkit.time.set", 921)) {
+                if (!sender.hasPermission(this.setPerm)) {
                     return;
                 }
                 if (args.isLengthHigherEquals(3, false)) {
@@ -115,7 +122,7 @@ public class CmdTime implements CommandListener {
                 }
             }
             case "day" -> {
-                if (!sender.hasPermission("exbukkit.time.day", 922)) {
+                if (!sender.hasPermission(this.dayPerm)) {
                     return;
                 }
                 if (args.isLengthHigherEquals(3, false)) {
@@ -128,7 +135,7 @@ public class CmdTime implements CommandListener {
                 }
             }
             case "night" -> {
-                if (!sender.hasPermission("exbukkit.time.night", 923)) {
+                if (!sender.hasPermission(this.nightPerm)) {
                     return;
                 }
                 if (args.isLengthHigherEquals(3, false)) {
@@ -141,7 +148,7 @@ public class CmdTime implements CommandListener {
                 }
             }
             case "noon" -> {
-                if (!sender.hasPermission("exbukkit.time.noon", 924)) {
+                if (!sender.hasPermission(this.noonPerm)) {
                     return;
                 }
                 if (args.isLengthHigherEquals(3, false)) {
@@ -173,8 +180,16 @@ public class CmdTime implements CommandListener {
         return null;
     }
 
+    @Override
+    public void loadCodes(Plugin plugin) {
+        this.dayPerm = plugin.createPermssionCode("tim", "exbukkit.time.day");
+        this.noonPerm = plugin.createPermssionCode("tim", "exbukkit.time.noon");
+        this.nightPerm = plugin.createPermssionCode("tim", "exbukkit.time.night");
+        this.setPerm = plugin.createPermssionCode("tim", "exbukkit.time.set");
+    }
+
     public void set(Sender sender, Argument arg0, Argument arg1) {
-        if (sender.hasPermission("exbukkit.time.set", 921)) {
+        if (sender.hasPermission(this.setPerm)) {
             if (arg0.isWorldName(true) && arg1.isInt(true)) {
                 ExWorld world = arg0.toWorld();
                 world.setTime(arg1.toInt());

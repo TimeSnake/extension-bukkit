@@ -7,6 +7,7 @@ import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.basic.util.chat.ExTextColor;
+import de.timesnake.library.extension.util.chat.Code;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
 import net.kyori.adventure.text.Component;
@@ -15,6 +16,9 @@ import org.bukkit.GameMode;
 import java.util.List;
 
 public class CmdGamemode implements CommandListener {
+
+    private Code.Permission perm;
+    private Code.Permission otherPerm;
 
     @Override
     public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
@@ -29,6 +33,12 @@ public class CmdGamemode implements CommandListener {
             return Server.getCommandManager().getTabCompleter().getPlayerNames();
         }
         return null;
+    }
+
+    @Override
+    public void loadCodes(de.timesnake.library.extension.util.chat.Plugin plugin) {
+        this.perm = plugin.createPermssionCode("gmo", "exbukkit.gamemode");
+        this.otherPerm = plugin.createPermssionCode("gmo", "exbukkit.gamemode.other");
     }
 
     public void handleCmdGamemode(Sender sender, Arguments<Argument> args) {
@@ -51,44 +61,36 @@ public class CmdGamemode implements CommandListener {
         GameMode gameMode;
 
         switch (args.get(0).toLowerCase()) {
-
-            case "survival":
-            case "0":
+            case "survival", "0" -> {
                 gameMode = GameMode.SURVIVAL;
                 name = "Survival";
-                break;
-
-            case "creative":
-            case "1":
+            }
+            case "creative", "1" -> {
                 gameMode = GameMode.CREATIVE;
                 name = "Creative";
-                break;
-
-            case "adventure":
-            case "2":
+            }
+            case "adventure", "2" -> {
                 gameMode = GameMode.ADVENTURE;
                 name = "Adventure";
-                break;
-
-            case "spectator":
-            case "3":
+            }
+            case "spectator", "3" -> {
                 gameMode = GameMode.SPECTATOR;
                 name = "Spectator";
-
-                break;
-            default:
+            }
+            default -> {
                 sender.sendMessageGamemodeNotExist(args.get(0).getString());
                 return;
+            }
         }
 
 
         if (sender.getName().equals(user.getName())) {
-            if (!sender.hasPermission("exbukkit.gamemode", 913)) {
+            if (!sender.hasPermission(this.perm)) {
                 return;
             }
 
         } else {
-            if (!sender.hasPermission("exbukkit.gamemode.other", 914)) {
+            if (!sender.hasPermission(this.otherPerm)) {
                 return;
             }
 

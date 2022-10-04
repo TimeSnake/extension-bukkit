@@ -9,6 +9,7 @@ import de.timesnake.basic.bukkit.util.user.ExcludedInventoryHolder;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.basic.util.chat.ExTextColor;
+import de.timesnake.library.extension.util.chat.Code;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
 import net.kyori.adventure.text.Component;
@@ -41,6 +42,10 @@ public class CmdInventory implements CommandListener, Listener {
         PLAYER_SEE_INV.put(40, 5); // off-hand
     }
 
+    private Code.Permission seePerm;
+    private Code.Permission modifyPerm;
+    private Code.Permission clearPerm;
+
     @Override
     public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
         switch (cmd.getName().toLowerCase()) {
@@ -72,8 +77,15 @@ public class CmdInventory implements CommandListener, Listener {
         return List.of();
     }
 
+    @Override
+    public void loadCodes(de.timesnake.library.extension.util.chat.Plugin plugin) {
+        this.seePerm = plugin.createPermssionCode("inv", "exbukkit.inventory.see");
+        this.modifyPerm = plugin.createPermssionCode("inv", "exbukkit.inventory.modify");
+        this.clearPerm = plugin.createPermssionCode("inv", "exbukkit.inventory.clear");
+    }
+
     public void see(Sender sender, Argument arg) {
-        if (!sender.hasPermission("exbukkit.inventory.see", 928)) {
+        if (!sender.hasPermission(this.seePerm)) {
             return;
         }
 
@@ -121,7 +133,7 @@ public class CmdInventory implements CommandListener, Listener {
         User seeUser = vHolder.getUser();
 
         Sender sender = Server.getUser((Player) e.getWhoClicked()).asSender(Plugin.BUKKIT);
-        if (!sender.hasPermission("exbukkit.inventory.modify", 929)) {
+        if (!sender.hasPermission(this.modifyPerm)) {
             e.setCancelled(true);
         }
 
@@ -164,7 +176,7 @@ public class CmdInventory implements CommandListener, Listener {
     }
 
     public void clear(Sender sender, Argument arg) {
-        if (!sender.hasPermission("exbukkit.inventory.clear", 930)) {
+        if (!sender.hasPermission(this.clearPerm)) {
             return;
         }
 

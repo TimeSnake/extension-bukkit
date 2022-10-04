@@ -6,6 +6,8 @@ import de.timesnake.basic.bukkit.util.chat.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.library.basic.util.chat.ExTextColor;
+import de.timesnake.library.extension.util.chat.Code;
+import de.timesnake.library.extension.util.chat.Plugin;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
 import net.kyori.adventure.text.Component;
@@ -14,6 +16,10 @@ import org.bukkit.World;
 import java.util.List;
 
 public class CmdWeather implements CommandListener {
+
+    private Code.Permission weatherPerm;
+    private Code.Permission sunPerm;
+    private Code.Permission rainPerm;
 
     @Override
     public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
@@ -53,7 +59,7 @@ public class CmdWeather implements CommandListener {
             return;
         }
 
-        if (!sender.hasPermission("exbukkit.weather.weather", 927)) {
+        if (!sender.hasPermission(this.weatherPerm)) {
             return;
         }
 
@@ -86,8 +92,15 @@ public class CmdWeather implements CommandListener {
         return null;
     }
 
+    @Override
+    public void loadCodes(Plugin plugin) {
+        this.weatherPerm = plugin.createPermssionCode("wea", "exbukkit.weather.weather");
+        this.sunPerm = plugin.createPermssionCode("wea", "exbukkit.weather.sun");
+        this.rainPerm = plugin.createPermssionCode("wea", "exbukkit.weather.rain");
+    }
+
     public void sun(Sender sender, Argument arg) {
-        if (!sender.hasPermission("exbukkit.weather.sun", 925)) {
+        if (!sender.hasPermission(this.sunPerm)) {
             return;
         }
 
@@ -113,7 +126,7 @@ public class CmdWeather implements CommandListener {
     }
 
     public void rain(Sender sender, Argument arg) {
-        if (!sender.hasPermission("exbukkit.weather.rain", 926)) {
+        if (!sender.hasPermission(this.rainPerm)) {
             return;
         }
 
