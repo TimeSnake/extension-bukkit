@@ -1,13 +1,34 @@
+/*
+ * extension-bukkit.main
+ * Copyright (C) 2022 timesnake
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package de.timesnake.extension.bukkit.cmd;
 
+import de.timesnake.basic.bukkit.core.world.CustomGenerator;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.Argument;
 import de.timesnake.basic.bukkit.util.chat.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
+import de.timesnake.basic.bukkit.util.world.ExWorldType;
 import de.timesnake.basic.bukkit.util.world.WorldManager;
 import de.timesnake.extension.bukkit.chat.Plugin;
+import de.timesnake.library.basic.util.Tuple;
 import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Chat;
 import de.timesnake.library.extension.util.chat.Code;
@@ -18,8 +39,11 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.World;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 
 public class CmdWorld implements CommandListener {
@@ -63,45 +87,91 @@ public class CmdWorld implements CommandListener {
                 if (!sender.hasPermission(this.createPerm)) {
                     return;
                 }
+
                 if (world != null) {
                     sender.sendMessageWorldAlreadyExist(worldName);
                     return;
                 }
+
                 for (String s : WorldManager.UNSUPPORTED_SYMBOLS) {
                     if (worldName.contains(s)) {
                         sender.sendPluginMessage(Component.text("World name contains an unsupported symbol: ", ExTextColor.WARNING)
                                 .append(Component.text(s, ExTextColor.VALUE)));
-                        return;
                     }
                 }
-                WorldManager.Type worldType = WorldManager.Type.VOID;
+
+                ExWorldType worldType = ExWorldType.VOID;
                 if (args.isLengthEquals(3, false)) {
-                    String typeName = args.getString(2).toUpperCase();
-                    try {
-                        worldType = WorldManager.Type.valueOf(typeName);
-                    } catch (IllegalArgumentException e) {
+                    String worldTypeName = args.getString(2).toLowerCase();
+                    worldType = ExWorldType.valueOf(worldTypeName);
+                    if (worldType == null) {
                         sender.sendPluginMessage(Component.text("World-Type ", ExTextColor.WARNING)
-                                .append(Component.text(typeName, ExTextColor.VALUE))
+                                .append(Component.text(worldTypeName, ExTextColor.VALUE))
                                 .append(Component.text(" does not exist", ExTextColor.WARNING)));
                         return;
                     }
-                } else if (args.isLengthHigherEquals(4, false)) {
+                } else if (!args.isLengthEquals(4, false)) {
+                    if (args.isLengthHigherEquals(5, true)) {
+                        return;
+                    }
+                } else if (!args.get(2).equalsIgnoreCase("custom")) {
                     sender.sendMessageTooManyArguments();
-                    return;
+                } else {
+                    String materialsString = args.getString(3);
+                    List<Tuple<Integer, Material>> materials = new LinkedList<>();
+                    String[] materialStrings = materialsString.split(";");
+
+                    for (String heightMaterialString : materialStrings) {
+                        String[] heightMaterial = heightMaterialString.split("#");
+                        if (heightMaterial.length == 1) {
+                            Material material;
+                            try {
+                                material = Material.valueOf(heightMaterial[0].toUpperCase());
+                            } catch (IllegalArgumentException var21) {
+                                sender.sendMessageNoItemName(heightMaterial[0].toUpperCase());
+                                return;
+                            }
+
+                            materials.add(new Tuple<>(1, material));
+                        } else {
+                            if (heightMaterial.length != 2) {
+                                sender.sendPluginMessage(Component.text("Invalid layer ", ExTextColor.WARNING).append(Component.text(heightMaterialString, ExTextColor.VALUE)));
+                                return;
+                            }
+
+                            Material material;
+                            int height;
+                            try {
+                                height = Integer.parseInt(heightMaterial[0]);
+                                material = Material.valueOf(heightMaterial[1].toUpperCase());
+                            } catch (NumberFormatException var19) {
+                                sender.sendMessageNoInteger(heightMaterial[0]);
+                                return;
+                            } catch (IllegalArgumentException var20) {
+                                sender.sendMessageNoItemName(heightMaterial[1].toUpperCase());
+                                return;
+                            }
+
+                            materials.add(new Tuple<>(height, material));
+                        }
+                    }
+
+                    worldType = new ExWorldType("custom", World.Environment.NORMAL, null,
+                            new CustomGenerator(materials));
                 }
+
                 sender.sendPluginMessage(Component.text("Creating world ", ExTextColor.PERSONAL)
                         .append(Component.text(worldName, ExTextColor.VALUE, TextDecoration.UNDERLINED)
-                                .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to teleport to world")))
+                                .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                        Component.text("Click to teleport to world")))
                                 .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/mw tp " + worldName)))
                         .append(Component.text(" with type ", ExTextColor.PERSONAL))
-                        .append(Component.text(worldType.name(), ExTextColor.VALUE)));
+                        .append(Component.text(worldType.getName(), ExTextColor.VALUE)));
                 ExWorld createdWorld = Server.getWorldManager().createWorld(worldName, worldType);
-
                 if (createdWorld != null) {
                     sender.sendPluginMessage(Component.text("Complete", ExTextColor.PERSONAL));
                 } else {
-                    sender.sendPluginMessage(Component.text("Failed to load world ", ExTextColor.WARNING)
-                            .append(Component.text(worldName, ExTextColor.VALUE)));
+                    sender.sendPluginMessage(Component.text("Failed to load world ", ExTextColor.WARNING).append(Component.text(worldName, ExTextColor.VALUE)));
                 }
             }
             case "clone" -> {
@@ -262,7 +332,7 @@ public class CmdWorld implements CommandListener {
             switch (args.getString(0).toLowerCase()) {
                 case "create":
                     if (args.getLength() == 3) {
-                        return WorldManager.Type.getNames();
+                        return ExWorldType.getNames();
                     }
                     break;
                 case "tp":
