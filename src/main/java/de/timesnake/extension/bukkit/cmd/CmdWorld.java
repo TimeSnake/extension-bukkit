@@ -18,7 +18,6 @@
 
 package de.timesnake.extension.bukkit.cmd;
 
-import de.timesnake.basic.bukkit.core.world.CustomGenerator;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.Argument;
 import de.timesnake.basic.bukkit.util.chat.CommandListener;
@@ -28,11 +27,14 @@ import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.basic.bukkit.util.world.ExWorldType;
 import de.timesnake.basic.bukkit.util.world.WorldManager;
 import de.timesnake.extension.bukkit.chat.Plugin;
+import de.timesnake.extension.bukkit.main.ExBukkit;
 import de.timesnake.library.basic.util.Tuple;
 import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Chat;
 import de.timesnake.library.extension.util.chat.Code;
-import de.timesnake.library.extension.util.cmd.Arguments;
+import de.timesnake.library.extension.util.cmd.ArgumentsType;
+import de.timesnake.library.extension.util.cmd.CmdOption;
+import de.timesnake.library.extension.util.cmd.ExArguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -40,14 +42,18 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.world.WorldLoadEvent;
 
 import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class CmdWorld implements CommandListener {
+public class CmdWorld implements CommandListener, Listener {
 
+    private final Map<String, Sender> waitingWorldLoadedSenderByWorldName = new HashMap<>();
     private Code.Permission listPerm;
     private Code.Permission createPerm;
     private Code.Permission clonePerm;
@@ -56,8 +62,12 @@ public class CmdWorld implements CommandListener {
     private Code.Permission teleportPerm;
     private Code.Permission renamePerm;
 
+    public CmdWorld() {
+        Server.registerListener(this, ExBukkit.getPlugin());
+    }
+
     @Override
-    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
+    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd, ExArguments<Argument> args) {
         if (!args.isLengthHigherEquals(1, true)) {
             this.sendCmdMessages(sender);
             return;
@@ -101,7 +111,8 @@ public class CmdWorld implements CommandListener {
                 }
 
                 ExWorldType worldType = ExWorldType.VOID;
-                if (args.isLengthEquals(3, false)) {
+                if (args.isLengthEquals(3, false) && args.getOptions().isEmpty()
+                        && args.getFlags().isEmpty()) {
                     String worldTypeName = args.getString(2).toLowerCase();
                     worldType = ExWorldType.valueOf(worldTypeName);
                     if (worldType == null) {
@@ -110,54 +121,109 @@ public class CmdWorld implements CommandListener {
                                 .append(Component.text(" does not exist", ExTextColor.WARNING)));
                         return;
                     }
-                } else if (!args.isLengthEquals(4, false)) {
-                    if (args.isLengthHigherEquals(5, true)) {
-                        return;
-                    }
-                } else if (!args.get(2).equalsIgnoreCase("custom")) {
+                } else if (!args.get(2).getString().startsWith("custom_")) {
                     sender.sendMessageTooManyArguments();
                 } else {
-                    String materialsString = args.getString(3);
-                    List<Tuple<Integer, Material>> materials = new LinkedList<>();
-                    String[] materialStrings = materialsString.split(";");
-
-                    for (String heightMaterialString : materialStrings) {
-                        String[] heightMaterial = heightMaterialString.split("#");
-                        if (heightMaterial.length == 1) {
-                            Material material;
-                            try {
-                                material = Material.valueOf(heightMaterial[0].toUpperCase());
-                            } catch (IllegalArgumentException var21) {
-                                sender.sendMessageNoItemName(heightMaterial[0].toUpperCase());
-                                return;
-                            }
-
-                            materials.add(new Tuple<>(1, material));
-                        } else {
-                            if (heightMaterial.length != 2) {
-                                sender.sendPluginMessage(Component.text("Invalid layer ", ExTextColor.WARNING).append(Component.text(heightMaterialString, ExTextColor.VALUE)));
-                                return;
-                            }
-
-                            Material material;
-                            int height;
-                            try {
-                                height = Integer.parseInt(heightMaterial[0]);
-                                material = Material.valueOf(heightMaterial[1].toUpperCase());
-                            } catch (NumberFormatException var19) {
-                                sender.sendMessageNoInteger(heightMaterial[0]);
-                                return;
-                            } catch (IllegalArgumentException var20) {
-                                sender.sendMessageNoItemName(heightMaterial[1].toUpperCase());
-                                return;
-                            }
-
-                            materials.add(new Tuple<>(height, material));
+                    if (args.get(2).equalsIgnoreCase("custom_flat")) {
+                        if (!args.isLengthEquals(4, true)) {
+                            return;
                         }
+
+                        String materialsString = args.getString(3);
+                        List<Tuple<Integer, Material>> materials = this.parseMaterials(sender, materialsString);
+                        if (materials == null) {
+                            return;
+                        }
+
+                        worldType = new ExWorldType.CustomFlat(materials);
+                    } else if (args.get(2).equalsIgnoreCase("custom_height")) {
+                        if (!args.isLengthEquals(4, true)) {
+                            return;
+                        }
+
+                        String materialsString = args.getString(3);
+                        List<Tuple<Integer, Material>> materials = this.parseMaterials(sender, materialsString);
+                        if (materials == null) {
+                            return;
+                        }
+
+                        double scale = args.getOptionOrElse("scale", new CmdOption(sender,
+                                        "" + ExWorldType.CustomHeight.SCALE))
+                                .toBoundedDoubleOrExit(0, 1, true);
+
+                        double xScale = args.getOptionOrElse("xScale", new CmdOption(sender,
+                                        "" + scale))
+                                .toBoundedDoubleOrExit(0, 1, true);
+
+                        double yScale = args.getOptionOrElse("yScale", new CmdOption(sender,
+                                        "" + scale))
+                                .toBoundedDoubleOrExit(0, 1, true);
+
+                        double zScale = args.getOptionOrElse("zScale", new CmdOption(sender,
+                                        "" + scale))
+                                .toBoundedDoubleOrExit(0, 1, true);
+
+                        double frequency = args.getOptionOrElse("frequency", new CmdOption(sender,
+                                        "" + ExWorldType.CustomHeight.FREQUENCY))
+                                .toBoundedDoubleOrExit(0, 1, true);
+
+                        double amplitude = args.getOptionOrElse("amplitude", new CmdOption(sender,
+                                        "" + ExWorldType.CustomHeight.AMPLITUDE))
+                                .toBoundedDoubleOrExit(0, 1, true);
+
+                        int baseHeight = args.getOptionOrElse("baseHeight", new CmdOption(sender,
+                                        "" + ExWorldType.CustomHeight.BASE_HEIGHT))
+                                .toBoundedIntOrExit(-64, 320, true);
+
+                        boolean simplex = args.containsFlag('s');
+
+                        worldType = new ExWorldType.CustomHeight(simplex, xScale, yScale, zScale, frequency, amplitude,
+                                baseHeight, materials);
+                    } else if (args.get(2).equalsIgnoreCase("custom_island")) {
+                        if (!args.isLengthEquals(4, true)) {
+                            return;
+                        }
+
+                        String materialsString = args.getString(3);
+                        List<Tuple<Integer, Material>> materials = this.parseMaterials(sender, materialsString);
+                        if (materials == null) {
+                            return;
+                        }
+
+                        float density = args.getOptionOrElse("density", new CmdOption(sender,
+                                        "" + ExWorldType.CustomIsland.DENSITY))
+                                .toBoundedFloatOrExit(0, 1, true);
+
+                        double scale = args.getOptionOrElse("scale", new CmdOption(sender,
+                                        "" + ExWorldType.CustomHeight.SCALE))
+                                .toBoundedDoubleOrExit(0, 1, true);
+
+                        double xScale = args.getOptionOrElse("xScale", new CmdOption(sender,
+                                        "" + scale))
+                                .toBoundedDoubleOrExit(0, 1, true);
+
+                        double yScale = args.getOptionOrElse("yScale", new CmdOption(sender,
+                                        "" + scale))
+                                .toBoundedDoubleOrExit(0, 1, true);
+
+                        double zScale = args.getOptionOrElse("zScale", new CmdOption(sender,
+                                        "" + scale))
+                                .toBoundedDoubleOrExit(0, 1, true);
+
+
+                        double frequency = args.getOptionOrElse("frequency", new CmdOption(sender,
+                                        "" + ExWorldType.CustomIsland.FREQUENCY))
+                                .toBoundedDoubleOrExit(0, 1, true);
+
+                        double amplitude = args.getOptionOrElse("amplitude", new CmdOption(sender,
+                                        "" + ExWorldType.CustomIsland.AMPLITUDE))
+                                .toBoundedDoubleOrExit(0, 1, true);
+
+                        worldType = new ExWorldType.CustomIsland(density, xScale, yScale, zScale, frequency, amplitude,
+                                materials);
                     }
 
-                    worldType = new ExWorldType("custom", World.Environment.NORMAL, null,
-                            new CustomGenerator(materials));
+
                 }
 
                 sender.sendPluginMessage(Component.text("Creating world ", ExTextColor.PERSONAL)
@@ -169,7 +235,7 @@ public class CmdWorld implements CommandListener {
                         .append(Component.text(worldType.getName(), ExTextColor.VALUE)));
                 ExWorld createdWorld = Server.getWorldManager().createWorld(worldName, worldType);
                 if (createdWorld != null) {
-                    sender.sendPluginMessage(Component.text("Complete", ExTextColor.PERSONAL));
+                    this.waitingWorldLoadedSenderByWorldName.put(createdWorld.getName(), sender);
                 } else {
                     sender.sendPluginMessage(Component.text("Failed to load world ", ExTextColor.WARNING).append(Component.text(worldName, ExTextColor.VALUE)));
                 }
@@ -299,6 +365,49 @@ public class CmdWorld implements CommandListener {
         }
     }
 
+    private List<Tuple<Integer, Material>> parseMaterials(Sender sender, String arg) {
+        List<Tuple<Integer, Material>> materials = new LinkedList<>();
+        String[] materialStrings = arg.split(",");
+
+        for (String heightMaterialString : materialStrings) {
+            String[] heightMaterial = heightMaterialString.split("#");
+            if (heightMaterial.length == 1) {
+                Material material;
+                try {
+                    material = Material.valueOf(heightMaterial[0].toUpperCase());
+                } catch (IllegalArgumentException var21) {
+                    sender.sendMessageNoItemName(heightMaterial[0].toUpperCase());
+                    return null;
+                }
+
+                materials.add(new Tuple<>(1, material));
+            } else {
+                if (heightMaterial.length != 2) {
+                    sender.sendPluginMessage(Component.text("Invalid layer ", ExTextColor.WARNING)
+                            .append(Component.text(heightMaterialString, ExTextColor.VALUE)));
+                    return null;
+                }
+
+                Material material;
+                int height;
+                try {
+                    height = Integer.parseInt(heightMaterial[0]);
+                    material = Material.valueOf(heightMaterial[1].toUpperCase());
+                } catch (NumberFormatException var19) {
+                    sender.sendMessageNoInteger(heightMaterial[0]);
+                    return null;
+                } catch (IllegalArgumentException var20) {
+                    sender.sendMessageNoItemName(heightMaterial[1].toUpperCase());
+                    return null;
+                }
+
+                materials.add(new Tuple<>(height, material));
+            }
+        }
+
+        return materials;
+    }
+
     private void sendCmdMessages(Sender sender) {
         if (sender.hasPermission("exbukkit.world.create")) {
             sender.sendMessageCommandHelp("Create a new world", "mw create <world> [type]");
@@ -324,32 +433,85 @@ public class CmdWorld implements CommandListener {
     }
 
     @Override
-    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
+    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd, ExArguments<Argument> args) {
         if (args.getLength() >= 1) {
             if (args.getLength() == 1) {
                 return List.of("create", "tp", "delete", "clone", "list", "unload", "rename");
             }
             switch (args.getString(0).toLowerCase()) {
-                case "create":
-                    if (args.getLength() == 3) {
-                        return ExWorldType.getNames();
+                case "create" -> {
+                    if (args.length() == 2) {
+                        return List.of("<name>");
                     }
-                    break;
-                case "tp":
+
                     if (args.getLength() == 3) {
-                        return Server.getCommandManager().getTabCompleter().getPlayerNames();
+                        return Stream.concat(ExWorldType.getNames().stream(),
+                                Stream.of("custom_height", "custom_flat", "custom_island")).collect(Collectors.toList());
                     }
-                case "delete":
-                case "unload":
-                case "clone":
-                case "rename":
+
+                    if (args.length() == 4 && args.getOptions().isEmpty() && args.getFlags().isEmpty()
+                            && args.get(2).equalsIgnoreCase("custom_height", "custom_flat", "custom_island")) {
+
+                        List<String> completion = new LinkedList<>();
+
+                        List<String> numbers = List.of("1#", "2#", "3#", "10#", "16#", "64#", "128#");
+
+                        String materialString = args.getString(3);
+                        if (materialString.isEmpty() || materialString.endsWith(",")) {
+                            completion.addAll(numbers.stream().map(n -> materialString + n).toList());
+                            completion.addAll(Arrays.stream(Material.values()).map(m -> m.name().toLowerCase()).toList());
+                        } else if (materialString.endsWith("#")) {
+                            completion.addAll(Arrays.stream(Material.values()).map(m -> materialString + m.name().toLowerCase()).toList());
+                        } else {
+                            if (materialString.contains("#")
+                                    && !Character.isDigit(materialString.charAt(materialString.length() - 1))) {
+                                String materialName = materialString.substring(materialString.lastIndexOf('#'))
+                                        .replace("#", "");
+
+                                completion.addAll(Arrays.stream(Material.values())
+                                        .filter(m -> m.name().toLowerCase().startsWith(materialName)
+                                                && !m.name().equalsIgnoreCase(materialString))
+                                        .map(m -> materialString + m.name().toLowerCase()).toList());
+
+                                if (Material.getMaterial(materialName.toUpperCase()) != null) {
+                                    completion.add(materialString + ",");
+                                }
+                            } else {
+                                completion.add(materialString + "#");
+                            }
+                        }
+                        return completion;
+                    }
+
+                    if (args.length() > 4 && args.get(2).equalsIgnoreCase("custom_height")) {
+                        return List.of("--scale=", "--xScale=", "--yScale=", "--zScale=", "--frequency=", "--amplitude=", "-s");
+                    }
+
+                    if (args.length() > 4 && args.get(2).equalsIgnoreCase("custom_island")) {
+                        return List.of("--scale=", "--xScale=", "--yScale=", "--zScale=", "--frequency=", "--amplitude=", "--density=");
+                    }
+                }
+                case "tp", "teleport" -> {
                     if (args.getLength() == 2) {
                         return Server.getCommandManager().getTabCompleter().getWorldNames();
                     }
-                    break;
+                    if (args.getLength() == 3) {
+                        return Server.getCommandManager().getTabCompleter().getPlayerNames();
+                    }
+                }
+                case "delete", "unload", "clone", "rename" -> {
+                    if (args.getLength() == 2) {
+                        return Server.getCommandManager().getTabCompleter().getWorldNames();
+                    }
+                }
             }
         }
         return List.of();
+    }
+
+    @Override
+    public ArgumentsType getArgumentType(String cmd, String[] args) {
+        return ArgumentsType.EXTENDED;
     }
 
     @Override
@@ -361,5 +523,13 @@ public class CmdWorld implements CommandListener {
         this.unloadPerm = plugin.createPermssionCode("wol", "exbukkit.world.unload");
         this.teleportPerm = plugin.createPermssionCode("wol", "exbukkit.world.teleport");
         this.renamePerm = plugin.createPermssionCode("wol", "exbukkit.world.rename");
+    }
+
+    @EventHandler
+    public void onWorldLoad(WorldLoadEvent e) {
+        Sender sender = this.waitingWorldLoadedSenderByWorldName.remove(e.getWorld().getName());
+        if (sender != null) {
+            sender.sendPluginMessage(Component.text("Complete", ExTextColor.PERSONAL));
+        }
     }
 }
