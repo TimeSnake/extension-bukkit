@@ -110,6 +110,11 @@ public class CmdWorld implements CommandListener, Listener {
                     }
                 }
 
+                if (args.isLengthEquals(2, false)) {
+                    sender.sendMessageTooFewArguments();
+                    return;
+                }
+
                 ExWorldType worldType = ExWorldType.VOID;
                 if (args.isLengthEquals(3, false) && args.getOptions().isEmpty()
                         && args.getFlags().isEmpty()) {
