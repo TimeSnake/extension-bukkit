@@ -1,5 +1,5 @@
 /*
- * extension-bukkit.main
+ * workspace.extension-bukkit.main
  * Copyright (C) 2022 timesnake
  *
  * This program is free software; you can redistribute it and/or
@@ -22,6 +22,7 @@ import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.Argument;
 import de.timesnake.basic.bukkit.util.chat.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.Sender;
+import de.timesnake.basic.bukkit.util.user.ExInventory;
 import de.timesnake.basic.bukkit.util.user.ExItemStack;
 import de.timesnake.basic.bukkit.util.user.ExcludedInventoryHolder;
 import de.timesnake.basic.bukkit.util.user.User;
@@ -122,7 +123,7 @@ public class CmdInventory implements CommandListener, Listener {
         ItemStack[] items = seeUser.getInventory().getContents();
 
         VirtuellInventoryHolder holder = new VirtuellInventoryHolder(seeUser);
-        Inventory inv = Server.createExInventory(6 * 9, seeUser.getName(), holder).getInventory();
+        Inventory inv = new ExInventory(6 * 9, Component.text(seeUser.getName()), holder).getInventory();
         holder.setInventory(inv);
 
         for (int slot = 0; slot < 41; slot++) {
