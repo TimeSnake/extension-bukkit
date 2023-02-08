@@ -6,7 +6,7 @@ package de.timesnake.extension.bukkit.cmd;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.Argument;
-import de.timesnake.basic.bukkit.util.chat.CommandListener;
+import de.timesnake.basic.bukkit.util.chat.ExCommandListener;
 import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
@@ -18,10 +18,17 @@ import de.timesnake.library.basic.util.Tuple;
 import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Chat;
 import de.timesnake.library.extension.util.chat.Code;
-import de.timesnake.library.extension.util.cmd.ArgumentsType;
 import de.timesnake.library.extension.util.cmd.CmdOption;
 import de.timesnake.library.extension.util.cmd.ExArguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
+import java.io.File;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -32,12 +39,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldLoadEvent;
 
-import java.io.File;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-public class CmdWorld implements CommandListener, Listener {
+public class CmdWorld implements ExCommandListener, Listener {
 
     private final Map<String, Sender> waitingWorldLoadedSenderByWorldName = new HashMap<>();
     private Code.Permission listPerm;
@@ -53,7 +55,8 @@ public class CmdWorld implements CommandListener, Listener {
     }
 
     @Override
-    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd, ExArguments<Argument> args) {
+    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
+            ExArguments<Argument> args) {
         if (!args.isLengthHigherEquals(1, true)) {
             this.sendCmdMessages(sender);
             return;
@@ -65,7 +68,8 @@ public class CmdWorld implements CommandListener, Listener {
             }
 
             sender.sendPluginMessage(Component.text("Worlds: ", ExTextColor.PERSONAL)
-                    .append(Chat.listToComponent(Server.getCommandManager().getTabCompleter().getWorldNames(),
+                    .append(Chat.listToComponent(
+                            Server.getCommandManager().getTabCompleter().getWorldNames(),
                             ExTextColor.VALUE, ExTextColor.PERSONAL)));
             return;
         }
@@ -91,8 +95,10 @@ public class CmdWorld implements CommandListener, Listener {
 
                 for (String s : WorldManager.UNSUPPORTED_SYMBOLS) {
                     if (worldName.contains(s)) {
-                        sender.sendPluginMessage(Component.text("World name contains an unsupported symbol: ", ExTextColor.WARNING)
-                                .append(Component.text(s, ExTextColor.VALUE)));
+                        sender.sendPluginMessage(
+                                Component.text("World name contains an unsupported symbol: ",
+                                                ExTextColor.WARNING)
+                                        .append(Component.text(s, ExTextColor.VALUE)));
                     }
                 }
 
@@ -121,7 +127,8 @@ public class CmdWorld implements CommandListener, Listener {
                         }
 
                         String materialsString = args.getString(3);
-                        List<Tuple<Integer, Material>> materials = this.parseMaterials(sender, materialsString);
+                        List<Tuple<Integer, Material>> materials = this.parseMaterials(sender,
+                                materialsString);
                         if (materials == null) {
                             return;
                         }
@@ -133,7 +140,8 @@ public class CmdWorld implements CommandListener, Listener {
                         }
 
                         String materialsString = args.getString(3);
-                        List<Tuple<Integer, Material>> materials = this.parseMaterials(sender, materialsString);
+                        List<Tuple<Integer, Material>> materials = this.parseMaterials(sender,
+                                materialsString);
                         if (materials == null) {
                             return;
                         }
@@ -168,7 +176,8 @@ public class CmdWorld implements CommandListener, Listener {
 
                         boolean simplex = args.containsFlag('s');
 
-                        worldType = new ExWorldType.CustomHeight(simplex, xScale, yScale, zScale, frequency, amplitude,
+                        worldType = new ExWorldType.CustomHeight(simplex, xScale, yScale, zScale,
+                                frequency, amplitude,
                                 baseHeight, materials);
                     } else if (args.get(2).equalsIgnoreCase("custom_island")) {
                         if (!args.isLengthEquals(4, true)) {
@@ -176,7 +185,8 @@ public class CmdWorld implements CommandListener, Listener {
                         }
 
                         String materialsString = args.getString(3);
-                        List<Tuple<Integer, Material>> materials = this.parseMaterials(sender, materialsString);
+                        List<Tuple<Integer, Material>> materials = this.parseMaterials(sender,
+                                materialsString);
                         if (materials == null) {
                             return;
                         }
@@ -201,7 +211,6 @@ public class CmdWorld implements CommandListener, Listener {
                                         "" + scale))
                                 .toBoundedDoubleOrExit(0, 1, true);
 
-
                         double frequency = args.getOptionOrElse("frequency", new CmdOption(sender,
                                         "" + ExWorldType.CustomIsland.FREQUENCY))
                                 .toBoundedDoubleOrExit(0, 1, true);
@@ -210,7 +219,8 @@ public class CmdWorld implements CommandListener, Listener {
                                         "" + ExWorldType.CustomIsland.AMPLITUDE))
                                 .toBoundedDoubleOrExit(0, 1, true);
 
-                        worldType = new ExWorldType.CustomIsland(density, xScale, yScale, zScale, frequency, amplitude,
+                        worldType = new ExWorldType.CustomIsland(density, xScale, yScale, zScale,
+                                frequency, amplitude,
                                 materials);
                     }
 
@@ -218,17 +228,21 @@ public class CmdWorld implements CommandListener, Listener {
                 }
 
                 sender.sendPluginMessage(Component.text("Creating world ", ExTextColor.PERSONAL)
-                        .append(Component.text(worldName, ExTextColor.VALUE, TextDecoration.UNDERLINED)
+                        .append(Component.text(worldName, ExTextColor.VALUE,
+                                        TextDecoration.UNDERLINED)
                                 .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT,
                                         Component.text("Click to teleport to world")))
-                                .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/mw tp " + worldName)))
+                                .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND,
+                                        "/mw tp " + worldName)))
                         .append(Component.text(" with type ", ExTextColor.PERSONAL))
                         .append(Component.text(worldType.getName(), ExTextColor.VALUE)));
                 ExWorld createdWorld = Server.getWorldManager().createWorld(worldName, worldType);
                 if (createdWorld != null) {
                     this.waitingWorldLoadedSenderByWorldName.put(createdWorld.getName(), sender);
                 } else {
-                    sender.sendPluginMessage(Component.text("Failed to load world ", ExTextColor.WARNING).append(Component.text(worldName, ExTextColor.VALUE)));
+                    sender.sendPluginMessage(
+                            Component.text("Failed to load world ", ExTextColor.WARNING)
+                                    .append(Component.text(worldName, ExTextColor.VALUE)));
                 }
             }
             case "clone" -> {
@@ -266,8 +280,9 @@ public class CmdWorld implements CommandListener, Listener {
                     sender.sendPluginMessage(Component.text("Deleted world ", ExTextColor.PERSONAL)
                             .append(Component.text(worldName, ExTextColor.VALUE)));
                 } else {
-                    sender.sendPluginMessage(Component.text("Failed to delete world ", ExTextColor.WARNING)
-                            .append(Component.text(worldName, ExTextColor.VALUE)));
+                    sender.sendPluginMessage(
+                            Component.text("Failed to delete world ", ExTextColor.WARNING)
+                                    .append(Component.text(worldName, ExTextColor.VALUE)));
                 }
             }
             case "unload" -> {
@@ -282,8 +297,9 @@ public class CmdWorld implements CommandListener, Listener {
                     sender.sendPluginMessage(Component.text("Unloaded world ", ExTextColor.PERSONAL)
                             .append(Component.text(worldName, ExTextColor.VALUE)));
                 } else {
-                    sender.sendPluginMessage(Component.text("Failed to unload world ", ExTextColor.WARNING)
-                            .append(Component.text(worldName, ExTextColor.VALUE)));
+                    sender.sendPluginMessage(
+                            Component.text("Failed to unload world ", ExTextColor.WARNING)
+                                    .append(Component.text(worldName, ExTextColor.VALUE)));
                 }
             }
             case "teleport", "tp" -> {
@@ -299,16 +315,18 @@ public class CmdWorld implements CommandListener, Listener {
                         return;
                     }
                     sender.getUser().teleport(world);
-                    sender.sendPluginMessage(Component.text("Teleported to world ", ExTextColor.PERSONAL)
-                            .append(Component.text(worldName, ExTextColor.VALUE)));
+                    sender.sendPluginMessage(
+                            Component.text("Teleported to world ", ExTextColor.PERSONAL)
+                                    .append(Component.text(worldName, ExTextColor.VALUE)));
                 } else if (args.isLengthEquals(3, true)) {
                     if (!args.get(2).isPlayerName(true)) {
                         return;
                     }
                     User user = args.get(2).toUser();
                     user.teleport(world);
-                    user.sendPluginMessage(Plugin.BUKKIT, Component.text("Teleported to world ", ExTextColor.PERSONAL)
-                            .append(Component.text(worldName, ExTextColor.VALUE)));
+                    user.sendPluginMessage(Plugin.BUKKIT,
+                            Component.text("Teleported to world ", ExTextColor.PERSONAL)
+                                    .append(Component.text(worldName, ExTextColor.VALUE)));
                     sender.sendPluginMessage(Component.text("Teleported ", ExTextColor.PERSONAL)
                             .append(user.getChatNameComponent())
                             .append(Component.text(" to world ", ExTextColor.PERSONAL))
@@ -342,13 +360,15 @@ public class CmdWorld implements CommandListener, Listener {
                 boolean result = Server.getWorldManager().unloadWorld(world, true);
 
                 if (!result) {
-                    sender.sendPluginMessage(Component.text("Can not unload world ", ExTextColor.WARNING)
-                            .append(Component.text(world.getName(), ExTextColor.VALUE)));
+                    sender.sendPluginMessage(
+                            Component.text("Can not unload world ", ExTextColor.WARNING)
+                                    .append(Component.text(world.getName(), ExTextColor.VALUE)));
                     return;
                 }
 
-                worldFolder.renameTo(new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator +
-                        newName));
+                worldFolder.renameTo(
+                        new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator +
+                                newName));
 
                 Server.getWorldManager().createWorld(newName);
             }
@@ -424,7 +444,8 @@ public class CmdWorld implements CommandListener, Listener {
     }
 
     @Override
-    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd, ExArguments<Argument> args) {
+    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
+            ExArguments<Argument> args) {
         if (args.getLength() >= 1) {
             if (args.getLength() == 1) {
                 return List.of("create", "tp", "delete", "clone", "list", "unload", "rename");
@@ -437,32 +458,42 @@ public class CmdWorld implements CommandListener, Listener {
 
                     if (args.getLength() == 3) {
                         return Stream.concat(ExWorldType.getNames().stream(),
-                                Stream.of("custom_height", "custom_flat", "custom_island")).collect(Collectors.toList());
+                                        Stream.of("custom_height", "custom_flat", "custom_island"))
+                                .collect(Collectors.toList());
                     }
 
-                    if (args.length() == 4 && args.getOptions().isEmpty() && args.getFlags().isEmpty()
-                            && args.get(2).equalsIgnoreCase("custom_height", "custom_flat", "custom_island")) {
+                    if (args.length() == 4 && args.getOptions().isEmpty() && args.getFlags()
+                            .isEmpty()
+                            && args.get(2)
+                            .equalsIgnoreCase("custom_height", "custom_flat", "custom_island")) {
 
                         List<String> completion = new LinkedList<>();
 
-                        List<String> numbers = List.of("1#", "2#", "3#", "10#", "16#", "64#", "128#");
+                        List<String> numbers = List.of("1#", "2#", "3#", "10#", "16#", "64#",
+                                "128#");
 
                         String materialString = args.getString(3);
                         if (materialString.isEmpty() || materialString.endsWith(",")) {
-                            completion.addAll(numbers.stream().map(n -> materialString + n).toList());
-                            completion.addAll(Arrays.stream(Material.values()).map(m -> m.name().toLowerCase()).toList());
+                            completion.addAll(
+                                    numbers.stream().map(n -> materialString + n).toList());
+                            completion.addAll(Arrays.stream(Material.values())
+                                    .map(m -> m.name().toLowerCase()).toList());
                         } else if (materialString.endsWith("#")) {
-                            completion.addAll(Arrays.stream(Material.values()).map(m -> materialString + m.name().toLowerCase()).toList());
+                            completion.addAll(Arrays.stream(Material.values())
+                                    .map(m -> materialString + m.name().toLowerCase()).toList());
                         } else {
                             if (materialString.contains("#")
-                                    && !Character.isDigit(materialString.charAt(materialString.length() - 1))) {
-                                String materialName = materialString.substring(materialString.lastIndexOf('#'))
+                                    && !Character.isDigit(
+                                    materialString.charAt(materialString.length() - 1))) {
+                                String materialName = materialString.substring(
+                                                materialString.lastIndexOf('#'))
                                         .replace("#", "");
 
                                 completion.addAll(Arrays.stream(Material.values())
                                         .filter(m -> m.name().toLowerCase().startsWith(materialName)
                                                 && !m.name().equalsIgnoreCase(materialString))
-                                        .map(m -> materialString + m.name().toLowerCase()).toList());
+                                        .map(m -> materialString + m.name().toLowerCase())
+                                        .toList());
 
                                 if (Material.getMaterial(materialName.toUpperCase()) != null) {
                                     completion.add(materialString + ",");
@@ -475,11 +506,13 @@ public class CmdWorld implements CommandListener, Listener {
                     }
 
                     if (args.length() > 4 && args.get(2).equalsIgnoreCase("custom_height")) {
-                        return List.of("--scale=", "--xScale=", "--yScale=", "--zScale=", "--frequency=", "--amplitude=", "-s");
+                        return List.of("--scale=", "--xScale=", "--yScale=", "--zScale=",
+                                "--frequency=", "--amplitude=", "-s");
                     }
 
                     if (args.length() > 4 && args.get(2).equalsIgnoreCase("custom_island")) {
-                        return List.of("--scale=", "--xScale=", "--yScale=", "--zScale=", "--frequency=", "--amplitude=", "--density=");
+                        return List.of("--scale=", "--xScale=", "--yScale=", "--zScale=",
+                                "--frequency=", "--amplitude=", "--density=");
                     }
                 }
                 case "tp", "teleport" -> {
@@ -498,11 +531,6 @@ public class CmdWorld implements CommandListener, Listener {
             }
         }
         return List.of();
-    }
-
-    @Override
-    public ArgumentsType getArgumentType(String cmd, String[] args) {
-        return ArgumentsType.EXTENDED;
     }
 
     @Override
