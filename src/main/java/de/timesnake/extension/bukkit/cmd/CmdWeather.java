@@ -14,19 +14,19 @@ import de.timesnake.library.extension.util.chat.Code;
 import de.timesnake.library.extension.util.chat.Plugin;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
+import java.util.List;
 import net.kyori.adventure.text.Component;
 import org.bukkit.World;
 
-import java.util.List;
-
 public class CmdWeather implements CommandListener {
 
-    private Code.Permission weatherPerm;
-    private Code.Permission sunPerm;
-    private Code.Permission rainPerm;
+    private Code weatherPerm;
+    private Code sunPerm;
+    private Code rainPerm;
 
     @Override
-    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
+    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
+            Arguments<Argument> args) {
         switch (cmd.getName()) {
             case "weather":
                 this.handleCmdWeather(sender, args);
@@ -59,7 +59,8 @@ public class CmdWeather implements CommandListener {
 
     public void handleCmdWeather(Sender sender, Arguments<Argument> args) {
         if (!args.isLengthHigherEquals(1, true)) {
-            sender.sendMessageCommandHelp("Change weather in world", "weather <clear/rain/sun> [world]");
+            sender.sendMessageCommandHelp("Change weather in world",
+                    "weather <clear/rain/sun> [world]");
             return;
         }
 
@@ -77,13 +78,15 @@ public class CmdWeather implements CommandListener {
             case "rain", "storm", "thunder" -> this.rain(sender, world);
             default -> {
                 sender.sendMessageWeatherTypeNotExist(args.get(0).getString());
-                sender.sendMessageCommandHelp("Change weather in world", "weather <clear/rain/sun> " + "[world]");
+                sender.sendMessageCommandHelp("Change weather in world",
+                        "weather <clear/rain/sun> " + "[world]");
             }
         }
     }
 
     @Override
-    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
+    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
+            Arguments<Argument> args) {
         if (cmd.getName().equalsIgnoreCase("weather")) {
             return null;
         }
@@ -98,9 +101,9 @@ public class CmdWeather implements CommandListener {
 
     @Override
     public void loadCodes(Plugin plugin) {
-        this.weatherPerm = plugin.createPermssionCode("wea", "exbukkit.weather.weather");
-        this.sunPerm = plugin.createPermssionCode("wea", "exbukkit.weather.sun");
-        this.rainPerm = plugin.createPermssionCode("wea", "exbukkit.weather.rain");
+        this.weatherPerm = plugin.createPermssionCode("exbukkit.weather.weather");
+        this.sunPerm = plugin.createPermssionCode("exbukkit.weather.sun");
+        this.rainPerm = plugin.createPermssionCode("exbukkit.weather.rain");
     }
 
     public void sun(Sender sender, Argument arg) {

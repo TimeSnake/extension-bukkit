@@ -14,20 +14,20 @@ import de.timesnake.library.extension.util.chat.Code;
 import de.timesnake.library.extension.util.chat.Plugin;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
+import java.util.List;
 import net.kyori.adventure.text.Component;
 import org.bukkit.World;
 
-import java.util.List;
-
 public class CmdTime implements CommandListener {
 
-    private Code.Permission dayPerm;
-    private Code.Permission nightPerm;
-    private Code.Permission noonPerm;
-    private Code.Permission setPerm;
+    private Code dayPerm;
+    private Code nightPerm;
+    private Code noonPerm;
+    private Code setPerm;
 
     @Override
-    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
+    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
+            Arguments<Argument> args) {
         switch (cmd.getName()) {
             case "time":
                 this.handleCmdTime(sender, args);
@@ -37,8 +37,11 @@ public class CmdTime implements CommandListener {
                     if (args.isLengthEquals(1, false)) {
                         this.setDay(sender, args.get(0));
                     } else if (sender.isPlayer(false)) {
-                        this.setDay(sender, new Argument(sender, sender.getPlayer().getWorld().getName()));
-                    } else sender.sendMessageCommandHelp("Set day in world", "day <world>");
+                        this.setDay(sender,
+                                new Argument(sender, sender.getPlayer().getWorld().getName()));
+                    } else {
+                        sender.sendMessageCommandHelp("Set day in world", "day <world>");
+                    }
                 }
                 break;
             case "night":
@@ -46,8 +49,11 @@ public class CmdTime implements CommandListener {
                     if (args.isLengthEquals(1, false)) {
                         this.setNight(sender, args.get(0));
                     } else if (sender.isPlayer(false)) {
-                        this.setNight(sender, new Argument(sender, sender.getPlayer().getWorld().getName()));
-                    } else sender.sendMessageCommandHelp("Set night in world", "night <world>");
+                        this.setNight(sender,
+                                new Argument(sender, sender.getPlayer().getWorld().getName()));
+                    } else {
+                        sender.sendMessageCommandHelp("Set night in world", "night <world>");
+                    }
                 }
 
                 break;
@@ -56,8 +62,11 @@ public class CmdTime implements CommandListener {
                     if (args.isLengthEquals(1, false)) {
                         this.setNoon(sender, args.get(0));
                     } else if (sender.isPlayer(false)) {
-                        this.setNoon(sender, new Argument(sender, sender.getPlayer().getWorld().getName()));
-                    } else sender.sendMessageCommandHelp("Set noon in world", "noon <world>");
+                        this.setNoon(sender,
+                                new Argument(sender, sender.getPlayer().getWorld().getName()));
+                    } else {
+                        sender.sendMessageCommandHelp("Set noon in world", "noon <world>");
+                    }
                 }
                 break;
 
@@ -71,7 +80,8 @@ public class CmdTime implements CommandListener {
                 sender.sendPluginMessage(Component.text("Current time: ", ExTextColor.PERSONAL)
                         .append(Component.text(ticks, ExTextColor.VALUE))
                         .append(Component.text(" ticks, ", ExTextColor.PERSONAL))
-                        .append(Component.text(new Argument(sender, String.valueOf(ticks)).toTime(), ExTextColor.VALUE)));
+                        .append(Component.text(new Argument(sender, String.valueOf(ticks)).toTime(),
+                                ExTextColor.VALUE)));
                 return;
             } else {
                 sender.sendMessageCommandHelp("Set time in world", "time set <time> [world]");
@@ -96,7 +106,8 @@ public class CmdTime implements CommandListener {
                     } else if (args.get(1).isInt(false)) {
                         this.set(sender, args.get(2), args.get(1));
                     } else if (args.get(1).isTime(true)) {
-                        this.set(sender, args.get(2), new Argument(sender, String.valueOf(args.get(1).toTicks())));
+                        this.set(sender, args.get(2),
+                                new Argument(sender, String.valueOf(args.get(1).toTicks())));
                     }
                 } else if (sender.isPlayer(false)) {
 
@@ -114,10 +125,12 @@ public class CmdTime implements CommandListener {
                             return;
                         default:
                             if (args.get(1).isInt(false)) {
-                                this.set(sender, new Argument(sender, world.getName()), args.get(1));
+                                this.set(sender, new Argument(sender, world.getName()),
+                                        args.get(1));
                             } else if (args.get(1).isTime(true)) {
-                                this.set(sender, new Argument(sender, world.getName()), new Argument(sender,
-                                        String.valueOf(args.get(1).toTicks())));
+                                this.set(sender, new Argument(sender, world.getName()),
+                                        new Argument(sender,
+                                                String.valueOf(args.get(1).toTicks())));
                             }
                     }
                 } else {
@@ -132,7 +145,8 @@ public class CmdTime implements CommandListener {
                 if (args.isLengthHigherEquals(3, false)) {
                     this.setDay(sender, args.get(2));
                 } else if (sender.isPlayer(false)) {
-                    this.setDay(sender, new Argument(sender, sender.getPlayer().getWorld().getName()));
+                    this.setDay(sender,
+                            new Argument(sender, sender.getPlayer().getWorld().getName()));
                 } else {
                     sender.sendMessageTooFewManyArguments();
                     sender.sendMessageCommandHelp("Set time in world", "time set <time> [world]");
@@ -145,7 +159,8 @@ public class CmdTime implements CommandListener {
                 if (args.isLengthHigherEquals(3, false)) {
                     this.setNight(sender, args.get(2));
                 } else if (sender.isPlayer(false)) {
-                    this.setNight(sender, new Argument(sender, sender.getPlayer().getWorld().getName()));
+                    this.setNight(sender,
+                            new Argument(sender, sender.getPlayer().getWorld().getName()));
                 } else {
                     sender.sendMessageTooFewManyArguments();
                     sender.sendMessageCommandHelp("Set time in world", "time set <time> [world]");
@@ -158,18 +173,21 @@ public class CmdTime implements CommandListener {
                 if (args.isLengthHigherEquals(3, false)) {
                     this.setNoon(sender, args.get(2));
                 } else if (sender.isPlayer(false)) {
-                    this.setNoon(sender, new Argument(sender, sender.getPlayer().getWorld().getName()));
+                    this.setNoon(sender,
+                            new Argument(sender, sender.getPlayer().getWorld().getName()));
                 } else {
                     sender.sendMessageTooFewManyArguments();
                     sender.sendMessageCommandHelp("Set time in world", "time set <time> [world]");
                 }
             }
-            default -> sender.sendMessageCommandHelp("Set time in world", "time set <time> [world]");
+            default ->
+                    sender.sendMessageCommandHelp("Set time in world", "time set <time> [world]");
         }
     }
 
     @Override
-    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
+    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
+            Arguments<Argument> args) {
         if (cmd.getName().equalsIgnoreCase("time")) {
             if (args.getLength() == 1) {
                 return List.of("set", "day", "night", "noon");
@@ -186,10 +204,10 @@ public class CmdTime implements CommandListener {
 
     @Override
     public void loadCodes(Plugin plugin) {
-        this.dayPerm = plugin.createPermssionCode("tim", "exbukkit.time.day");
-        this.noonPerm = plugin.createPermssionCode("tim", "exbukkit.time.noon");
-        this.nightPerm = plugin.createPermssionCode("tim", "exbukkit.time.night");
-        this.setPerm = plugin.createPermssionCode("tim", "exbukkit.time.set");
+        this.dayPerm = plugin.createPermssionCode("exbukkit.time.day");
+        this.noonPerm = plugin.createPermssionCode("exbukkit.time.noon");
+        this.nightPerm = plugin.createPermssionCode("exbukkit.time.night");
+        this.setPerm = plugin.createPermssionCode("exbukkit.time.set");
     }
 
     public void set(Sender sender, Argument arg0, Argument arg1) {
@@ -197,12 +215,13 @@ public class CmdTime implements CommandListener {
             if (arg0.isWorldName(true) && arg1.isInt(true)) {
                 ExWorld world = arg0.toWorld();
                 world.setTime(arg1.toInt());
-                sender.sendPluginMessage(Component.text("Updated time in world ", ExTextColor.PERSONAL)
-                        .append(Component.text(world.getName(), ExTextColor.VALUE))
-                        .append(Component.text(" to ", ExTextColor.PERSONAL))
-                        .append(Component.text(arg1.toInt(), ExTextColor.VALUE))
-                        .append(Component.text(" " + "ticks, ", ExTextColor.PERSONAL))
-                        .append(Component.text(arg1.toTime(), ExTextColor.VALUE)));
+                sender.sendPluginMessage(
+                        Component.text("Updated time in world ", ExTextColor.PERSONAL)
+                                .append(Component.text(world.getName(), ExTextColor.VALUE))
+                                .append(Component.text(" to ", ExTextColor.PERSONAL))
+                                .append(Component.text(arg1.toInt(), ExTextColor.VALUE))
+                                .append(Component.text(" " + "ticks, ", ExTextColor.PERSONAL))
+                                .append(Component.text(arg1.toTime(), ExTextColor.VALUE)));
             }
         }
     }

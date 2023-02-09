@@ -14,17 +14,17 @@ import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Code;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
-import net.kyori.adventure.text.Component;
-
 import java.util.List;
+import net.kyori.adventure.text.Component;
 
 public class CmdFly implements CommandListener {
 
-    private Code.Permission perm;
-    private Code.Permission otherPerm;
+    private Code perm;
+    private Code otherPerm;
 
     @Override
-    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
+    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
+            Arguments<Argument> args) {
 
         User user = null;
 
@@ -55,17 +55,21 @@ public class CmdFly implements CommandListener {
 
         if (!sender.getUser().equals(user)) {
             user.sendPluginMessage(Plugin.BUKKIT,
-                    Component.text((fly ? "Enabled" : "Disabled") + " flying by ", ExTextColor.PERSONAL)
+                    Component.text((fly ? "Enabled" : "Disabled") + " flying by ",
+                                    ExTextColor.PERSONAL)
                             .append(sender.getChatName()));
-            sender.sendPluginMessage(Component.text((fly ? "Enabled" : "Disabled") + " flying for ", ExTextColor.PERSONAL)
+            sender.sendPluginMessage(Component.text((fly ? "Enabled" : "Disabled") + " flying for ",
+                            ExTextColor.PERSONAL)
                     .append(user.getChatNameComponent()));
         } else {
-            sender.sendPluginMessage(Component.text((fly ? "Enabled" : "Disabled") + " flying", ExTextColor.PERSONAL));
+            sender.sendPluginMessage(Component.text((fly ? "Enabled" : "Disabled") + " flying",
+                    ExTextColor.PERSONAL));
         }
     }
 
     @Override
-    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
+    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
+            Arguments<Argument> args) {
         if (args.getLength() == 1) {
             return Server.getCommandManager().getTabCompleter().getPlayerNames();
         }
@@ -74,7 +78,7 @@ public class CmdFly implements CommandListener {
 
     @Override
     public void loadCodes(de.timesnake.library.extension.util.chat.Plugin plugin) {
-        this.perm = plugin.createPermssionCode("fly", "exbukkit.fly");
-        this.otherPerm = plugin.createPermssionCode("fly", "exbukkit.fly.other");
+        this.perm = plugin.createPermssionCode("exbukkit.fly");
+        this.otherPerm = plugin.createPermssionCode("exbukkit.fly.other");
     }
 }
