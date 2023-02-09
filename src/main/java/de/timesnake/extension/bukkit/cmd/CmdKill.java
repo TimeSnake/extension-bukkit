@@ -14,38 +14,43 @@ import de.timesnake.library.extension.util.chat.Code;
 import de.timesnake.library.extension.util.chat.Plugin;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
+import java.util.List;
 import net.kyori.adventure.text.Component;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
-import java.util.List;
-
 public class CmdKill implements CommandListener {
 
-    private final List<EntityType> monsters = List.of(EntityType.BLAZE, EntityType.CAVE_SPIDER, EntityType.CREEPER,
-            EntityType.ELDER_GUARDIAN, EntityType.GUARDIAN, EntityType.GHAST, EntityType.GIANT, EntityType.ENDER_DRAGON,
+    private final List<EntityType> monsters = List.of(EntityType.BLAZE, EntityType.CAVE_SPIDER,
+            EntityType.CREEPER,
+            EntityType.ELDER_GUARDIAN, EntityType.GUARDIAN, EntityType.GHAST, EntityType.GIANT,
+            EntityType.ENDER_DRAGON,
             EntityType.ENDERMAN, EntityType.ENDERMITE, EntityType.MAGMA_CUBE, EntityType.PHANTOM,
             EntityType.ZOMBIFIED_PIGLIN,
-            EntityType.PIGLIN, EntityType.PILLAGER, EntityType.SHULKER, EntityType.SILVERFISH, EntityType.SKELETON,
-            EntityType.SLIME, EntityType.SPIDER, EntityType.VEX, EntityType.WITCH, EntityType.WITHER,
+            EntityType.PIGLIN, EntityType.PILLAGER, EntityType.SHULKER, EntityType.SILVERFISH,
+            EntityType.SKELETON,
+            EntityType.SLIME, EntityType.SPIDER, EntityType.VEX, EntityType.WITCH,
+            EntityType.WITHER,
             EntityType.WITHER_SKELETON,
             EntityType.ZOMBIE, EntityType.ZOMBIE_VILLAGER, EntityType.VINDICATOR, EntityType.EVOKER,
             EntityType.EVOKER_FANGS);
 
     private final List<EntityType> excluded = List.of(EntityType.ARMOR_STAND, EntityType.ITEM_FRAME,
             EntityType.GLOW_ITEM_FRAME,
-            EntityType.PAINTING, EntityType.BOAT, EntityType.BOAT, EntityType.MINECART, EntityType.MINECART_FURNACE,
+            EntityType.PAINTING, EntityType.BOAT, EntityType.BOAT, EntityType.MINECART,
+            EntityType.MINECART_FURNACE,
             EntityType.MINECART_CHEST, EntityType.MINECART_COMMAND, EntityType.MINECART_HOPPER,
             EntityType.MINECART_MOB_SPAWNER,
             EntityType.MINECART_TNT);
 
-    private Code.Permission playerPerm;
-    private Code.Permission typePerm;
-    private Code.Permission allPerm;
+    private Code playerPerm;
+    private Code typePerm;
+    private Code allPerm;
 
     @Override
-    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
+    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
+            Arguments<Argument> args) {
         if (cmd.getName().equalsIgnoreCase("kill")) {
             this.killPlayer(sender, args);
         } else if (cmd.getName().equalsIgnoreCase("killall")) {
@@ -56,17 +61,20 @@ public class CmdKill implements CommandListener {
                     this.killTypeAll(sender);
                 }
             } else {
-                sender.sendMessageCommandHelp("Kill all of a type (drops, mobs, ...)", "killall <type>");
+                sender.sendMessageCommandHelp("Kill all of a type (drops, mobs, ...)",
+                        "killall <type>");
                 sender.sendMessageCommandHelp("Kill all types", "killall all");
             }
         }
     }
 
     @Override
-    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
+    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
+            Arguments<Argument> args) {
         if (args.getLength() == 1) {
             List<String> players = Server.getCommandManager().getTabCompleter().getPlayerNames();
-            players.addAll(List.of("drops", "mobs", "monsters", "animals", "xps", "all", "<mobType>"));
+            players.addAll(
+                    List.of("drops", "mobs", "monsters", "animals", "xps", "all", "<mobType>"));
             return players;
         }
         return null;
@@ -75,9 +83,9 @@ public class CmdKill implements CommandListener {
 
     @Override
     public void loadCodes(Plugin plugin) {
-        this.playerPerm = plugin.createPermssionCode("kil", "exbukkit.kill.player");
-        this.typePerm = plugin.createPermssionCode("kil", "exbukkit.kill.type");
-        this.allPerm = plugin.createPermssionCode("kil", "exbukkit.kill.all");
+        this.playerPerm = plugin.createPermssionCode("exbukkit.kill.player");
+        this.typePerm = plugin.createPermssionCode("exbukkit.kill.type");
+        this.allPerm = plugin.createPermssionCode("exbukkit.kill.all");
     }
 
     public void killPlayer(Sender sender, Arguments<Argument> args) {
@@ -149,7 +157,8 @@ public class CmdKill implements CommandListener {
             }
             case "xps", "xp" -> {
                 for (Entity entity : w.getEntities()) {
-                    if (entity.getType().equals(EntityType.THROWN_EXP_BOTTLE) || entity.getType().equals(EntityType.EXPERIENCE_ORB)) {
+                    if (entity.getType().equals(EntityType.THROWN_EXP_BOTTLE) || entity.getType()
+                            .equals(EntityType.EXPERIENCE_ORB)) {
                         entity.remove();
                         i++;
                     }
@@ -161,7 +170,8 @@ public class CmdKill implements CommandListener {
             }
             case "animals", "animal" -> {
                 for (Entity entity : w.getLivingEntities()) {
-                    if (!entity.getType().equals(EntityType.PLAYER) && !this.monsters.contains(entity.getType())) {
+                    if (!entity.getType().equals(EntityType.PLAYER) && !this.monsters.contains(
+                            entity.getType())) {
                         entity.remove();
                         i++;
                     }
@@ -177,7 +187,8 @@ public class CmdKill implements CommandListener {
                 try {
                     type = EntityType.valueOf(arg.toUpperCase());
                 } catch (IllegalArgumentException e) {
-                    sender.sendMessageCommandHelp("Kill all of a type (drops, mobs, ...)", "killall <type>");
+                    sender.sendMessageCommandHelp("Kill all of a type (drops, mobs, ...)",
+                            "killall <type>");
                     sender.sendMessageCommandHelp("Kill all types", "killall all");
                     sender.sendMessageKillAllTypeNotExist(arg.getString());
                     return;
@@ -207,7 +218,8 @@ public class CmdKill implements CommandListener {
         World w = sender.getUser().getPlayer().getWorld();
         int i = 0;
         for (Entity entity : w.getEntities()) {
-            if (!entity.getType().equals(EntityType.PLAYER) && !this.excluded.contains(entity.getType())) {
+            if (!entity.getType().equals(EntityType.PLAYER) && !this.excluded.contains(
+                    entity.getType())) {
                 entity.remove();
                 i++;
             }

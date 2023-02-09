@@ -15,6 +15,8 @@ import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Code;
 import de.timesnake.library.extension.util.cmd.Arguments;
+import java.util.HashMap;
+import java.util.Stack;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Location;
@@ -22,9 +24,6 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-
-import java.util.HashMap;
-import java.util.Stack;
 
 public class Teleport implements Listener {
 
@@ -50,7 +49,8 @@ public class Teleport implements Listener {
 
         } else if (args.isLengthEquals(2, false)) {
 
-            if (!((sender.hasPermission(teleportToOtherPerm.getPermission()) && sender.isPlayer(false)
+            if (!((sender.hasPermission(teleportToOtherPerm.getPermission()) && sender.isPlayer(
+                    false)
                     && sender.getPlayer().getName().equals(args.getString(0)))
                     || sender.hasPermission(teleportToOtherOtherPerm))) {
                 return;
@@ -63,9 +63,11 @@ public class Teleport implements Listener {
             User user1 = args.get(0).toUser();
             User user2 = args.get(1).toUser();
             user1.teleport(user2);
-            user1.sendPluginMessage(Plugin.BUKKIT, Component.text("Teleported to ", ExTextColor.PERSONAL)
-                    .append(user2.getChatNameComponent()));
-            if (!sender.getName().equals(user1.getName()) && !sender.getName().equals(user2.getName())) {
+            user1.sendPluginMessage(Plugin.BUKKIT,
+                    Component.text("Teleported to ", ExTextColor.PERSONAL)
+                            .append(user2.getChatNameComponent()));
+            if (!sender.getName().equals(user1.getName()) && !sender.getName()
+                    .equals(user2.getName())) {
                 sender.sendPluginMessage(Component.text("Teleported ", ExTextColor.PERSONAL)
                         .append(user1.getChatNameComponent())
                         .append(Component.text(" to ", ExTextColor.PERSONAL))
@@ -79,7 +81,6 @@ public class Teleport implements Listener {
             if (!sender.isPlayer(true)) {
                 return;
             }
-
 
             User senderUser = sender.getUser();
 
@@ -160,8 +161,9 @@ public class Teleport implements Listener {
             user.getWorld().loadChunk(loc.getChunk());
             user.teleport(loc);
 
-            user.sendPluginMessage(Plugin.BUKKIT, Component.text("Teleported to ", ExTextColor.PERSONAL)
-                    .append(Component.text(x + " " + y + " " + z, ExTextColor.VALUE)));
+            user.sendPluginMessage(Plugin.BUKKIT,
+                    Component.text("Teleported to ", ExTextColor.PERSONAL)
+                            .append(Component.text(x + " " + y + " " + z, ExTextColor.VALUE)));
             if (!sender.getName().equals(Server.getUser(user).getName())) {
                 sender.sendPluginMessage(Component.text("Teleported ", ExTextColor.PERSONAL)
                         .append(user.getChatNameComponent())
@@ -195,8 +197,9 @@ public class Teleport implements Listener {
         User user = sender.getUser();
         User other = args.get(0).toUser();
         other.teleport(user);
-        other.sendPluginMessage(Plugin.BUKKIT, Component.text("Teleported to ", ExTextColor.PERSONAL)
-                .append(user.getChatNameComponent()));
+        other.sendPluginMessage(Plugin.BUKKIT,
+                Component.text("Teleported to ", ExTextColor.PERSONAL)
+                        .append(user.getChatNameComponent()));
         sender.sendPluginMessage(Component.text("Teleported ", ExTextColor.PERSONAL)
                 .append(other.getChatNameComponent()));
     }
@@ -222,9 +225,10 @@ public class Teleport implements Listener {
                 if (args.isLengthEquals(2, false)) {
                     user.teleport(world);
 
-                    user.sendPluginMessage(Plugin.BUKKIT, Component.text("Teleported to ", ExTextColor.PERSONAL)
-                            .append(Component.text(world.getName(), ExTextColor.VALUE))
-                            .append(Component.text(" spawn", ExTextColor.PERSONAL)));
+                    user.sendPluginMessage(Plugin.BUKKIT,
+                            Component.text("Teleported to ", ExTextColor.PERSONAL)
+                                    .append(Component.text(world.getName(), ExTextColor.VALUE))
+                                    .append(Component.text(" spawn", ExTextColor.PERSONAL)));
                     if (!sender.getName().equals(user.getName())) {
                         sender.sendPluginMessage(Component.text("Teleported ", ExTextColor.PERSONAL)
                                 .append(user.getChatNameComponent())
@@ -233,7 +237,8 @@ public class Teleport implements Listener {
                                 .append(Component.text(" spawn", ExTextColor.PERSONAL)));
                     }
                 } else if (args.isLengthEquals(5, false)) {
-                    if (!(args.get(2).isInt(true) && args.get(3).isInt(true) && args.get(4).isInt(true))) {
+                    if (!(args.get(2).isInt(true) && args.get(3).isInt(true) && args.get(4)
+                            .isInt(true))) {
                         return;
                     }
 
@@ -245,20 +250,25 @@ public class Teleport implements Listener {
                     world.loadChunk(loc.getChunk());
                     user.teleport(loc);
 
-                    user.sendPluginMessage(Plugin.BUKKIT, Component.text("Teleported to ", ExTextColor.PERSONAL)
-                            .append(Component.text(world.getName(), ExTextColor.VALUE))
-                            .append(Component.text(x + " " + y + " " + z, ExTextColor.VALUE)));
+                    user.sendPluginMessage(Plugin.BUKKIT,
+                            Component.text("Teleported to ", ExTextColor.PERSONAL)
+                                    .append(Component.text(world.getName(), ExTextColor.VALUE))
+                                    .append(Component.text(x + " " + y + " " + z,
+                                            ExTextColor.VALUE)));
                     if (!sender.getName().equals(user.getName())) {
                         sender.sendPluginMessage(Component.text("Teleported ", ExTextColor.PERSONAL)
                                 .append(user.getChatNameComponent())
                                 .append(Component.text(" to ", ExTextColor.PERSONAL))
                                 .append(Component.text(world.getName(), ExTextColor.VALUE))
-                                .append(Component.text(x + " " + y + " " + z).color(ExTextColor.VALUE)));
+                                .append(Component.text(x + " " + y + " " + z)
+                                        .color(ExTextColor.VALUE)));
                     }
                 } else {
                     sender.sendMessageTooFewManyArguments();
-                    sender.sendMessageCommandHelp("Teleport to world", "tpw <world> [x] " + "[y] [z]");
-                    sender.sendMessageCommandHelp("Teleport player to world", "tpw " + "<player> <world> [x] [y] [z]");
+                    sender.sendMessageCommandHelp("Teleport to world",
+                            "tpw <world> [x] " + "[y] [z]");
+                    sender.sendMessageCommandHelp("Teleport player to world",
+                            "tpw " + "<player> <world> [x] [y] [z]");
                 }
             } else if (args.get(0).isWorldName(false)) {
 
@@ -275,9 +285,11 @@ public class Teleport implements Listener {
                 if (args.isLengthEquals(1, false)) {
                     sender.getUser().teleport(world);
 
-                    sender.sendPluginMessage(Component.text("Teleported to ").color(ExTextColor.PERSONAL)
-                            .append(Component.text(world.getName()).color(ExTextColor.VALUE))
-                            .append(Component.text(" spawn").color(ExTextColor.PERSONAL)));
+                    sender.sendPluginMessage(
+                            Component.text("Teleported to ").color(ExTextColor.PERSONAL)
+                                    .append(Component.text(world.getName())
+                                            .color(ExTextColor.VALUE))
+                                    .append(Component.text(" spawn").color(ExTextColor.PERSONAL)));
                 } else if (args.isLengthEquals(4, false)) {
                     if (!(args.get(1).isInt(true) && args.get(2).isInt(true)
                             && args.get(3).isInt(true))) {
@@ -292,21 +304,27 @@ public class Teleport implements Listener {
                     world.loadChunk(loc.getChunk());
                     sender.getUser().teleport(loc);
 
-                    sender.sendPluginMessage(Component.text("Teleported to ").color(ExTextColor.PERSONAL)
-                            .append(Component.text(world.getName()).color(ExTextColor.VALUE))
-                            .append(Component.text(x + " " + y + " " + z).color(ExTextColor.VALUE)));
+                    sender.sendPluginMessage(
+                            Component.text("Teleported to ").color(ExTextColor.PERSONAL)
+                                    .append(Component.text(world.getName())
+                                            .color(ExTextColor.VALUE))
+                                    .append(Component.text(x + " " + y + " " + z)
+                                            .color(ExTextColor.VALUE)));
                 } else {
                     sender.sendMessageTooFewManyArguments();
                     sender.sendMessageCommandHelp("Teleport to world", "tpw <world> [x] [y] [z]");
-                    sender.sendMessageCommandHelp("Teleport player to world", "tpw <player> " + "<world> [x] [y] [z]");
+                    sender.sendMessageCommandHelp("Teleport player to world",
+                            "tpw <player> " + "<world> [x] [y] [z]");
                 }
             } else {
                 sender.sendMessageCommandHelp("Teleport to world", "tpw <world> [x] [y] [z]");
-                sender.sendMessageCommandHelp("Teleport player to world", "tpw <player> <world> [x] " + "[y] [z]");
+                sender.sendMessageCommandHelp("Teleport player to world",
+                        "tpw <player> <world> [x] " + "[y] [z]");
             }
         } else {
             sender.sendMessageCommandHelp("Teleport to world", "tpw <world> [x] [y] [z]");
-            sender.sendMessageCommandHelp("Teleport player to world", "tpw <player> <world> [x] [y] " + "[z]");
+            sender.sendMessageCommandHelp("Teleport player to world",
+                    "tpw <player> <world> [x] [y] " + "[z]");
         }
     }
 
@@ -342,8 +360,10 @@ public class Teleport implements Listener {
 
         if (users != null) {
             if (users.contains(sender.getUser())) {
-                sender.sendPluginMessage(Component.text("You have already send a teleport request to ").color(ExTextColor.WARNING)
-                        .append(user.getChatNameComponent()));
+                sender.sendPluginMessage(
+                        Component.text("You have already send a teleport request to ")
+                                .color(ExTextColor.WARNING)
+                                .append(user.getChatNameComponent()));
                 return;
             }
         } else {
@@ -359,9 +379,11 @@ public class Teleport implements Listener {
 
         user.sendClickablePluginMessage(Plugin.BUKKIT,
                 Component.text("Use ", ExTextColor.PERSONAL)
-                        .append(Component.text("/tpaccept ", ExTextColor.VALUE, TextDecoration.UNDERLINED))
+                        .append(Component.text("/tpaccept ", ExTextColor.VALUE,
+                                TextDecoration.UNDERLINED))
                         .append(sender.getUser().getChatNameComponent())
-                        .append(Component.text(" to accept the teleport request", ExTextColor.PERSONAL)),
+                        .append(Component.text(" to accept the teleport request",
+                                ExTextColor.PERSONAL)),
                 "/tpaccept ",
                 Component.text("Click to accept the teleport request"),
                 net.kyori.adventure.text.event.ClickEvent.Action.RUN_COMMAND);
@@ -374,8 +396,9 @@ public class Teleport implements Listener {
                 Component.text("Click to deny the teleport request"),
                 net.kyori.adventure.text.event.ClickEvent.Action.RUN_COMMAND);
 
-        sender.sendPluginMessage(Component.text("Send teleport request to ").color(ExTextColor.PERSONAL)
-                .append(user.getChatNameComponent()));
+        sender.sendPluginMessage(
+                Component.text("Send teleport request to ").color(ExTextColor.PERSONAL)
+                        .append(user.getChatNameComponent()));
     }
 
     public static void teleportHereAsk(Sender sender, Arguments<Argument> args) {
@@ -402,8 +425,10 @@ public class Teleport implements Listener {
 
         if (Teleport.askHere.containsKey(user)) {
             if (users.contains(sender.getUser())) {
-                sender.sendPluginMessage(Component.text("You have already send a teleport here request to ", ExTextColor.WARNING)
-                        .append(user.getChatNameComponent()));
+                sender.sendPluginMessage(
+                        Component.text("You have already send a teleport here request to ",
+                                        ExTextColor.WARNING)
+                                .append(user.getChatNameComponent()));
                 return;
             }
         } else {
@@ -419,9 +444,11 @@ public class Teleport implements Listener {
 
         user.sendClickablePluginMessage(Plugin.BUKKIT,
                 Component.text("Use ", ExTextColor.PERSONAL)
-                        .append(Component.text("/tpaccept ", ExTextColor.VALUE, TextDecoration.UNDERLINED))
+                        .append(Component.text("/tpaccept ", ExTextColor.VALUE,
+                                TextDecoration.UNDERLINED))
                         .append(sender.getUser().getChatNameComponent())
-                        .append(Component.text(" to accept the teleport-here request", ExTextColor.PERSONAL)),
+                        .append(Component.text(" to accept the teleport-here request",
+                                ExTextColor.PERSONAL)),
                 "/tpaccept ",
                 Component.text("Click to accept the teleport-here request"),
                 net.kyori.adventure.text.event.ClickEvent.Action.RUN_COMMAND);
@@ -434,8 +461,9 @@ public class Teleport implements Listener {
                 Component.text("Click to deny the teleport-her request"),
                 net.kyori.adventure.text.event.ClickEvent.Action.RUN_COMMAND);
 
-        sender.sendPluginMessage(Component.text("Send teleport-here request to ").color(ExTextColor.PERSONAL)
-                .append(user.getChatNameComponent()));
+        sender.sendPluginMessage(
+                Component.text("Send teleport-here request to ").color(ExTextColor.PERSONAL)
+                        .append(user.getChatNameComponent()));
     }
 
     public static void accept(Sender sender, Arguments<Argument> args) {
@@ -451,7 +479,8 @@ public class Teleport implements Listener {
         if (Teleport.ask.containsKey(user)) {
             Stack<User> users = Teleport.ask.get(user);
             if (users.isEmpty()) {
-                sender.sendPluginMessage(Component.text("You haven't open requests", ExTextColor.WARNING));
+                sender.sendPluginMessage(
+                        Component.text("You haven't open requests", ExTextColor.WARNING));
                 return;
             }
 
@@ -468,8 +497,9 @@ public class Teleport implements Listener {
             User argUser = args.get(0).toUser();
 
             if (!users.contains(argUser)) {
-                sender.sendPluginMessage(Component.text("You haven't an open request by ", ExTextColor.WARNING)
-                        .append(argUser.getChatNameComponent()));
+                sender.sendPluginMessage(
+                        Component.text("You haven't an open request by ", ExTextColor.WARNING)
+                                .append(argUser.getChatNameComponent()));
                 return;
             }
 
@@ -478,7 +508,8 @@ public class Teleport implements Listener {
         } else if (Teleport.askHere.containsKey(user)) {
             Stack<User> users = Teleport.askHere.get(user);
             if (users.isEmpty()) {
-                sender.sendPluginMessage(Component.text("You haven't open requests", ExTextColor.WARNING));
+                sender.sendPluginMessage(
+                        Component.text("You haven't open requests", ExTextColor.WARNING));
                 return;
             }
 
@@ -495,24 +526,30 @@ public class Teleport implements Listener {
             User argUser = args.get(0).toUser();
 
             if (!users.contains(argUser)) {
-                sender.sendPluginMessage(Component.text("You haven't an open request by ", ExTextColor.WARNING)
-                        .append(argUser.getChatNameComponent()));
+                sender.sendPluginMessage(
+                        Component.text("You haven't an open request by ", ExTextColor.WARNING)
+                                .append(argUser.getChatNameComponent()));
                 return;
             }
 
             users.pop();
             teleportUserToUser(argUser, user);
 
-        } else sender.sendPluginMessage(Component.text("You haven't open requests", ExTextColor.WARNING));
+        } else {
+            sender.sendPluginMessage(
+                    Component.text("You haven't open requests", ExTextColor.WARNING));
+        }
     }
 
     private static void teleportUserToUser(User user, User teleporter) {
         teleporter.teleport(user);
 
-        user.sendPluginMessage(Plugin.BUKKIT, Component.text("Teleported ").color(ExTextColor.PERSONAL)
-                .append(teleporter.getChatNameComponent()));
-        teleporter.sendPluginMessage(Plugin.BUKKIT, Component.text("Teleported to ").color(ExTextColor.PERSONAL)
-                .append(user.getChatNameComponent()));
+        user.sendPluginMessage(Plugin.BUKKIT,
+                Component.text("Teleported ").color(ExTextColor.PERSONAL)
+                        .append(teleporter.getChatNameComponent()));
+        teleporter.sendPluginMessage(Plugin.BUKKIT,
+                Component.text("Teleported to ").color(ExTextColor.PERSONAL)
+                        .append(user.getChatNameComponent()));
     }
 
     public static void deny(Sender sender, Arguments<Argument> args) {
@@ -528,16 +565,19 @@ public class Teleport implements Listener {
         if (Teleport.ask.containsKey(user)) {
             Stack<User> users = Teleport.ask.get(user);
             if (users.isEmpty()) {
-                sender.sendPluginMessage(Component.text("You haven't open requests").color(ExTextColor.WARNING));
+                sender.sendPluginMessage(
+                        Component.text("You haven't open requests").color(ExTextColor.WARNING));
                 return;
             }
 
             if (args.isLengthEquals(0, false)) {
                 User enquirer = users.pop();
-                sender.sendPluginMessage(Component.text("Denied teleport request by ").color(ExTextColor.PERSONAL)
-                        .append(enquirer.getChatNameComponent()));
+                sender.sendPluginMessage(
+                        Component.text("Denied teleport request by ").color(ExTextColor.PERSONAL)
+                                .append(enquirer.getChatNameComponent()));
                 enquirer.sendPluginMessage(Plugin.BUKKIT, user.getChatNameComponent()
-                        .append(Component.text(" denied your teleport request").color(ExTextColor.PERSONAL)));
+                        .append(Component.text(" denied your teleport request")
+                                .color(ExTextColor.PERSONAL)));
                 return;
             }
 
@@ -548,30 +588,36 @@ public class Teleport implements Listener {
             User argUser = args.get(0).toUser();
 
             if (!users.contains(argUser)) {
-                sender.sendPluginMessage(Component.text("You haven't an open request by ").color(ExTextColor.WARNING)
-                        .append(argUser.getChatNameComponent()));
+                sender.sendPluginMessage(
+                        Component.text("You haven't an open request by ").color(ExTextColor.WARNING)
+                                .append(argUser.getChatNameComponent()));
                 return;
             }
 
             users.pop();
-            sender.sendPluginMessage(Component.text("Denied teleport request by ").color(ExTextColor.PERSONAL)
-                    .append(argUser.getChatNameComponent()));
+            sender.sendPluginMessage(
+                    Component.text("Denied teleport request by ").color(ExTextColor.PERSONAL)
+                            .append(argUser.getChatNameComponent()));
             argUser.sendPluginMessage(Plugin.BUKKIT, user.getChatNameComponent()
-                    .append(Component.text(" denied your teleport request").color(ExTextColor.PERSONAL)));
+                    .append(Component.text(" denied your teleport request")
+                            .color(ExTextColor.PERSONAL)));
 
         } else if (Teleport.askHere.containsKey(user)) {
             Stack<User> users = Teleport.askHere.get(user);
             if (users.isEmpty()) {
-                sender.sendPluginMessage(Component.text("You haven't open requests").color(ExTextColor.WARNING));
+                sender.sendPluginMessage(
+                        Component.text("You haven't open requests").color(ExTextColor.WARNING));
                 return;
             }
 
             if (args.isLengthEquals(0, false)) {
                 User enquirer = users.pop();
-                sender.sendPluginMessage(Component.text("Denied teleport-here request by ").color(ExTextColor.PERSONAL)
+                sender.sendPluginMessage(Component.text("Denied teleport-here request by ")
+                        .color(ExTextColor.PERSONAL)
                         .append(enquirer.getChatNameComponent()));
                 enquirer.sendPluginMessage(Plugin.BUKKIT, user.getChatNameComponent()
-                        .append(Component.text(" denied your teleport-here request").color(ExTextColor.PERSONAL)));
+                        .append(Component.text(" denied your teleport-here request")
+                                .color(ExTextColor.PERSONAL)));
                 return;
             }
 
@@ -582,19 +628,23 @@ public class Teleport implements Listener {
             User argUser = args.get(0).toUser();
 
             if (!users.contains(argUser)) {
-                sender.sendPluginMessage(Component.text("You haven't an open request by ").color(ExTextColor.WARNING)
-                        .append(argUser.getChatNameComponent()));
+                sender.sendPluginMessage(
+                        Component.text("You haven't an open request by ").color(ExTextColor.WARNING)
+                                .append(argUser.getChatNameComponent()));
                 return;
             }
 
             users.pop();
-            sender.sendPluginMessage(Component.text("Denied teleport-here request by ").color(ExTextColor.PERSONAL)
-                    .append(argUser.getChatNameComponent()));
+            sender.sendPluginMessage(
+                    Component.text("Denied teleport-here request by ").color(ExTextColor.PERSONAL)
+                            .append(argUser.getChatNameComponent()));
             argUser.sendPluginMessage(Plugin.BUKKIT, user.getChatNameComponent()
-                    .append(Component.text(" denied your teleport-here request").color(ExTextColor.PERSONAL)));
+                    .append(Component.text(" denied your teleport-here request")
+                            .color(ExTextColor.PERSONAL)));
 
         } else {
-            sender.sendPluginMessage(Component.text("You haven't open requests").color(ExTextColor.WARNING));
+            sender.sendPluginMessage(
+                    Component.text("You haven't open requests").color(ExTextColor.WARNING));
         }
     }
 
@@ -606,22 +656,28 @@ public class Teleport implements Listener {
         if (sender.isPlayer(true)) {
             Player p = sender.getPlayer();
             if (args.isLengthEquals(3, false)) {
-                if (!(args.get(0).isInt(true) && args.get(1).isInt(true) && args.get(2).isInt(true))) {
+                if (!(args.get(0).isInt(true) && args.get(1).isInt(true) && args.get(2)
+                        .isInt(true))) {
                     sender.sendMessageCommandHelp("Set world spawn", "setspawn");
                     sender.sendMessageCommandHelp("Set world spawn", "setspawn <x> <y> <z>");
                 }
 
-                p.getWorld().setSpawnLocation(new Location(p.getWorld(), args.get(0).toInt(), args.get(1).toInt(),
-                        args.get(2).toInt()));
+                p.getWorld().setSpawnLocation(
+                        new Location(p.getWorld(), args.get(0).toInt(), args.get(1).toInt(),
+                                args.get(2).toInt()));
                 sender.sendPluginMessage(Component.text("Set spawn in ", ExTextColor.PERSONAL)
                         .append(Component.text(p.getWorld().getName(), ExTextColor.VALUE))
                         .append(Component.text(" to: ", ExTextColor.PERSONAL))
-                        .append(Component.text(args.get(0).getString() + " " + args.get(1).getString() + " " + args.get(2).getString(), ExTextColor.VALUE)));
+                        .append(Component.text(
+                                args.get(0).getString() + " " + args.get(1).getString() + " "
+                                        + args.get(2).getString(), ExTextColor.VALUE)));
 
             } else if (args.isLengthEquals(0, false)) {
                 p.getWorld().setSpawnLocation(p.getLocation());
                 sender.sendMessage(Component.text("Set spawn to: ", ExTextColor.PERSONAL)
-                        .append(Component.text(p.getLocation().getBlockX() + " " + p.getLocation().getBlockY() + " " + p.getLocation().getBlockZ(), ExTextColor.VALUE)));
+                        .append(Component.text(
+                                p.getLocation().getBlockX() + " " + p.getLocation().getBlockY()
+                                        + " " + p.getLocation().getBlockZ(), ExTextColor.VALUE)));
             } else {
                 sender.sendMessageTooFewManyArguments();
                 sender.sendMessageCommandHelp("Set world spawn", "setspawn");
@@ -641,7 +697,8 @@ public class Teleport implements Listener {
 
             ExWorld world = args.get(0).toWorld();
             if (!(args.get(1).isInt(true) && args.get(2).isInt(true) && args.get(3).isInt(true))) {
-                sender.sendMessageCommandHelp("Set world spawn", "setspawn <world> <x> " + "<y> <z>");
+                sender.sendMessageCommandHelp("Set world spawn",
+                        "setspawn <world> <x> " + "<y> <z>");
                 return;
             }
 
@@ -650,7 +707,9 @@ public class Teleport implements Listener {
             sender.sendPluginMessage(Component.text("Set spawn in ", ExTextColor.PERSONAL)
                     .append(Component.text(world.getName(), ExTextColor.VALUE))
                     .append(Component.text("to: ", ExTextColor.PERSONAL))
-                    .append(Component.text(args.get(1).getString() + " " + args.get(2).getString() + " " + args.get(3).getString(), ExTextColor.VALUE)));
+                    .append(Component.text(
+                            args.get(1).getString() + " " + args.get(2).getString() + " "
+                                    + args.get(3).getString(), ExTextColor.VALUE)));
         }
 
     }
@@ -660,7 +719,8 @@ public class Teleport implements Listener {
             if (sender.hasPermission(teleportBackPerm)) {
                 User user = sender.getUser();
                 user.teleport(user.getLastLocation());
-                sender.sendPluginMessage(Component.text("Teleported to last location", ExTextColor.PERSONAL));
+                sender.sendPluginMessage(
+                        Component.text("Teleported to last location", ExTextColor.PERSONAL));
             }
         } else if (args.isLengthEquals(1, true) && args.get(0).isPlayerName(true)) {
             if (sender.hasPermission(teleportBackOtherPerm)) {
@@ -669,7 +729,8 @@ public class Teleport implements Listener {
                 sender.sendPluginMessage(Component.text("Teleported ", ExTextColor.PERSONAL)
                         .append(user.getChatNameComponent())
                         .append(Component.text(" to last location", ExTextColor.PERSONAL)));
-                user.sendPluginMessage(Plugin.BUKKIT, Component.text("Teleported to last location", ExTextColor.PERSONAL));
+                user.sendPluginMessage(Plugin.BUKKIT,
+                        Component.text("Teleported to last location", ExTextColor.PERSONAL));
             }
         }
     }
@@ -688,8 +749,9 @@ public class Teleport implements Listener {
         for (User user : Server.getUsers()) {
             if (!user.equals(senderUser)) {
                 user.teleport(senderUser);
-                user.sendPluginMessage(Plugin.BUKKIT, Component.text("Teleported to ", ExTextColor.PERSONAL)
-                        .append(senderUser.getChatNameComponent()));
+                user.sendPluginMessage(Plugin.BUKKIT,
+                        Component.text("Teleported to ", ExTextColor.PERSONAL)
+                                .append(senderUser.getChatNameComponent()));
             }
         }
 
@@ -698,39 +760,39 @@ public class Teleport implements Listener {
     }
 
     public static void loadCodes(Plugin plugin) {
-        teleportToOtherPerm = plugin.createPermssionCode("tlp", "exbukkit.teleport.toother");
-        teleportToOtherOtherPerm = plugin.createPermssionCode("tlp", "exbukkit.teleport.toother.other");
-        teleportLocationPerm = plugin.createPermssionCode("tlp", "exbukkit.teleport.location");
-        teleportLocationOtherPerm = plugin.createPermssionCode("tlp", "exbukkit.teleport.location.other");
-        teleportHerePerm = plugin.createPermssionCode("tlp", "exbukkit.teleport.here");
-        teleportWorldPerm = plugin.createPermssionCode("tlp", "exbukkit.teleport.world");
-        teleportWorldOtherPerm = plugin.createPermssionCode("tlp", "exbukkit.teleport.world.other");
-        teleportSpawnPerm = plugin.createPermssionCode("tlp", "exbukkit.teleport.spawn");
-        teleportSetSpawnPerm = plugin.createPermssionCode("tlp", "exbukkit.teleport.setspawn");
-        teleportAskPerm = plugin.createPermssionCode("tlp", "exbukkit.teleport.ask");
-        teleportAskAcceptPerm = plugin.createPermssionCode("tlp", "exbukkit.teleport.ask.accept");
-        teleportAskDenyPerm = plugin.createPermssionCode("tlp", "exbukkit.teleport.ask.deny");
-        teleportBackPerm = plugin.createPermssionCode("tlp", "exbukkit.teleport.back");
-        teleportBackOtherPerm = plugin.createPermssionCode("tlp", "exbukkit.teleport.back.other");
+        teleportToOtherPerm = plugin.createPermssionCode("exbukkit.teleport.toother");
+        teleportToOtherOtherPerm = plugin.createPermssionCode("exbukkit.teleport.toother.other");
+        teleportLocationPerm = plugin.createPermssionCode("exbukkit.teleport.location");
+        teleportLocationOtherPerm = plugin.createPermssionCode("exbukkit.teleport.location.other");
+        teleportHerePerm = plugin.createPermssionCode("exbukkit.teleport.here");
+        teleportWorldPerm = plugin.createPermssionCode("exbukkit.teleport.world");
+        teleportWorldOtherPerm = plugin.createPermssionCode("exbukkit.teleport.world.other");
+        teleportSpawnPerm = plugin.createPermssionCode("exbukkit.teleport.spawn");
+        teleportSetSpawnPerm = plugin.createPermssionCode("exbukkit.teleport.setspawn");
+        teleportAskPerm = plugin.createPermssionCode("exbukkit.teleport.ask");
+        teleportAskAcceptPerm = plugin.createPermssionCode("exbukkit.teleport.ask.accept");
+        teleportAskDenyPerm = plugin.createPermssionCode("exbukkit.teleport.ask.deny");
+        teleportBackPerm = plugin.createPermssionCode("exbukkit.teleport.back");
+        teleportBackOtherPerm = plugin.createPermssionCode("exbukkit.teleport.back.other");
     }
 
     private static final HashMap<User, Stack<User>> ask = new HashMap<>();
     private static final HashMap<User, Stack<User>> askHere = new HashMap<>();
 
-    private static Code.Permission teleportToOtherPerm;
-    private static Code.Permission teleportToOtherOtherPerm;
-    private static Code.Permission teleportLocationPerm;
-    private static Code.Permission teleportLocationOtherPerm;
-    private static Code.Permission teleportHerePerm;
-    private static Code.Permission teleportWorldPerm;
-    private static Code.Permission teleportWorldOtherPerm;
-    private static Code.Permission teleportSpawnPerm;
-    private static Code.Permission teleportSetSpawnPerm;
-    private static Code.Permission teleportAskPerm;
-    private static Code.Permission teleportAskAcceptPerm;
-    private static Code.Permission teleportAskDenyPerm;
-    private static Code.Permission teleportBackPerm;
-    private static Code.Permission teleportBackOtherPerm;
+    private static Code teleportToOtherPerm;
+    private static Code teleportToOtherOtherPerm;
+    private static Code teleportLocationPerm;
+    private static Code teleportLocationOtherPerm;
+    private static Code teleportHerePerm;
+    private static Code teleportWorldPerm;
+    private static Code teleportWorldOtherPerm;
+    private static Code teleportSpawnPerm;
+    private static Code teleportSetSpawnPerm;
+    private static Code teleportAskPerm;
+    private static Code teleportAskAcceptPerm;
+    private static Code teleportAskDenyPerm;
+    private static Code teleportBackPerm;
+    private static Code teleportBackOtherPerm;
 
     @EventHandler
     public void onUserQuit(UserQuitEvent e) {

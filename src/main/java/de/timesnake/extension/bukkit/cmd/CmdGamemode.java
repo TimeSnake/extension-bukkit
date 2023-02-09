@@ -14,23 +14,24 @@ import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Code;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
+import java.util.List;
 import net.kyori.adventure.text.Component;
 import org.bukkit.GameMode;
 
-import java.util.List;
-
 public class CmdGamemode implements CommandListener {
 
-    private Code.Permission perm;
-    private Code.Permission otherPerm;
+    private Code perm;
+    private Code otherPerm;
 
     @Override
-    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
+    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
+            Arguments<Argument> args) {
         this.handleCmdGamemode(sender, args);
     }
 
     @Override
-    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
+    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
+            Arguments<Argument> args) {
         if (args.getLength() == 1) {
             return List.of("survival", "creative", "adventure", "spectator");
         } else if (args.getLength() == 2) {
@@ -41,8 +42,8 @@ public class CmdGamemode implements CommandListener {
 
     @Override
     public void loadCodes(de.timesnake.library.extension.util.chat.Plugin plugin) {
-        this.perm = plugin.createPermssionCode("gmo", "exbukkit.gamemode");
-        this.otherPerm = plugin.createPermssionCode("gmo", "exbukkit.gamemode.other");
+        this.perm = plugin.createPermssionCode("exbukkit.gamemode");
+        this.otherPerm = plugin.createPermssionCode("exbukkit.gamemode.other");
     }
 
     public void handleCmdGamemode(Sender sender, Arguments<Argument> args) {
@@ -87,7 +88,6 @@ public class CmdGamemode implements CommandListener {
             }
         }
 
-
         if (sender.getName().equals(user.getName())) {
             if (!sender.hasPermission(this.perm)) {
                 return;
@@ -108,8 +108,9 @@ public class CmdGamemode implements CommandListener {
         }
 
         user.setGameMode(gameMode);
-        user.sendPluginMessage(Plugin.BUKKIT, Component.text("Updated gamemode to ", ExTextColor.PERSONAL)
-                .append(Component.text(name, ExTextColor.VALUE)));
+        user.sendPluginMessage(Plugin.BUKKIT,
+                Component.text("Updated gamemode to ", ExTextColor.PERSONAL)
+                        .append(Component.text(name, ExTextColor.VALUE)));
 
     }
 }

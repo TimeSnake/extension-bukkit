@@ -15,24 +15,24 @@ import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Code;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
-import net.kyori.adventure.text.Component;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import net.kyori.adventure.text.Component;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 public class CmdVanish implements CommandListener, Listener {
 
     private final Set<User> users = new HashSet<>();
 
-    private Code.Permission perm;
-    private Code.Permission otherPerm;
-    private Code.Permission seePerm;
+    private Code perm;
+    private Code otherPerm;
+    private Code seePerm;
 
     @Override
-    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
+    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
+            Arguments<Argument> args) {
 
         User user;
 
@@ -65,10 +65,12 @@ public class CmdVanish implements CommandListener, Listener {
             this.users.remove(user);
 
             if (!sender.getUser().equals(user)) {
-                sender.sendPluginMessage(Component.text("Disabled vanish for ", ExTextColor.PERSONAL)
-                        .append(user.getChatNameComponent()));
+                sender.sendPluginMessage(
+                        Component.text("Disabled vanish for ", ExTextColor.PERSONAL)
+                                .append(user.getChatNameComponent()));
             }
-            user.sendPluginMessage(Plugin.BUKKIT, Component.text("Disabled vanish", ExTextColor.PERSONAL));
+            user.sendPluginMessage(Plugin.BUKKIT,
+                    Component.text("Disabled vanish", ExTextColor.PERSONAL));
         } else {
 
             for (User u : Server.getUsers()) {
@@ -83,13 +85,15 @@ public class CmdVanish implements CommandListener, Listener {
                 sender.sendPluginMessage(Component.text("Enabled vanish for ", ExTextColor.PERSONAL)
                         .append(user.getChatNameComponent()));
             }
-            user.sendPluginMessage(Plugin.BUKKIT, Component.text("Enabled vanish", ExTextColor.PERSONAL));
+            user.sendPluginMessage(Plugin.BUKKIT,
+                    Component.text("Enabled vanish", ExTextColor.PERSONAL));
 
         }
     }
 
     @Override
-    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
+    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
+            Arguments<Argument> args) {
         if (args.getLength() == 1) {
             return Server.getCommandManager().getTabCompleter().getPlayerNames();
         }
@@ -98,9 +102,9 @@ public class CmdVanish implements CommandListener, Listener {
 
     @Override
     public void loadCodes(de.timesnake.library.extension.util.chat.Plugin plugin) {
-        this.perm = plugin.createPermssionCode("van", "exbukkit.vanish");
-        this.otherPerm = plugin.createPermssionCode("van", "exbukkit.vanish.other");
-        this.seePerm = plugin.createPermssionCode("van", "exbukkit.vanish.see");
+        this.perm = plugin.createPermssionCode("exbukkit.vanish");
+        this.otherPerm = plugin.createPermssionCode("exbukkit.vanish.other");
+        this.seePerm = plugin.createPermssionCode("exbukkit.vanish.see");
     }
 
     @EventHandler

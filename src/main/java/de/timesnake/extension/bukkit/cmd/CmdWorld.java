@@ -42,13 +42,13 @@ import org.bukkit.event.world.WorldLoadEvent;
 public class CmdWorld implements ExCommandListener, Listener {
 
     private final Map<String, Sender> waitingWorldLoadedSenderByWorldName = new HashMap<>();
-    private Code.Permission listPerm;
-    private Code.Permission createPerm;
-    private Code.Permission clonePerm;
-    private Code.Permission deletePerm;
-    private Code.Permission unloadPerm;
-    private Code.Permission teleportPerm;
-    private Code.Permission renamePerm;
+    private Code listPerm;
+    private Code createPerm;
+    private Code clonePerm;
+    private Code deletePerm;
+    private Code unloadPerm;
+    private Code teleportPerm;
+    private Code renamePerm;
 
     public CmdWorld() {
         Server.registerListener(this, ExBukkit.getPlugin());
@@ -535,13 +535,13 @@ public class CmdWorld implements ExCommandListener, Listener {
 
     @Override
     public void loadCodes(de.timesnake.library.extension.util.chat.Plugin plugin) {
-        this.listPerm = plugin.createPermssionCode("wol", "exbukkit.world.list");
-        this.createPerm = plugin.createPermssionCode("wol", "exbukkit.world.create");
-        this.clonePerm = plugin.createPermssionCode("wol", "exbukkit.world.clone");
-        this.deletePerm = plugin.createPermssionCode("wol", "exbukkit.world.delete");
-        this.unloadPerm = plugin.createPermssionCode("wol", "exbukkit.world.unload");
-        this.teleportPerm = plugin.createPermssionCode("wol", "exbukkit.world.teleport");
-        this.renamePerm = plugin.createPermssionCode("wol", "exbukkit.world.rename");
+        this.listPerm = plugin.createPermssionCode("exbukkit.world.list");
+        this.createPerm = plugin.createPermssionCode("exbukkit.world.create");
+        this.clonePerm = plugin.createPermssionCode("exbukkit.world.clone");
+        this.deletePerm = plugin.createPermssionCode("exbukkit.world.delete");
+        this.unloadPerm = plugin.createPermssionCode("exbukkit.world.unload");
+        this.teleportPerm = plugin.createPermssionCode("exbukkit.world.teleport");
+        this.renamePerm = plugin.createPermssionCode("exbukkit.world.rename");
     }
 
     @EventHandler

@@ -14,17 +14,17 @@ import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Code;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
-import net.kyori.adventure.text.Component;
-
 import java.util.List;
+import net.kyori.adventure.text.Component;
 
 public class CmdGod implements CommandListener {
 
-    private Code.Permission perm;
-    private Code.Permission otherPerm;
+    private Code perm;
+    private Code otherPerm;
 
     @Override
-    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
+    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
+            Arguments<Argument> args) {
 
         User user = null;
 
@@ -46,18 +46,21 @@ public class CmdGod implements CommandListener {
             return;
         }
 
-
         user.setInvulnerable(!user.isInvulnerable());
         if (!sender.isPlayer(false) || !sender.getUser().equals(user)) {
-            sender.sendPluginMessage(Component.text((user.isInvulnerable() ? "Enabled" : "Disabled") + " god " +
-                    "mode for ", ExTextColor.PERSONAL).append(user.getChatNameComponent()));
+            sender.sendPluginMessage(
+                    Component.text((user.isInvulnerable() ? "Enabled" : "Disabled") + " god " +
+                            "mode for ", ExTextColor.PERSONAL).append(user.getChatNameComponent()));
         }
 
-        user.sendPluginMessage(Plugin.BUKKIT, Component.text((user.isInvulnerable() ? "Enabled" : "Disabled") + " god mode", ExTextColor.PERSONAL));
+        user.sendPluginMessage(Plugin.BUKKIT,
+                Component.text((user.isInvulnerable() ? "Enabled" : "Disabled") + " god mode",
+                        ExTextColor.PERSONAL));
     }
 
     @Override
-    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
+    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
+            Arguments<Argument> args) {
         if (args.getLength() == 1) {
             return Server.getCommandManager().getTabCompleter().getPlayerNames();
         }
@@ -66,7 +69,7 @@ public class CmdGod implements CommandListener {
 
     @Override
     public void loadCodes(de.timesnake.library.extension.util.chat.Plugin plugin) {
-        this.perm = plugin.createPermssionCode("god", "exbukkit.god");
-        this.otherPerm = plugin.createPermssionCode("god", "exbukkit.god.other");
+        this.perm = plugin.createPermssionCode("exbukkit.god");
+        this.otherPerm = plugin.createPermssionCode("exbukkit.god.other");
     }
 }

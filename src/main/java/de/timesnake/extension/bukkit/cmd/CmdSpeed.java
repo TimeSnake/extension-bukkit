@@ -14,17 +14,17 @@ import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Code;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
-import net.kyori.adventure.text.Component;
-
 import java.util.List;
+import net.kyori.adventure.text.Component;
 
 public class CmdSpeed implements CommandListener {
 
-    private Code.Permission perm;
-    private Code.Permission otherPerm;
+    private Code perm;
+    private Code otherPerm;
 
     @Override
-    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
+    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
+            Arguments<Argument> args) {
         switch (cmd.getName().toLowerCase()) {
             case "speed":
                 if (args.isLengthHigherEquals(1, true)) {
@@ -60,7 +60,8 @@ public class CmdSpeed implements CommandListener {
                     }
                 } else {
                     sender.sendMessageCommandHelp("Set fly speed", "speedfly <speed>");
-                    sender.sendMessageCommandHelp("Set fly speed for player", "speedfly <speed> <player>");
+                    sender.sendMessageCommandHelp("Set fly speed for player",
+                            "speedfly <speed> <player>");
                 }
                 break;
 
@@ -78,14 +79,16 @@ public class CmdSpeed implements CommandListener {
                     }
                 } else {
                     sender.sendMessageCommandHelp("Set walk speed", "speedwalk <speed>");
-                    sender.sendMessageCommandHelp("Set walk speed for player", "speedwalk <speed> <player>");
+                    sender.sendMessageCommandHelp("Set walk speed for player",
+                            "speedwalk <speed> <player>");
                 }
                 break;
         }
     }
 
     @Override
-    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
+    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
+            Arguments<Argument> args) {
         if (args.getLength() == 1) {
             return List.of("1", "2", "1.2", "0.5");
         } else if (args.getLength() == 2) {
@@ -96,8 +99,8 @@ public class CmdSpeed implements CommandListener {
 
     @Override
     public void loadCodes(de.timesnake.library.extension.util.chat.Plugin plugin) {
-        this.perm = plugin.createPermssionCode("spe", "exbukkit.speed.<mode>");
-        this.otherPerm = plugin.createPermssionCode("spe", "exbukkit.speed.<mode>.other");
+        this.perm = plugin.createPermssionCode("exbukkit.speed.<mode>");
+        this.otherPerm = plugin.createPermssionCode("exbukkit.speed.<mode>.other");
     }
 
     private void set(Sender sender, User user, float speed, Type mode) {
@@ -110,23 +113,28 @@ public class CmdSpeed implements CommandListener {
                 return;
             }
 
-            user.sendPluginMessage(Plugin.BUKKIT, Component.text("Updated " + mode.name().toLowerCase() +
-                    "speed to ", ExTextColor.PERSONAL).append(Component.text(speed, ExTextColor.VALUE)));
+            user.sendPluginMessage(Plugin.BUKKIT,
+                    Component.text("Updated " + mode.name().toLowerCase() +
+                                    "speed to ", ExTextColor.PERSONAL)
+                            .append(Component.text(speed, ExTextColor.VALUE)));
         } else {
             if (sender.hasPermission(this.otherPerm)) {
                 if (setWithPermission(sender, user, speed, mode)) {
                     return;
                 }
 
-                sender.sendPluginMessage(Component.text("Updated " + mode.name().toLowerCase() + "speed from ", ExTextColor.PERSONAL)
-                        .append(user.getChatNameComponent())
-                        .append(Component.text(" to ", ExTextColor.PERSONAL))
-                        .append(Component.text(speed, ExTextColor.VALUE)));
-                user.sendPluginMessage(Plugin.BUKKIT, Component.text("Updated " + mode.name().toLowerCase() +
-                                "speed by ", ExTextColor.PERSONAL)
-                        .append(sender.getChatName())
-                        .append(Component.text(" to ", ExTextColor.PERSONAL))
-                        .append(Component.text(speed, ExTextColor.VALUE)));
+                sender.sendPluginMessage(
+                        Component.text("Updated " + mode.name().toLowerCase() + "speed from ",
+                                        ExTextColor.PERSONAL)
+                                .append(user.getChatNameComponent())
+                                .append(Component.text(" to ", ExTextColor.PERSONAL))
+                                .append(Component.text(speed, ExTextColor.VALUE)));
+                user.sendPluginMessage(Plugin.BUKKIT,
+                        Component.text("Updated " + mode.name().toLowerCase() +
+                                        "speed by ", ExTextColor.PERSONAL)
+                                .append(sender.getChatName())
+                                .append(Component.text(" to ", ExTextColor.PERSONAL))
+                                .append(Component.text(speed, ExTextColor.VALUE)));
             }
 
         }

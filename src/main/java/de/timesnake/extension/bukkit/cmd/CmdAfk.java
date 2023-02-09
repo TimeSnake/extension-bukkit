@@ -14,11 +14,10 @@ import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Code;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
-import net.kyori.adventure.text.Component;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import net.kyori.adventure.text.Component;
 
 public class CmdAfk implements CommandListener {
 
@@ -26,13 +25,15 @@ public class CmdAfk implements CommandListener {
     public Set<User> users = new HashSet<>();
     public Set<User> toggledUsers = new HashSet<>();
 
-    private Code.Permission perm;
-    private Code.Permission togglePerm;
+    private Code perm;
+    private Code togglePerm;
 
     @Override
-    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
+    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
+            Arguments<Argument> args) {
 
-        if (cmd.getName().equalsIgnoreCase("afk") || cmd.getName().equalsIgnoreCase("awayfromkeyboard")) {
+        if (cmd.getName().equalsIgnoreCase("afk") || cmd.getName()
+                .equalsIgnoreCase("awayfromkeyboard")) {
             if (!sender.hasPermission(this.perm)) {
                 return;
             }
@@ -68,14 +69,15 @@ public class CmdAfk implements CommandListener {
     }
 
     @Override
-    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
+    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
+            Arguments<Argument> args) {
         return List.of();
     }
 
     @Override
     public void loadCodes(de.timesnake.library.extension.util.chat.Plugin plugin) {
-        this.perm = plugin.createPermssionCode("afk", "exbukkit.afk");
-        this.togglePerm = plugin.createPermssionCode("afk", "exbukkit.afk.toggle");
+        this.perm = plugin.createPermssionCode("exbukkit.afk");
+        this.togglePerm = plugin.createPermssionCode("exbukkit.afk.toggle");
     }
 
     public void afk(User user) {
@@ -106,7 +108,8 @@ public class CmdAfk implements CommandListener {
         }
 
         this.toggledUsers.add(user);
-        user.sendPluginMessage(Plugin.BUKKIT, Component.text(" disabled auto-afk", ExTextColor.PERSONAL));
+        user.sendPluginMessage(Plugin.BUKKIT,
+                Component.text(" disabled auto-afk", ExTextColor.PERSONAL));
     }
 
     public void unToggleAfk(User user) {
@@ -115,6 +118,7 @@ public class CmdAfk implements CommandListener {
         }
 
         this.toggledUsers.remove(user);
-        user.sendPluginMessage(Plugin.BUKKIT, Component.text(" enabled auto-afk", ExTextColor.PERSONAL));
+        user.sendPluginMessage(Plugin.BUKKIT,
+                Component.text(" enabled auto-afk", ExTextColor.PERSONAL));
     }
 }

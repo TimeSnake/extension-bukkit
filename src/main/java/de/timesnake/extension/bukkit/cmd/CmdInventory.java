@@ -17,6 +17,10 @@ import de.timesnake.library.basic.util.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Code;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -28,16 +32,12 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
 public class CmdInventory implements CommandListener, Listener {
 
     private static final Map<Integer, Integer> PLAYER_SEE_INV = new HashMap<>();
 
-    private static final ExItemStack COMMIT = new ExItemStack(Material.RED_DYE, "§cCommit").setSlot(8);
+    private static final ExItemStack COMMIT = new ExItemStack(Material.RED_DYE, "§cCommit").setSlot(
+            8);
 
     static {
         PLAYER_SEE_INV.put(36, 0); // feet
@@ -47,12 +47,13 @@ public class CmdInventory implements CommandListener, Listener {
         PLAYER_SEE_INV.put(40, 5); // off-hand
     }
 
-    private Code.Permission seePerm;
-    private Code.Permission modifyPerm;
-    private Code.Permission clearPerm;
+    private Code seePerm;
+    private Code modifyPerm;
+    private Code clearPerm;
 
     @Override
-    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
+    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
+            Arguments<Argument> args) {
         switch (cmd.getName().toLowerCase()) {
             case "inventory":
             case "inv":
@@ -75,7 +76,8 @@ public class CmdInventory implements CommandListener, Listener {
     }
 
     @Override
-    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd, Arguments<Argument> args) {
+    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
+            Arguments<Argument> args) {
         if (args.getLength() == 1) {
             return Server.getCommandManager().getTabCompleter().getPlayerNames();
         }
@@ -84,9 +86,9 @@ public class CmdInventory implements CommandListener, Listener {
 
     @Override
     public void loadCodes(de.timesnake.library.extension.util.chat.Plugin plugin) {
-        this.seePerm = plugin.createPermssionCode("inv", "exbukkit.inventory.see");
-        this.modifyPerm = plugin.createPermssionCode("inv", "exbukkit.inventory.modify");
-        this.clearPerm = plugin.createPermssionCode("inv", "exbukkit.inventory.clear");
+        this.seePerm = plugin.createPermssionCode("exbukkit.inventory.see");
+        this.modifyPerm = plugin.createPermssionCode("exbukkit.inventory.modify");
+        this.clearPerm = plugin.createPermssionCode("exbukkit.inventory.clear");
     }
 
     public void see(Sender sender, Argument arg) {
@@ -109,7 +111,8 @@ public class CmdInventory implements CommandListener, Listener {
         ItemStack[] items = seeUser.getInventory().getContents();
 
         VirtuellInventoryHolder holder = new VirtuellInventoryHolder(seeUser);
-        Inventory inv = new ExInventory(6 * 9, Component.text(seeUser.getName()), holder).getInventory();
+        Inventory inv = new ExInventory(6 * 9, Component.text(seeUser.getName()),
+                holder).getInventory();
         holder.setInventory(inv);
 
         for (int slot = 0; slot < 41; slot++) {
@@ -216,8 +219,12 @@ public class CmdInventory implements CommandListener, Listener {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
             VirtuellInventoryHolder that = (VirtuellInventoryHolder) o;
             return Objects.equals(inventory, that.inventory);
         }
