@@ -88,6 +88,27 @@ public class CmdWorld implements ExCommandListener, Listener {
                     return;
                 }
 
+                if (args.containsFlag('p')) {
+                    if (world == null) {
+                        sender.sendMessageWorldNotExist(worldName);
+                        return;
+                    }
+
+                    if (!world.isTemporary()) {
+                        sender.sendPluginMessage(Component.text("World ", ExTextColor.WARNING)
+                                .append(Component.text(worldName, ExTextColor.VALUE))
+                                .append(Component.text(" is not temporary", ExTextColor.WARNING)));
+                        return;
+                    }
+
+                    world.makePersistent();
+                    sender.sendPluginMessage(Component.text("Made world ", ExTextColor.PERSONAL)
+                            .append(Component.text(worldName, ExTextColor.VALUE))
+                            .append(Component.text(" persistent", ExTextColor.PERSONAL)));
+
+                    return;
+                }
+
                 if (world != null) {
                     sender.sendMessageWorldAlreadyExist(worldName);
                     return;
@@ -224,8 +245,9 @@ public class CmdWorld implements ExCommandListener, Listener {
                                 materials);
                     }
 
-
                 }
+
+                boolean temporary = args.containsFlag('t');
 
                 sender.sendPluginMessage(Component.text("Creating world ", ExTextColor.PERSONAL)
                         .append(Component.text(worldName, ExTextColor.VALUE,
@@ -236,7 +258,10 @@ public class CmdWorld implements ExCommandListener, Listener {
                                         "/mw tp " + worldName)))
                         .append(Component.text(" with type ", ExTextColor.PERSONAL))
                         .append(Component.text(worldType.getName(), ExTextColor.VALUE)));
-                ExWorld createdWorld = Server.getWorldManager().createWorld(worldName, worldType);
+
+                ExWorld createdWorld = Server.getWorldManager()
+                        .createWorld(worldName, worldType, temporary);
+
                 if (createdWorld != null) {
                     this.waitingWorldLoadedSenderByWorldName.put(createdWorld.getName(), sender);
                 } else {
