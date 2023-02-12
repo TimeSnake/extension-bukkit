@@ -12,7 +12,7 @@ import de.timesnake.basic.bukkit.util.user.event.UserQuitEvent;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.extension.bukkit.chat.Plugin;
-import de.timesnake.library.basic.util.chat.ExTextColor;
+import de.timesnake.library.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Code;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import java.util.HashMap;
@@ -172,17 +172,18 @@ public class Teleport implements Listener {
             }
         } else {
             sender.sendMessageTooFewManyArguments();
-            sender.sendMessageCommandHelp("Teleport to player", "tp <player>");
-            sender.sendMessageCommandHelp("Teleport player to player", "tp <player> <player>");
-            sender.sendMessageCommandHelp("Teleport to location", "tp <x> <y> <z>");
-            sender.sendMessageCommandHelp("Teleport player to location", "tp <player> <x> <y> <z>");
+            sender.sendTDMessageCommandHelp("Teleport to player", "tp <player>");
+            sender.sendTDMessageCommandHelp("Teleport player to player", "tp <player> <player>");
+            sender.sendTDMessageCommandHelp("Teleport to location", "tp <x> <y> <z>");
+            sender.sendTDMessageCommandHelp("Teleport player to location",
+                    "tp <player> <x> <y> <z>");
         }
 
     }
 
     public static void teleportHere(Sender sender, Arguments<Argument> args) {
         if (!args.isLengthEquals(1, true)) {
-            sender.sendMessageCommandHelp("Teleport player here", "tph <player>");
+            sender.sendTDMessageCommandHelp("Teleport player here", "tph <player>");
             return;
         }
 
@@ -265,9 +266,9 @@ public class Teleport implements Listener {
                     }
                 } else {
                     sender.sendMessageTooFewManyArguments();
-                    sender.sendMessageCommandHelp("Teleport to world",
+                    sender.sendTDMessageCommandHelp("Teleport to world",
                             "tpw <world> [x] " + "[y] [z]");
-                    sender.sendMessageCommandHelp("Teleport player to world",
+                    sender.sendTDMessageCommandHelp("Teleport player to world",
                             "tpw " + "<player> <world> [x] [y] [z]");
                 }
             } else if (args.get(0).isWorldName(false)) {
@@ -312,18 +313,18 @@ public class Teleport implements Listener {
                                             .color(ExTextColor.VALUE)));
                 } else {
                     sender.sendMessageTooFewManyArguments();
-                    sender.sendMessageCommandHelp("Teleport to world", "tpw <world> [x] [y] [z]");
-                    sender.sendMessageCommandHelp("Teleport player to world",
+                    sender.sendTDMessageCommandHelp("Teleport to world", "tpw <world> [x] [y] [z]");
+                    sender.sendTDMessageCommandHelp("Teleport player to world",
                             "tpw <player> " + "<world> [x] [y] [z]");
                 }
             } else {
-                sender.sendMessageCommandHelp("Teleport to world", "tpw <world> [x] [y] [z]");
-                sender.sendMessageCommandHelp("Teleport player to world",
+                sender.sendTDMessageCommandHelp("Teleport to world", "tpw <world> [x] [y] [z]");
+                sender.sendTDMessageCommandHelp("Teleport player to world",
                         "tpw <player> <world> [x] " + "[y] [z]");
             }
         } else {
-            sender.sendMessageCommandHelp("Teleport to world", "tpw <world> [x] [y] [z]");
-            sender.sendMessageCommandHelp("Teleport player to world",
+            sender.sendTDMessageCommandHelp("Teleport to world", "tpw <world> [x] [y] [z]");
+            sender.sendTDMessageCommandHelp("Teleport player to world",
                     "tpw <player> <world> [x] [y] " + "[z]");
         }
     }
@@ -338,7 +339,7 @@ public class Teleport implements Listener {
 
     public static void teleportAsk(Sender sender, Arguments<Argument> args) {
         if (!args.isLengthEquals(1, true)) {
-            sender.sendMessageCommandHelp("Ask a teleport", "tpa <player>");
+            sender.sendTDMessageCommandHelp("Ask a teleport", "tpa <player>");
             return;
         }
 
@@ -403,7 +404,7 @@ public class Teleport implements Listener {
 
     public static void teleportHereAsk(Sender sender, Arguments<Argument> args) {
         if (!args.isLengthEquals(1, true)) {
-            sender.sendMessageCommandHelp("Ask a teleporthere", "tpha <player>");
+            sender.sendTDMessageCommandHelp("Ask a teleporthere", "tpha <player>");
             return;
         }
 
@@ -658,8 +659,8 @@ public class Teleport implements Listener {
             if (args.isLengthEquals(3, false)) {
                 if (!(args.get(0).isInt(true) && args.get(1).isInt(true) && args.get(2)
                         .isInt(true))) {
-                    sender.sendMessageCommandHelp("Set world spawn", "setspawn");
-                    sender.sendMessageCommandHelp("Set world spawn", "setspawn <x> <y> <z>");
+                    sender.sendTDMessageCommandHelp("Set world spawn", "setspawn");
+                    sender.sendTDMessageCommandHelp("Set world spawn", "setspawn <x> <y> <z>");
                 }
 
                 p.getWorld().setSpawnLocation(
@@ -680,24 +681,24 @@ public class Teleport implements Listener {
                                         + " " + p.getLocation().getBlockZ(), ExTextColor.VALUE)));
             } else {
                 sender.sendMessageTooFewManyArguments();
-                sender.sendMessageCommandHelp("Set world spawn", "setspawn");
-                sender.sendMessageCommandHelp("Set world spawn", "setspawn <x> <y> <z>");
+                sender.sendTDMessageCommandHelp("Set world spawn", "setspawn");
+                sender.sendTDMessageCommandHelp("Set world spawn", "setspawn <x> <y> <z>");
             }
 
         } else if (sender instanceof ConsoleCommandSender) {
             if (!args.isLengthEquals(4, true)) {
-                sender.sendMessageCommandHelp("Set world spawn", "setspawn <world> <x> <y> <z>");
+                sender.sendTDMessageCommandHelp("Set world spawn", "setspawn <world> <x> <y> <z>");
                 return;
             }
 
             if (!args.get(0).isWorldName(true)) {
-                sender.sendMessageCommandHelp("Set world spawn", "setspawn <world> <x> <y> <z>");
+                sender.sendTDMessageCommandHelp("Set world spawn", "setspawn <world> <x> <y> <z>");
                 return;
             }
 
             ExWorld world = args.get(0).toWorld();
             if (!(args.get(1).isInt(true) && args.get(2).isInt(true) && args.get(3).isInt(true))) {
-                sender.sendMessageCommandHelp("Set world spawn",
+                sender.sendTDMessageCommandHelp("Set world spawn",
                         "setspawn <world> <x> " + "<y> <z>");
                 return;
             }

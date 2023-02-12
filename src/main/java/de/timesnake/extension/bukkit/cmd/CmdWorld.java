@@ -15,7 +15,7 @@ import de.timesnake.basic.bukkit.util.world.WorldManager;
 import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.extension.bukkit.main.ExBukkit;
 import de.timesnake.library.basic.util.Tuple;
-import de.timesnake.library.basic.util.chat.ExTextColor;
+import de.timesnake.library.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Chat;
 import de.timesnake.library.extension.util.chat.Code;
 import de.timesnake.library.extension.util.cmd.CmdOption;
@@ -364,7 +364,8 @@ public class CmdWorld implements ExCommandListener, Listener {
                 }
 
                 if (!args.isLengthEquals(3, true)) {
-                    sender.sendMessageCommandHelp("Rename a world", "mw rename <world> <newName>");
+                    sender.sendTDMessageCommandHelp("Rename a world",
+                            "mw rename <world> <newName>");
                     return;
                 }
 
@@ -446,25 +447,25 @@ public class CmdWorld implements ExCommandListener, Listener {
 
     private void sendCmdMessages(Sender sender) {
         if (sender.hasPermission("exbukkit.world.create")) {
-            sender.sendMessageCommandHelp("Create a new world", "mw create <world> [type]");
+            sender.sendTDMessageCommandHelp("Create a new world", "mw create <world> [type]");
         }
         if (sender.hasPermission("exbukkit.world.delete")) {
-            sender.sendMessageCommandHelp("Delete an existing world", "mw delete <world>");
+            sender.sendTDMessageCommandHelp("Delete an existing world", "mw delete <world>");
         }
         if (sender.hasPermission("exbukkit.world.unload")) {
-            sender.sendMessageCommandHelp("Unload an existing world", "mw unload <world>");
+            sender.sendTDMessageCommandHelp("Unload an existing world", "mw unload <world>");
         }
         if (sender.hasPermission("exbukkit.world.teleport")) {
-            sender.sendMessageCommandHelp("Teleport to a world", "mw tp <world> [player]");
+            sender.sendTDMessageCommandHelp("Teleport to a world", "mw tp <world> [player]");
         }
         if (sender.hasPermission("exbukkit.world.clone")) {
-            sender.sendMessageCommandHelp("Clone a world", "mw clone <source> <world>");
+            sender.sendTDMessageCommandHelp("Clone a world", "mw clone <source> <world>");
         }
         if (sender.hasPermission("exbukkit.world.rename")) {
-            sender.sendMessageCommandHelp("Rename a world", "mw rename <world> <newName>");
+            sender.sendTDMessageCommandHelp("Rename a world", "mw rename <world> <newName>");
         }
         if (sender.hasPermission("exbukkit.world.list")) {
-            sender.sendMessageCommandHelp("List the worlds", "mw list");
+            sender.sendTDMessageCommandHelp("List the worlds", "mw list");
         }
     }
 

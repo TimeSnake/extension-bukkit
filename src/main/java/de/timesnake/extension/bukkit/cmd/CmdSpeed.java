@@ -10,7 +10,7 @@ import de.timesnake.basic.bukkit.util.chat.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.extension.bukkit.chat.Plugin;
-import de.timesnake.library.basic.util.chat.ExTextColor;
+import de.timesnake.library.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Code;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
@@ -42,8 +42,9 @@ public class CmdSpeed implements CommandListener {
                         }
                     }
                 } else {
-                    sender.sendMessageCommandHelp("Set speed", "speed <speed>");
-                    sender.sendMessageCommandHelp("Set speed for player", "speed <speed> <player>");
+                    sender.sendTDMessageCommandHelp("Set speed", "speed <speed>");
+                    sender.sendTDMessageCommandHelp("Set speed for player",
+                            "speed <speed> <player>");
                 }
                 break;
 
@@ -59,8 +60,8 @@ public class CmdSpeed implements CommandListener {
                         this.set(sender, user, args.get(0).toFloat(), Type.FLY);
                     }
                 } else {
-                    sender.sendMessageCommandHelp("Set fly speed", "speedfly <speed>");
-                    sender.sendMessageCommandHelp("Set fly speed for player",
+                    sender.sendTDMessageCommandHelp("Set fly speed", "speedfly <speed>");
+                    sender.sendTDMessageCommandHelp("Set fly speed for player",
                             "speedfly <speed> <player>");
                 }
                 break;
@@ -78,8 +79,8 @@ public class CmdSpeed implements CommandListener {
 
                     }
                 } else {
-                    sender.sendMessageCommandHelp("Set walk speed", "speedwalk <speed>");
-                    sender.sendMessageCommandHelp("Set walk speed for player",
+                    sender.sendTDMessageCommandHelp("Set walk speed", "speedwalk <speed>");
+                    sender.sendTDMessageCommandHelp("Set walk speed for player",
                             "speedwalk <speed> <player>");
                 }
                 break;

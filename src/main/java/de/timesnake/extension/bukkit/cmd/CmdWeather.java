@@ -9,7 +9,7 @@ import de.timesnake.basic.bukkit.util.chat.Argument;
 import de.timesnake.basic.bukkit.util.chat.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
-import de.timesnake.library.basic.util.chat.ExTextColor;
+import de.timesnake.library.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Code;
 import de.timesnake.library.extension.util.chat.Plugin;
 import de.timesnake.library.extension.util.cmd.Arguments;
@@ -59,7 +59,7 @@ public class CmdWeather implements CommandListener {
 
     public void handleCmdWeather(Sender sender, Arguments<Argument> args) {
         if (!args.isLengthHigherEquals(1, true)) {
-            sender.sendMessageCommandHelp("Change weather in world",
+            sender.sendTDMessageCommandHelp("Change weather in world",
                     "weather <clear/rain/sun> [world]");
             return;
         }
@@ -78,7 +78,7 @@ public class CmdWeather implements CommandListener {
             case "rain", "storm", "thunder" -> this.rain(sender, world);
             default -> {
                 sender.sendMessageWeatherTypeNotExist(args.get(0).getString());
-                sender.sendMessageCommandHelp("Change weather in world",
+                sender.sendTDMessageCommandHelp("Change weather in world",
                         "weather <clear/rain/sun> " + "[world]");
             }
         }
@@ -128,7 +128,7 @@ public class CmdWeather implements CommandListener {
                     .append(Component.text("in world ", ExTextColor.PERSONAL))
                     .append(Component.text(world.getName(), ExTextColor.VALUE)));
         } else {
-            sender.sendMessageCommandHelp("Set sun in world", "sun <world>");
+            sender.sendTDMessageCommandHelp("Set sun in world", "sun <world>");
         }
     }
 
@@ -154,7 +154,7 @@ public class CmdWeather implements CommandListener {
                     .append(Component.text("in world ", ExTextColor.PERSONAL))
                     .append(Component.text(world.getName(), ExTextColor.VALUE)));
         } else {
-            sender.sendMessageCommandHelp("Set rain in world", "rain <world>");
+            sender.sendTDMessageCommandHelp("Set rain in world", "rain <world>");
         }
     }
 

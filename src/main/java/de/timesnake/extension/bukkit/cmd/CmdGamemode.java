@@ -10,7 +10,7 @@ import de.timesnake.basic.bukkit.util.chat.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.extension.bukkit.chat.Plugin;
-import de.timesnake.library.basic.util.chat.ExTextColor;
+import de.timesnake.library.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Code;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
@@ -48,8 +48,8 @@ public class CmdGamemode implements CommandListener {
 
     public void handleCmdGamemode(Sender sender, Arguments<Argument> args) {
         if (!args.isLengthHigherEquals(1, true)) {
-            sender.sendMessageCommandHelp("Set gamemode", "gm <mode>");
-            sender.sendMessageCommandHelp("Set gamemode for player", "gm <mode> <player>");
+            sender.sendTDMessageCommandHelp("Set gamemode", "gm <mode>");
+            sender.sendTDMessageCommandHelp("Set gamemode for player", "gm <mode> <player>");
             return;
         }
 

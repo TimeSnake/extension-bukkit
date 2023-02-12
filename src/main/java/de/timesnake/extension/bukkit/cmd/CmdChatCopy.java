@@ -29,7 +29,7 @@ public class CmdChatCopy implements CommandListener {
         }
 
         if (args.isLengthEquals(0, true)) {
-            sender.sendMessageCommandHelp("Send copyable message", "cc <message>");
+            sender.sendTDMessageCommandHelp("Send copyable message", "cc <message>");
             return;
         }
 
