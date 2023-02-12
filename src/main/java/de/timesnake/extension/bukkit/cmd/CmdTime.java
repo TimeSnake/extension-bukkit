@@ -9,7 +9,7 @@ import de.timesnake.basic.bukkit.util.chat.Argument;
 import de.timesnake.basic.bukkit.util.chat.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
-import de.timesnake.library.basic.util.chat.ExTextColor;
+import de.timesnake.library.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Code;
 import de.timesnake.library.extension.util.chat.Plugin;
 import de.timesnake.library.extension.util.cmd.Arguments;
@@ -40,7 +40,7 @@ public class CmdTime implements CommandListener {
                         this.setDay(sender,
                                 new Argument(sender, sender.getPlayer().getWorld().getName()));
                     } else {
-                        sender.sendMessageCommandHelp("Set day in world", "day <world>");
+                        sender.sendTDMessageCommandHelp("Set day in world", "day <world>");
                     }
                 }
                 break;
@@ -52,7 +52,7 @@ public class CmdTime implements CommandListener {
                         this.setNight(sender,
                                 new Argument(sender, sender.getPlayer().getWorld().getName()));
                     } else {
-                        sender.sendMessageCommandHelp("Set night in world", "night <world>");
+                        sender.sendTDMessageCommandHelp("Set night in world", "night <world>");
                     }
                 }
 
@@ -65,7 +65,7 @@ public class CmdTime implements CommandListener {
                         this.setNoon(sender,
                                 new Argument(sender, sender.getPlayer().getWorld().getName()));
                     } else {
-                        sender.sendMessageCommandHelp("Set noon in world", "noon <world>");
+                        sender.sendTDMessageCommandHelp("Set noon in world", "noon <world>");
                     }
                 }
                 break;
@@ -84,7 +84,7 @@ public class CmdTime implements CommandListener {
                                 ExTextColor.VALUE)));
                 return;
             } else {
-                sender.sendMessageCommandHelp("Set time in world", "time set <time> [world]");
+                sender.sendTDMessageCommandHelp("Set time in world", "time set <time> [world]");
             }
             return;
         }
@@ -92,7 +92,7 @@ public class CmdTime implements CommandListener {
         switch (args.getString(0).toLowerCase()) {
             case "set" -> {
                 if (!args.isLengthHigherEquals(2, true)) {
-                    sender.sendMessageCommandHelp("Set time in world", "time set <time> [world]");
+                    sender.sendTDMessageCommandHelp("Set time in world", "time set <time> [world]");
                     return;
                 }
                 if (!sender.hasPermission(this.setPerm)) {
@@ -135,7 +135,7 @@ public class CmdTime implements CommandListener {
                     }
                 } else {
                     sender.sendMessageTooFewManyArguments();
-                    sender.sendMessageCommandHelp("Set time in world", "time set <time> [world]");
+                    sender.sendTDMessageCommandHelp("Set time in world", "time set <time> [world]");
                 }
             }
             case "day" -> {
@@ -149,7 +149,7 @@ public class CmdTime implements CommandListener {
                             new Argument(sender, sender.getPlayer().getWorld().getName()));
                 } else {
                     sender.sendMessageTooFewManyArguments();
-                    sender.sendMessageCommandHelp("Set time in world", "time set <time> [world]");
+                    sender.sendTDMessageCommandHelp("Set time in world", "time set <time> [world]");
                 }
             }
             case "night" -> {
@@ -163,7 +163,7 @@ public class CmdTime implements CommandListener {
                             new Argument(sender, sender.getPlayer().getWorld().getName()));
                 } else {
                     sender.sendMessageTooFewManyArguments();
-                    sender.sendMessageCommandHelp("Set time in world", "time set <time> [world]");
+                    sender.sendTDMessageCommandHelp("Set time in world", "time set <time> [world]");
                 }
             }
             case "noon" -> {
@@ -177,11 +177,11 @@ public class CmdTime implements CommandListener {
                             new Argument(sender, sender.getPlayer().getWorld().getName()));
                 } else {
                     sender.sendMessageTooFewManyArguments();
-                    sender.sendMessageCommandHelp("Set time in world", "time set <time> [world]");
+                    sender.sendTDMessageCommandHelp("Set time in world", "time set <time> [world]");
                 }
             }
             default ->
-                    sender.sendMessageCommandHelp("Set time in world", "time set <time> [world]");
+                    sender.sendTDMessageCommandHelp("Set time in world", "time set <time> [world]");
         }
     }
 

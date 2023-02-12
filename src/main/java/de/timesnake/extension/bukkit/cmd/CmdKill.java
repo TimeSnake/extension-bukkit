@@ -9,7 +9,7 @@ import de.timesnake.basic.bukkit.util.chat.Argument;
 import de.timesnake.basic.bukkit.util.chat.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
-import de.timesnake.library.basic.util.chat.ExTextColor;
+import de.timesnake.library.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Code;
 import de.timesnake.library.extension.util.chat.Plugin;
 import de.timesnake.library.extension.util.cmd.Arguments;
@@ -61,9 +61,9 @@ public class CmdKill implements CommandListener {
                     this.killTypeAll(sender);
                 }
             } else {
-                sender.sendMessageCommandHelp("Kill all of a type (drops, mobs, ...)",
+                sender.sendTDMessageCommandHelp("Kill all of a type (drops, mobs, ...)",
                         "killall <type>");
-                sender.sendMessageCommandHelp("Kill all types", "killall all");
+                sender.sendTDMessageCommandHelp("Kill all types", "killall all");
             }
         }
     }
@@ -90,7 +90,7 @@ public class CmdKill implements CommandListener {
 
     public void killPlayer(Sender sender, Arguments<Argument> args) {
         if (!args.isLengthEquals(1, true)) {
-            sender.sendMessageCommandHelp("Kill a player", "kill <player>");
+            sender.sendTDMessageCommandHelp("Kill a player", "kill <player>");
             return;
         }
 
@@ -187,9 +187,9 @@ public class CmdKill implements CommandListener {
                 try {
                     type = EntityType.valueOf(arg.toUpperCase());
                 } catch (IllegalArgumentException e) {
-                    sender.sendMessageCommandHelp("Kill all of a type (drops, mobs, ...)",
+                    sender.sendTDMessageCommandHelp("Kill all of a type (drops, mobs, ...)",
                             "killall <type>");
-                    sender.sendMessageCommandHelp("Kill all types", "killall all");
+                    sender.sendTDMessageCommandHelp("Kill all types", "killall all");
                     sender.sendMessageKillAllTypeNotExist(arg.getString());
                     return;
                 }

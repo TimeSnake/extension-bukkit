@@ -8,12 +8,12 @@ import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.Argument;
 import de.timesnake.basic.bukkit.util.chat.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.Sender;
+import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.inventory.ExInventory;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.user.inventory.ExcludedInventoryHolder;
-import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.extension.bukkit.chat.Plugin;
-import de.timesnake.library.basic.util.chat.ExTextColor;
+import de.timesnake.library.chat.ExTextColor;
 import de.timesnake.library.extension.util.chat.Code;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
@@ -61,7 +61,7 @@ public class CmdInventory implements CommandListener, Listener {
                 if (args.isLengthEquals(1, true)) {
                     this.see(sender, args.get(0));
                 } else {
-                    sender.sendMessageCommandHelp("See inventory form player", "invsee <player>");
+                    sender.sendTDMessageCommandHelp("See inventory form player", "invsee <player>");
                 }
                 break;
             case "clear":
