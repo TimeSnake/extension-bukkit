@@ -84,214 +84,10 @@ public class CmdWorld implements ExCommandListener, Listener {
 
         switch (args.getString(0)) {
             case "create" -> {
-                if (!sender.hasPermission(this.createPerm)) {
-                    return;
-                }
-
-                if (args.containsFlag('p')) {
-                    if (world == null) {
-                        sender.sendMessageWorldNotExist(worldName);
-                        return;
-                    }
-
-                    if (!world.isTemporary()) {
-                        sender.sendPluginMessage(Component.text("World ", ExTextColor.WARNING)
-                                .append(Component.text(worldName, ExTextColor.VALUE))
-                                .append(Component.text(" is not temporary", ExTextColor.WARNING)));
-                        return;
-                    }
-
-                    world.makePersistent();
-                    sender.sendPluginMessage(Component.text("Made world ", ExTextColor.PERSONAL)
-                            .append(Component.text(worldName, ExTextColor.VALUE))
-                            .append(Component.text(" persistent", ExTextColor.PERSONAL)));
-
-                    return;
-                }
-
-                if (world != null) {
-                    sender.sendMessageWorldAlreadyExist(worldName);
-                    return;
-                }
-
-                for (String s : WorldManager.UNSUPPORTED_SYMBOLS) {
-                    if (worldName.contains(s)) {
-                        sender.sendPluginMessage(
-                                Component.text("World name contains an unsupported symbol: ",
-                                                ExTextColor.WARNING)
-                                        .append(Component.text(s, ExTextColor.VALUE)));
-                    }
-                }
-
-                if (args.isLengthEquals(2, false)) {
-                    sender.sendMessageTooFewArguments();
-                    return;
-                }
-
-                ExWorldType worldType = ExWorldType.VOID;
-                if (args.isLengthEquals(3, false) && args.getOptions().isEmpty()
-                        && args.getFlags().isEmpty()) {
-                    String worldTypeName = args.getString(2).toLowerCase();
-                    worldType = ExWorldType.valueOf(worldTypeName);
-                    if (worldType == null) {
-                        sender.sendPluginMessage(Component.text("World-Type ", ExTextColor.WARNING)
-                                .append(Component.text(worldTypeName, ExTextColor.VALUE))
-                                .append(Component.text(" does not exist", ExTextColor.WARNING)));
-                        return;
-                    }
-                } else if (!args.get(2).getString().startsWith("custom_")) {
-                    sender.sendMessageTooManyArguments();
-                } else {
-                    if (args.get(2).equalsIgnoreCase("custom_flat")) {
-                        if (!args.isLengthEquals(4, true)) {
-                            return;
-                        }
-
-                        String materialsString = args.getString(3);
-                        List<Tuple<Integer, Material>> materials = this.parseMaterials(sender,
-                                materialsString);
-                        if (materials == null) {
-                            return;
-                        }
-
-                        worldType = new ExWorldType.CustomFlat(materials);
-                    } else if (args.get(2).equalsIgnoreCase("custom_height")) {
-                        if (!args.isLengthEquals(4, true)) {
-                            return;
-                        }
-
-                        String materialsString = args.getString(3);
-                        List<Tuple<Integer, Material>> materials = this.parseMaterials(sender,
-                                materialsString);
-                        if (materials == null) {
-                            return;
-                        }
-
-                        double scale = args.getOptionOrElse("scale", new CmdOption(sender,
-                                        "" + ExWorldType.CustomHeight.SCALE))
-                                .toBoundedDoubleOrExit(0, 1, true);
-
-                        double xScale = args.getOptionOrElse("xScale", new CmdOption(sender,
-                                        "" + scale))
-                                .toBoundedDoubleOrExit(0, 1, true);
-
-                        double yScale = args.getOptionOrElse("yScale", new CmdOption(sender,
-                                        "" + scale))
-                                .toBoundedDoubleOrExit(0, 1, true);
-
-                        double zScale = args.getOptionOrElse("zScale", new CmdOption(sender,
-                                        "" + scale))
-                                .toBoundedDoubleOrExit(0, 1, true);
-
-                        double frequency = args.getOptionOrElse("frequency", new CmdOption(sender,
-                                        "" + ExWorldType.CustomHeight.FREQUENCY))
-                                .toBoundedDoubleOrExit(0, 1, true);
-
-                        double amplitude = args.getOptionOrElse("amplitude", new CmdOption(sender,
-                                        "" + ExWorldType.CustomHeight.AMPLITUDE))
-                                .toBoundedDoubleOrExit(0, 1, true);
-
-                        int baseHeight = args.getOptionOrElse("baseHeight", new CmdOption(sender,
-                                        "" + ExWorldType.CustomHeight.BASE_HEIGHT))
-                                .toBoundedIntOrExit(-64, 320, true);
-
-                        boolean simplex = args.containsFlag('s');
-
-                        worldType = new ExWorldType.CustomHeight(simplex, xScale, yScale, zScale,
-                                frequency, amplitude,
-                                baseHeight, materials);
-                    } else if (args.get(2).equalsIgnoreCase("custom_island")) {
-                        if (!args.isLengthEquals(4, true)) {
-                            return;
-                        }
-
-                        String materialsString = args.getString(3);
-                        List<Tuple<Integer, Material>> materials = this.parseMaterials(sender,
-                                materialsString);
-                        if (materials == null) {
-                            return;
-                        }
-
-                        float density = args.getOptionOrElse("density", new CmdOption(sender,
-                                        "" + ExWorldType.CustomIsland.DENSITY))
-                                .toBoundedFloatOrExit(0, 1, true);
-
-                        double scale = args.getOptionOrElse("scale", new CmdOption(sender,
-                                        "" + ExWorldType.CustomHeight.SCALE))
-                                .toBoundedDoubleOrExit(0, 1, true);
-
-                        double xScale = args.getOptionOrElse("xScale", new CmdOption(sender,
-                                        "" + scale))
-                                .toBoundedDoubleOrExit(0, 1, true);
-
-                        double yScale = args.getOptionOrElse("yScale", new CmdOption(sender,
-                                        "" + scale))
-                                .toBoundedDoubleOrExit(0, 1, true);
-
-                        double zScale = args.getOptionOrElse("zScale", new CmdOption(sender,
-                                        "" + scale))
-                                .toBoundedDoubleOrExit(0, 1, true);
-
-                        double frequency = args.getOptionOrElse("frequency", new CmdOption(sender,
-                                        "" + ExWorldType.CustomIsland.FREQUENCY))
-                                .toBoundedDoubleOrExit(0, 1, true);
-
-                        double amplitude = args.getOptionOrElse("amplitude", new CmdOption(sender,
-                                        "" + ExWorldType.CustomIsland.AMPLITUDE))
-                                .toBoundedDoubleOrExit(0, 1, true);
-
-                        worldType = new ExWorldType.CustomIsland(density, xScale, yScale, zScale,
-                                frequency, amplitude,
-                                materials);
-                    }
-
-                }
-
-                boolean temporary = args.containsFlag('t');
-
-                sender.sendPluginMessage(Component.text("Creating world ", ExTextColor.PERSONAL)
-                        .append(Component.text(worldName, ExTextColor.VALUE,
-                                        TextDecoration.UNDERLINED)
-                                .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                        Component.text("Click to teleport to world")))
-                                .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND,
-                                        "/mw tp " + worldName)))
-                        .append(Component.text(" with type ", ExTextColor.PERSONAL))
-                        .append(Component.text(worldType.getName(), ExTextColor.VALUE)));
-
-                ExWorld createdWorld = Server.getWorldManager()
-                        .createWorld(worldName, worldType, temporary);
-
-                if (createdWorld != null) {
-                    this.waitingWorldLoadedSenderByWorldName.put(createdWorld.getName(), sender);
-                } else {
-                    sender.sendPluginMessage(
-                            Component.text("Failed to load world ", ExTextColor.WARNING)
-                                    .append(Component.text(worldName, ExTextColor.VALUE)));
-                }
+                this.handleWorldCreation(sender, args, world, worldName);
             }
             case "clone" -> {
-                if (!sender.hasPermission(this.clonePerm)) {
-                    return;
-                }
-                if (world == null) {
-                    sender.sendMessageWorldNotExist(worldName);
-                    return;
-                }
-                if (!args.isLengthEquals(3, true)) {
-                    return;
-                }
-                Argument clonedName = args.get(2);
-                if (clonedName.isWorldName(false)) {
-                    sender.sendMessageWorldAlreadyExist(worldName);
-                    return;
-                }
-                sender.sendPluginMessage(Component.text("Cloning world ", ExTextColor.PERSONAL)
-                        .append(Component.text(worldName, ExTextColor.VALUE))
-                        .append(Component.text(" to ", ExTextColor.PERSONAL))
-                        .append(Component.text(clonedName.getString(), ExTextColor.VALUE)));
-                Server.getWorldManager().cloneWorld(clonedName.getString(), world);
-                sender.sendPluginMessage(Component.text("Complete", ExTextColor.PERSONAL));
+                this.handleWorldClone(sender, args, world, worldName);
             }
             case "delete" -> {
                 if (!sender.hasPermission(this.deletePerm)) {
@@ -302,12 +98,9 @@ public class CmdWorld implements ExCommandListener, Listener {
                     return;
                 }
                 if (Server.getWorldManager().deleteWorld(world, true)) {
-                    sender.sendPluginMessage(Component.text("Deleted world ", ExTextColor.PERSONAL)
-                            .append(Component.text(worldName, ExTextColor.VALUE)));
+                    sender.sendPluginTDMessage("§sDeleted world §v" + worldName);
                 } else {
-                    sender.sendPluginMessage(
-                            Component.text("Failed to delete world ", ExTextColor.WARNING)
-                                    .append(Component.text(worldName, ExTextColor.VALUE)));
+                    sender.sendPluginTDMessage("§wFailed to delete world §v" + worldName);
                 }
             }
             case "unload" -> {
@@ -319,12 +112,9 @@ public class CmdWorld implements ExCommandListener, Listener {
                     return;
                 }
                 if (Server.getWorldManager().unloadWorld(world, true)) {
-                    sender.sendPluginMessage(Component.text("Unloaded world ", ExTextColor.PERSONAL)
-                            .append(Component.text(worldName, ExTextColor.VALUE)));
+                    sender.sendPluginTDMessage("§sUnloaded world §v" + worldName);
                 } else {
-                    sender.sendPluginMessage(
-                            Component.text("Failed to unload world ", ExTextColor.WARNING)
-                                    .append(Component.text(worldName, ExTextColor.VALUE)));
+                    sender.sendPluginTDMessage("§wFailed to unload world §v" + worldName);
                 }
             }
             case "teleport", "tp" -> {
@@ -340,22 +130,16 @@ public class CmdWorld implements ExCommandListener, Listener {
                         return;
                     }
                     sender.getUser().teleport(world);
-                    sender.sendPluginMessage(
-                            Component.text("Teleported to world ", ExTextColor.PERSONAL)
-                                    .append(Component.text(worldName, ExTextColor.VALUE)));
+                    sender.sendPluginTDMessage("§sTeleported to world §v" + worldName);
                 } else if (args.isLengthEquals(3, true)) {
                     if (!args.get(2).isPlayerName(true)) {
                         return;
                     }
                     User user = args.get(2).toUser();
                     user.teleport(world);
-                    user.sendPluginMessage(Plugin.BUKKIT,
-                            Component.text("Teleported to world ", ExTextColor.PERSONAL)
-                                    .append(Component.text(worldName, ExTextColor.VALUE)));
-                    sender.sendPluginMessage(Component.text("Teleported ", ExTextColor.PERSONAL)
-                            .append(user.getChatNameComponent())
-                            .append(Component.text(" to world ", ExTextColor.PERSONAL))
-                            .append(Component.text(worldName, ExTextColor.VALUE)));
+                    user.sendPluginTDMessage(Plugin.BUKKIT, "§sTeleported to world §v" + worldName);
+                    sender.sendPluginTDMessage("§sTeleported " + user.getChatName()
+                            + "§v to world §v" + worldName);
                 }
             }
             case "rename" -> {
@@ -376,29 +160,263 @@ public class CmdWorld implements ExCommandListener, Listener {
 
                 String newName = args.getString(2);
 
-                if (Server.getWorld(newName) != null) {
-                    sender.sendMessageWorldAlreadyExist(worldName);
-                    return;
+                for (String s : WorldManager.UNSUPPORTED_SYMBOLS) {
+                    if (newName.contains(s)) {
+                        sender.sendPluginTDMessage(
+                                "§wWorld name contains an unsupported symbol: §v" + s);
+                        return;
+                    }
                 }
+
+                sender.assertElseExitWith(Server.getWorld(newName) != null,
+                        s -> s.sendMessageWorldAlreadyExist(newName));
 
                 File worldFolder = world.getWorldFolder();
 
                 boolean result = Server.getWorldManager().unloadWorld(world, true);
 
                 if (!result) {
-                    sender.sendPluginMessage(
-                            Component.text("Can not unload world ", ExTextColor.WARNING)
-                                    .append(Component.text(world.getName(), ExTextColor.VALUE)));
+                    sender.sendPluginTDMessage("§wCan not unload world §v" + world.getName());
                     return;
                 }
 
-                worldFolder.renameTo(
-                        new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator +
-                                newName));
+                worldFolder.renameTo(new File(Bukkit.getWorldContainer().getAbsolutePath()
+                        + File.separator + newName));
 
                 Server.getWorldManager().createWorld(newName);
             }
             default -> this.sendCmdMessages(sender);
+        }
+    }
+
+    private void handleWorldClone(Sender sender, ExArguments<Argument> args, ExWorld world,
+            String worldName) {
+
+        sender.hasPermissionElseExit(this.clonePerm);
+        sender.assertElseExitWith(world == null, s -> s.sendMessageWorldNotExist(worldName));
+        args.assertElseExit(a -> a.isLengthEquals(3, true));
+
+        Argument clonedName = args.get(2);
+        if (clonedName.isWorldName(false)) {
+            sender.sendMessageWorldAlreadyExist(worldName);
+            return;
+        }
+
+        sender.sendPluginTDMessage(
+                "§sCloning world §v" + worldName + "§s to §v" + clonedName.getString());
+
+        Server.getWorldManager().cloneWorld(clonedName.getString(), world);
+        sender.sendPluginTDMessage("§sComplete");
+    }
+
+    private void handleWorldCreation(Sender sender, ExArguments<Argument> args, ExWorld world,
+            String worldName) {
+        sender.hasPermissionElseExit(this.createPerm);
+
+        if (args.containsFlag('p')) {
+            sender.assertElseExitWith(world == null,
+                    s -> s.sendMessageWorldNotExist(worldName));
+
+            if (!world.isTemporary()) {
+                sender.sendPluginTDMessage("§wWorld §v" + worldName + "§w is not temporary");
+                return;
+            }
+
+            world.makePersistent();
+            sender.sendPluginTDMessage("§sMade world §v" + worldName + "§s persistent");
+            return;
+        }
+
+        sender.assertElseExitWith(world != null,
+                s -> s.sendMessageWorldAlreadyExist(worldName));
+
+        for (String s : WorldManager.UNSUPPORTED_SYMBOLS) {
+            if (worldName.contains(s)) {
+                sender.sendPluginTDMessage("§wWorld name contains an unsupported symbol: §v" + s);
+                return;
+            }
+        }
+
+        args.assertElseExit(a -> a.isLengthHigherEquals(2, true));
+
+        ExWorldType worldType = ExWorldType.VOID;
+
+        if (args.length() == 3 && args.getOptions().isEmpty()) {
+            String worldTypeName = args.getString(2).toLowerCase();
+            worldType = ExWorldType.valueOf(worldTypeName);
+            if (worldType == null) {
+                sender.sendPluginTDMessage("§wWorld-Type §v" + worldTypeName + "§w does not exist");
+                return;
+            }
+        } else if (args.length() >= 3) {
+            if (!args.get(2).getString().startsWith("custom_")) {
+                sender.sendMessageTooManyArguments();
+            } else if (args.get(2).equalsIgnoreCase("custom_flat")) {
+                if (!args.isLengthEquals(4, true)) {
+                    return;
+                }
+
+                String materialsString = args.getString(3);
+                List<Tuple<Integer, Material>> materials = this.parseMaterials(sender,
+                        materialsString);
+
+                if (materials == null) {
+                    return;
+                }
+
+                worldType = new ExWorldType.CustomFlat(materials);
+            } else if (args.get(2).equalsIgnoreCase("custom_height")) {
+                if (!args.isLengthEquals(4, true)) {
+                    return;
+                }
+
+                String materialsString = args.getString(3);
+                List<Tuple<Integer, Material>> materials = this.parseMaterials(sender,
+                        materialsString);
+                if (materials == null) {
+                    return;
+                }
+
+                double scale = args.getOptionOrElse("scale", new CmdOption(sender,
+                                "" + ExWorldType.CustomHeight.SCALE))
+                        .toBoundedDoubleOrExit(0, 1, true);
+
+                double xScale = args.getOptionOrElse("xScale", new CmdOption(sender,
+                                "" + scale))
+                        .toBoundedDoubleOrExit(0, 1, true);
+
+                double yScale = args.getOptionOrElse("yScale", new CmdOption(sender,
+                                "" + scale))
+                        .toBoundedDoubleOrExit(0, 1, true);
+
+                double zScale = args.getOptionOrElse("zScale", new CmdOption(sender,
+                                "" + scale))
+                        .toBoundedDoubleOrExit(0, 1, true);
+
+                double frequency = args.getOptionOrElse("frequency", new CmdOption(sender,
+                                "" + ExWorldType.CustomHeight.FREQUENCY))
+                        .toBoundedDoubleOrExit(0, 1, true);
+
+                double amplitude = args.getOptionOrElse("amplitude", new CmdOption(sender,
+                                "" + ExWorldType.CustomHeight.AMPLITUDE))
+                        .toBoundedDoubleOrExit(0, 1, true);
+
+                int baseHeight = args.getOptionOrElse("baseHeight", new CmdOption(sender,
+                                "" + ExWorldType.CustomHeight.BASE_HEIGHT))
+                        .toBoundedIntOrExit(-64, 320, true);
+
+                boolean simplex = args.containsFlag('s');
+
+                worldType = new ExWorldType.CustomHeight(simplex, xScale, yScale, zScale,
+                        frequency, amplitude, baseHeight, materials);
+            } else if (args.get(2).equalsIgnoreCase("custom_island")) {
+                if (!args.isLengthEquals(4, true)) {
+                    return;
+                }
+
+                String materialsString = args.getString(3);
+                List<Tuple<Integer, Material>> materials = this.parseMaterials(sender,
+                        materialsString);
+                if (materials == null) {
+                    return;
+                }
+
+                float density = args.getOptionOrElse("density", new CmdOption(sender,
+                                "" + ExWorldType.CustomIsland.DENSITY))
+                        .toBoundedFloatOrExit(0, 1, true);
+
+                double scale = args.getOptionOrElse("scale", new CmdOption(sender,
+                                "" + ExWorldType.CustomHeight.SCALE))
+                        .toBoundedDoubleOrExit(0, 1, true);
+
+                double xScale = args.getOptionOrElse("xScale", new CmdOption(sender,
+                                "" + scale))
+                        .toBoundedDoubleOrExit(0, 1, true);
+
+                double yScale = args.getOptionOrElse("yScale", new CmdOption(sender,
+                                "" + scale))
+                        .toBoundedDoubleOrExit(0, 1, true);
+
+                double zScale = args.getOptionOrElse("zScale", new CmdOption(sender,
+                                "" + scale))
+                        .toBoundedDoubleOrExit(0, 1, true);
+
+                double frequency = args.getOptionOrElse("frequency", new CmdOption(sender,
+                                "" + ExWorldType.CustomIsland.FREQUENCY))
+                        .toBoundedDoubleOrExit(0, 1, true);
+
+                double amplitude = args.getOptionOrElse("amplitude", new CmdOption(sender,
+                                "" + ExWorldType.CustomIsland.AMPLITUDE))
+                        .toBoundedDoubleOrExit(0, 1, true);
+
+                worldType = new ExWorldType.CustomIsland(density, xScale, yScale, zScale,
+                        frequency, amplitude,
+                        materials);
+            } else if (args.get(2).equalsIgnoreCase("custom_island")) {
+                if (!args.isLengthEquals(4, true)) {
+                    return;
+                }
+
+                String materialsString = args.getString(3);
+                List<Tuple<Integer, Material>> materials = this.parseMaterials(sender,
+                        materialsString);
+                if (materials == null) {
+                    return;
+                }
+
+                float density = args.getOptionOrElse("density", new CmdOption(sender,
+                                "" + ExWorldType.CustomIsland.DENSITY))
+                        .toBoundedFloatOrExit(0, 1, true);
+
+                double scale = args.getOptionOrElse("scale", new CmdOption(sender,
+                                "" + ExWorldType.CustomHeight.SCALE))
+                        .toBoundedDoubleOrExit(0, 1, true);
+
+                double xScale = args.getOptionOrElse("xScale", new CmdOption(sender,
+                                "" + scale))
+                        .toBoundedDoubleOrExit(0, 1, true);
+
+                double yScale = args.getOptionOrElse("yScale", new CmdOption(sender,
+                                "" + scale))
+                        .toBoundedDoubleOrExit(0, 1, true);
+
+                double zScale = args.getOptionOrElse("zScale", new CmdOption(sender,
+                                "" + scale))
+                        .toBoundedDoubleOrExit(0, 1, true);
+
+                double frequency = args.getOptionOrElse("frequency", new CmdOption(sender,
+                                "" + ExWorldType.CustomIsland.FREQUENCY))
+                        .toBoundedDoubleOrExit(0, 1, true);
+
+                double amplitude = args.getOptionOrElse("amplitude", new CmdOption(sender,
+                                "" + ExWorldType.CustomIsland.AMPLITUDE))
+                        .toBoundedDoubleOrExit(0, 1, true);
+
+                worldType = new ExWorldType.CustomIsland(density, xScale, yScale, zScale,
+                        frequency, amplitude, materials);
+            }
+        }
+
+        boolean temporary = args.containsFlag('t');
+
+        sender.sendPluginMessage(
+                Component.text("Creating " + (temporary ? "temporary " : "") + "world ",
+                                ExTextColor.PERSONAL)
+                        .append(Component.text(worldName, ExTextColor.VALUE,
+                                        TextDecoration.UNDERLINED)
+                                .hoverEvent(HoverEvent.showText(
+                                        Component.text("Click to teleport to world")))
+                                .clickEvent(ClickEvent.runCommand("/mw tp " + worldName)))
+                        .append(Component.text(" with type ", ExTextColor.PERSONAL))
+                        .append(Component.text(worldType.getName(), ExTextColor.VALUE)));
+
+        ExWorld createdWorld = Server.getWorldManager()
+                .createWorld(worldName, worldType, temporary);
+
+        if (createdWorld != null) {
+            this.waitingWorldLoadedSenderByWorldName.put(createdWorld.getName(), sender);
+        } else {
+            sender.sendPluginTDMessage("§wFailed to load world " + worldName);
         }
     }
 
@@ -420,8 +438,7 @@ public class CmdWorld implements ExCommandListener, Listener {
                 materials.add(new Tuple<>(1, material));
             } else {
                 if (heightMaterial.length != 2) {
-                    sender.sendPluginMessage(Component.text("Invalid layer ", ExTextColor.WARNING)
-                            .append(Component.text(heightMaterialString, ExTextColor.VALUE)));
+                    sender.sendPluginTDMessage("§wInvalid layer §v" + heightMaterialString);
                     return null;
                 }
 

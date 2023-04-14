@@ -42,7 +42,7 @@ public class CmdNightVision implements CommandListener {
                 sender.sendPluginMessage(
                         Component.text("Disabled night vision", ExTextColor.PERSONAL));
             } else {
-                user.addPotionEffect(PotionEffectType.NIGHT_VISION, 1, 1, false);
+                user.addPotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 1, false);
                 sender.sendPluginMessage(
                         Component.text("Enabled night vision", ExTextColor.PERSONAL));
             }
