@@ -404,7 +404,7 @@ public class Teleport implements Listener {
 
     public static void teleportHereAsk(Sender sender, Arguments<Argument> args) {
         if (!args.isLengthEquals(1, true)) {
-            sender.sendTDMessageCommandHelp("Ask a teleporthere", "tpha <player>");
+            sender.sendTDMessageCommandHelp("Ask a teleporthere", "tpah <player>");
             return;
         }
 
@@ -699,7 +699,7 @@ public class Teleport implements Listener {
             ExWorld world = args.get(0).toWorld();
             if (!(args.get(1).isInt(true) && args.get(2).isInt(true) && args.get(3).isInt(true))) {
                 sender.sendTDMessageCommandHelp("Set world spawn",
-                        "setspawn <world> <x> " + "<y> <z>");
+                        "setspawn <world> <x> <y> <z>");
                 return;
             }
 

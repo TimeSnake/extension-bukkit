@@ -168,7 +168,7 @@ public class CmdWorld implements ExCommandListener, Listener {
                     }
                 }
 
-                sender.assertElseExitWith(Server.getWorld(newName) != null,
+                sender.assertElseExitWith(Server.getWorld(newName) == null,
                         s -> s.sendMessageWorldAlreadyExist(newName));
 
                 File worldFolder = world.getWorldFolder();
@@ -193,7 +193,7 @@ public class CmdWorld implements ExCommandListener, Listener {
             String worldName) {
 
         sender.hasPermissionElseExit(this.clonePerm);
-        sender.assertElseExitWith(world == null, s -> s.sendMessageWorldNotExist(worldName));
+        sender.assertElseExitWith(world != null, s -> s.sendMessageWorldNotExist(worldName));
         args.assertElseExit(a -> a.isLengthEquals(3, true));
 
         Argument clonedName = args.get(2);
@@ -214,7 +214,7 @@ public class CmdWorld implements ExCommandListener, Listener {
         sender.hasPermissionElseExit(this.createPerm);
 
         if (args.containsFlag('p')) {
-            sender.assertElseExitWith(world == null,
+            sender.assertElseExitWith(world != null,
                     s -> s.sendMessageWorldNotExist(worldName));
 
             if (!world.isTemporary()) {
@@ -227,7 +227,7 @@ public class CmdWorld implements ExCommandListener, Listener {
             return;
         }
 
-        sender.assertElseExitWith(world != null,
+        sender.assertElseExitWith(world == null,
                 s -> s.sendMessageWorldAlreadyExist(worldName));
 
         for (String s : WorldManager.UNSUPPORTED_SYMBOLS) {
