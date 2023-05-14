@@ -29,10 +29,8 @@ public class CmdTime implements CommandListener {
     public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
             Arguments<Argument> args) {
         switch (cmd.getName()) {
-            case "time":
-                this.handleCmdTime(sender, args);
-                break;
-            case "day":
+            case "time" -> this.handleCmdTime(sender, args);
+            case "day" -> {
                 if (sender.hasPermission(this.dayPerm)) {
                     if (args.isLengthEquals(1, false)) {
                         this.setDay(sender, args.get(0));
@@ -43,8 +41,8 @@ public class CmdTime implements CommandListener {
                         sender.sendTDMessageCommandHelp("Set day in world", "day <world>");
                     }
                 }
-                break;
-            case "night":
+            }
+            case "night" -> {
                 if (sender.hasPermission(this.nightPerm)) {
                     if (args.isLengthEquals(1, false)) {
                         this.setNight(sender, args.get(0));
@@ -55,9 +53,8 @@ public class CmdTime implements CommandListener {
                         sender.sendTDMessageCommandHelp("Set night in world", "night <world>");
                     }
                 }
-
-                break;
-            case "noon":
+            }
+            case "noon" -> {
                 if (sender.hasPermission(this.noonPerm)) {
                     if (args.isLengthEquals(1, false)) {
                         this.setNoon(sender, args.get(0));
@@ -68,8 +65,7 @@ public class CmdTime implements CommandListener {
                         sender.sendTDMessageCommandHelp("Set noon in world", "noon <world>");
                     }
                 }
-                break;
-
+            }
         }
     }
 
@@ -114,16 +110,11 @@ public class CmdTime implements CommandListener {
                     World world = sender.getPlayer().getWorld();
 
                     switch (args.getString(1).toLowerCase()) {
-                        case "day":
-                            this.setDay(sender, new Argument(sender, world.getName()));
-                            return;
-                        case "night":
-                            this.setNight(sender, new Argument(sender, world.getName()));
-                            return;
-                        case "noon":
-                            this.setNoon(sender, new Argument(sender, world.getName()));
-                            return;
-                        default:
+                        case "day" -> this.setDay(sender, new Argument(sender, world.getName()));
+                        case "night" ->
+                                this.setNight(sender, new Argument(sender, world.getName()));
+                        case "noon" -> this.setNoon(sender, new Argument(sender, world.getName()));
+                        default -> {
                             if (args.get(1).isInt(false)) {
                                 this.set(sender, new Argument(sender, world.getName()),
                                         args.get(1));
@@ -132,6 +123,7 @@ public class CmdTime implements CommandListener {
                                         new Argument(sender,
                                                 String.valueOf(args.get(1).toTicks())));
                             }
+                        }
                     }
                 } else {
                     sender.sendMessageTooFewManyArguments();

@@ -28,11 +28,8 @@ public class CmdWeather implements CommandListener {
     public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
             Arguments<Argument> args) {
         switch (cmd.getName()) {
-            case "weather":
-                this.handleCmdWeather(sender, args);
-                break;
-
-            case "sun":
+            case "weather" -> this.handleCmdWeather(sender, args);
+            case "sun" -> {
                 if (args.isLengthEquals(1, false)) {
                     this.sun(sender, args.get(0));
                 } else if (args.isLengthEquals(0, false)) {
@@ -40,11 +37,8 @@ public class CmdWeather implements CommandListener {
                 } else {
                     sender.sendMessageTooManyArguments();
                 }
-                break;
-
-            case "rain":
-            case "storm":
-            case "thunder":
+            }
+            case "rain", "storm", "thunder" -> {
                 if (args.isLengthEquals(1, false)) {
                     this.rain(sender, args.get(0));
                 } else if (args.isLengthEquals(0, false)) {
@@ -52,8 +46,7 @@ public class CmdWeather implements CommandListener {
                 } else {
                     sender.sendMessageTooManyArguments();
                 }
-
-                break;
+            }
         }
     }
 

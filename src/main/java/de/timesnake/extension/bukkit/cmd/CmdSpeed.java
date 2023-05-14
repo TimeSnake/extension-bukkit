@@ -26,7 +26,7 @@ public class CmdSpeed implements CommandListener {
     public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
             Arguments<Argument> args) {
         switch (cmd.getName().toLowerCase()) {
-            case "speed":
+            case "speed" -> {
                 if (args.isLengthHigherEquals(1, true)) {
                     if (args.get(0).isFloat(true)) {
                         User user = sender.getUser();
@@ -46,9 +46,8 @@ public class CmdSpeed implements CommandListener {
                     sender.sendTDMessageCommandHelp("Set speed for player",
                             "speed <speed> <player>");
                 }
-                break;
-
-            case "speedfly":
+            }
+            case "speedfly" -> {
                 if (args.isLengthHigherEquals(1, true)) {
                     if (args.get(0).isFloat(true)) {
                         User user = sender.getUser();
@@ -64,9 +63,8 @@ public class CmdSpeed implements CommandListener {
                     sender.sendTDMessageCommandHelp("Set fly speed for player",
                             "speedfly <speed> <player>");
                 }
-                break;
-
-            case "speedwalk":
+            }
+            case "speedwalk" -> {
                 if (args.isLengthHigherEquals(1, true)) {
                     if (args.get(0).isFloat(true)) {
                         User user = sender.getUser();
@@ -83,7 +81,7 @@ public class CmdSpeed implements CommandListener {
                     sender.sendTDMessageCommandHelp("Set walk speed for player",
                             "speedwalk <speed> <player>");
                 }
-                break;
+            }
         }
     }
 
