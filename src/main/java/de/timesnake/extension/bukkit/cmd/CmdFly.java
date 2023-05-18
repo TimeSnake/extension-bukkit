@@ -19,66 +19,66 @@ import net.kyori.adventure.text.Component;
 
 public class CmdFly implements CommandListener {
 
-    private Code perm;
-    private Code otherPerm;
+  private Code perm;
+  private Code otherPerm;
 
-    @Override
-    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
-            Arguments<Argument> args) {
+  @Override
+  public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
+      Arguments<Argument> args) {
 
-        User user = null;
+    User user = null;
 
-        if (args.isLengthEquals(1, false)) {
-            if (!sender.hasPermission(this.otherPerm) || !args.get(0).isPlayerName(true)) {
-                return;
-            }
+    if (args.isLengthEquals(1, false)) {
+      if (!sender.hasPermission(this.otherPerm) || !args.get(0).isPlayerName(true)) {
+        return;
+      }
 
-            user = args.get(0).toUser();
-        }
-
-        if (user == null) {
-            if (!sender.isPlayer(true)) {
-                return;
-            }
-
-            if (!sender.hasPermission(this.perm)) {
-                return;
-            }
-
-            user = sender.getUser();
-        }
-
-        boolean fly = !user.getPlayer().getAllowFlight();
-
-        user.setAllowFlight(fly);
-        user.setFlying(fly);
-
-        if (!sender.getUser().equals(user)) {
-            user.sendPluginMessage(Plugin.BUKKIT,
-                    Component.text((fly ? "Enabled" : "Disabled") + " flying by ",
-                                    ExTextColor.PERSONAL)
-                            .append(sender.getChatName()));
-            sender.sendPluginMessage(Component.text((fly ? "Enabled" : "Disabled") + " flying for ",
-                            ExTextColor.PERSONAL)
-                    .append(user.getChatNameComponent()));
-        } else {
-            sender.sendPluginMessage(Component.text((fly ? "Enabled" : "Disabled") + " flying",
-                    ExTextColor.PERSONAL));
-        }
+      user = args.get(0).toUser();
     }
 
-    @Override
-    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
-            Arguments<Argument> args) {
-        if (args.getLength() == 1) {
-            return Server.getCommandManager().getTabCompleter().getPlayerNames();
-        }
-        return List.of();
+    if (user == null) {
+      if (!sender.isPlayer(true)) {
+        return;
+      }
+
+      if (!sender.hasPermission(this.perm)) {
+        return;
+      }
+
+      user = sender.getUser();
     }
 
-    @Override
-    public void loadCodes(de.timesnake.library.extension.util.chat.Plugin plugin) {
-        this.perm = plugin.createPermssionCode("exbukkit.fly");
-        this.otherPerm = plugin.createPermssionCode("exbukkit.fly.other");
+    boolean fly = !user.getPlayer().getAllowFlight();
+
+    user.setAllowFlight(fly);
+    user.setFlying(fly);
+
+    if (!sender.getUser().equals(user)) {
+      user.sendPluginMessage(Plugin.BUKKIT,
+          Component.text((fly ? "Enabled" : "Disabled") + " flying by ",
+                  ExTextColor.PERSONAL)
+              .append(sender.getChatName()));
+      sender.sendPluginMessage(Component.text((fly ? "Enabled" : "Disabled") + " flying for ",
+              ExTextColor.PERSONAL)
+          .append(user.getChatNameComponent()));
+    } else {
+      sender.sendPluginMessage(Component.text((fly ? "Enabled" : "Disabled") + " flying",
+          ExTextColor.PERSONAL));
     }
+  }
+
+  @Override
+  public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
+      Arguments<Argument> args) {
+    if (args.getLength() == 1) {
+      return Server.getCommandManager().getTabCompleter().getPlayerNames();
+    }
+    return List.of();
+  }
+
+  @Override
+  public void loadCodes(de.timesnake.library.extension.util.chat.Plugin plugin) {
+    this.perm = plugin.createPermssionCode("exbukkit.fly");
+    this.otherPerm = plugin.createPermssionCode("exbukkit.fly.other");
+  }
 }

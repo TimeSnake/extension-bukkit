@@ -14,34 +14,34 @@ import java.util.List;
 
 public class CmdGive implements CommandListener {
 
-    @Override
-    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
-            Arguments<Argument> args) {
-        if (args.isLengthHigherEquals(1, true)) {
-            if (args.get(0).isPlayerName(false)) {
-                if (args.isLengthHigherEquals(2, false)) {
-                } else {
-
-                }
-            } else {
-
-            }
+  @Override
+  public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
+      Arguments<Argument> args) {
+    if (args.isLengthHigherEquals(1, true)) {
+      if (args.get(0).isPlayerName(false)) {
+        if (args.isLengthHigherEquals(2, false)) {
         } else {
-            sender.sendTDMessageCommandHelp("Give a item to a player",
-                    "give [Player] <item> [amount]");
+
         }
+      } else {
 
+      }
+    } else {
+      sender.sendTDMessageCommandHelp("Give a item to a player",
+          "give [Player] <item> [amount]");
     }
 
-    @Override
-    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
-            Arguments<Argument> args) {
-        return null;
-    }
+  }
 
-    @Override
-    public void loadCodes(Plugin plugin) {
+  @Override
+  public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
+      Arguments<Argument> args) {
+    return null;
+  }
 
-    }
+  @Override
+  public void loadCodes(Plugin plugin) {
+
+  }
 
 }

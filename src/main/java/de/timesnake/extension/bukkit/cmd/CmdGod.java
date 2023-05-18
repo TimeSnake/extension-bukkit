@@ -19,57 +19,57 @@ import net.kyori.adventure.text.Component;
 
 public class CmdGod implements CommandListener {
 
-    private Code perm;
-    private Code otherPerm;
+  private Code perm;
+  private Code otherPerm;
 
-    @Override
-    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
-            Arguments<Argument> args) {
+  @Override
+  public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
+      Arguments<Argument> args) {
 
-        User user = null;
+    User user = null;
 
-        if (args.isLengthEquals(0, false)) {
-            if (!sender.isPlayer(true) || !sender.hasPermission(this.perm)) {
-                return;
-            }
-            user = sender.getUser();
+    if (args.isLengthEquals(0, false)) {
+      if (!sender.isPlayer(true) || !sender.hasPermission(this.perm)) {
+        return;
+      }
+      user = sender.getUser();
 
-        } else if (args.isLengthEquals(1, true)) {
-            if (sender.hasPermission(this.otherPerm)) {
-                if (!args.get(0).isPlayerName(true)) {
-                    return;
-                }
-                user = args.get(0).toUser();
-            }
-        } else {
-            sender.sendTDMessageCommandHelp("Set god mode", "god [player]");
-            return;
+    } else if (args.isLengthEquals(1, true)) {
+      if (sender.hasPermission(this.otherPerm)) {
+        if (!args.get(0).isPlayerName(true)) {
+          return;
         }
-
-        user.setInvulnerable(!user.isInvulnerable());
-        if (!sender.isPlayer(false) || !sender.getUser().equals(user)) {
-            sender.sendPluginMessage(
-                    Component.text((user.isInvulnerable() ? "Enabled" : "Disabled") + " god " +
-                            "mode for ", ExTextColor.PERSONAL).append(user.getChatNameComponent()));
-        }
-
-        user.sendPluginMessage(Plugin.BUKKIT,
-                Component.text((user.isInvulnerable() ? "Enabled" : "Disabled") + " god mode",
-                        ExTextColor.PERSONAL));
+        user = args.get(0).toUser();
+      }
+    } else {
+      sender.sendTDMessageCommandHelp("Set god mode", "god [player]");
+      return;
     }
 
-    @Override
-    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
-            Arguments<Argument> args) {
-        if (args.getLength() == 1) {
-            return Server.getCommandManager().getTabCompleter().getPlayerNames();
-        }
-        return List.of();
+    user.setInvulnerable(!user.isInvulnerable());
+    if (!sender.isPlayer(false) || !sender.getUser().equals(user)) {
+      sender.sendPluginMessage(
+          Component.text((user.isInvulnerable() ? "Enabled" : "Disabled") + " god " +
+              "mode for ", ExTextColor.PERSONAL).append(user.getChatNameComponent()));
     }
 
-    @Override
-    public void loadCodes(de.timesnake.library.extension.util.chat.Plugin plugin) {
-        this.perm = plugin.createPermssionCode("exbukkit.god");
-        this.otherPerm = plugin.createPermssionCode("exbukkit.god.other");
+    user.sendPluginMessage(Plugin.BUKKIT,
+        Component.text((user.isInvulnerable() ? "Enabled" : "Disabled") + " god mode",
+            ExTextColor.PERSONAL));
+  }
+
+  @Override
+  public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
+      Arguments<Argument> args) {
+    if (args.getLength() == 1) {
+      return Server.getCommandManager().getTabCompleter().getPlayerNames();
     }
+    return List.of();
+  }
+
+  @Override
+  public void loadCodes(de.timesnake.library.extension.util.chat.Plugin plugin) {
+    this.perm = plugin.createPermssionCode("exbukkit.god");
+    this.otherPerm = plugin.createPermssionCode("exbukkit.god.other");
+  }
 }
