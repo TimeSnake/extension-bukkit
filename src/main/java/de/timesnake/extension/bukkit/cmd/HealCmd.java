@@ -19,41 +19,41 @@ import net.kyori.adventure.text.Component;
 
 public class HealCmd implements CommandListener {
 
-    private Code perm;
-    private Code otherPerm;
+  private Code perm;
+  private Code otherPerm;
 
-    @Override
-    public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
-            Arguments<Argument> args) {
-        if (args.isLengthEquals(0, false)) {
-            if (sender.hasPermission(this.perm) && sender.isPlayer(true)) {
-                sender.getUser().heal();
-                sender.sendPluginMessage(Component.text("Healed", ExTextColor.PERSONAL));
-            }
-        } else if (args.isLengthEquals(1, true)) {
-            if (args.get(0).isPlayerName(true) && sender.hasPermission(this.otherPerm)) {
-                User other = args.get(0).toUser();
-                other.heal();
-                sender.sendPluginMessage(Component.text("Healed ", ExTextColor.PERSONAL)
-                        .append(other.getChatNameComponent()));
-                other.sendPluginMessage(Plugin.BUKKIT,
-                        Component.text("Healed", ExTextColor.PERSONAL));
-            }
-        }
+  @Override
+  public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
+      Arguments<Argument> args) {
+    if (args.isLengthEquals(0, false)) {
+      if (sender.hasPermission(this.perm) && sender.isPlayer(true)) {
+        sender.getUser().heal();
+        sender.sendPluginMessage(Component.text("Healed", ExTextColor.PERSONAL));
+      }
+    } else if (args.isLengthEquals(1, true)) {
+      if (args.get(0).isPlayerName(true) && sender.hasPermission(this.otherPerm)) {
+        User other = args.get(0).toUser();
+        other.heal();
+        sender.sendPluginMessage(Component.text("Healed ", ExTextColor.PERSONAL)
+            .append(other.getChatNameComponent()));
+        other.sendPluginMessage(Plugin.BUKKIT,
+            Component.text("Healed", ExTextColor.PERSONAL));
+      }
     }
+  }
 
-    @Override
-    public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
-            Arguments<Argument> args) {
-        if (args.getLength() == 1) {
-            return Server.getCommandManager().getTabCompleter().getPlayerNames();
-        }
-        return null;
+  @Override
+  public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
+      Arguments<Argument> args) {
+    if (args.getLength() == 1) {
+      return Server.getCommandManager().getTabCompleter().getPlayerNames();
     }
+    return null;
+  }
 
-    @Override
-    public void loadCodes(de.timesnake.library.extension.util.chat.Plugin plugin) {
-        this.perm = plugin.createPermssionCode("exbukkit.heal");
-        this.otherPerm = plugin.createPermssionCode("exbukkit.heal.other");
-    }
+  @Override
+  public void loadCodes(de.timesnake.library.extension.util.chat.Plugin plugin) {
+    this.perm = plugin.createPermssionCode("exbukkit.heal");
+    this.otherPerm = plugin.createPermssionCode("exbukkit.heal.other");
+  }
 }
