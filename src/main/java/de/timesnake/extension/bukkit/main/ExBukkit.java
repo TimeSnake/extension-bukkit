@@ -6,26 +6,12 @@ package de.timesnake.extension.bukkit.main;
 
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.extension.bukkit.chat.Plugin;
-import de.timesnake.extension.bukkit.cmd.CmdAfk;
-import de.timesnake.extension.bukkit.cmd.CmdChatCopy;
-import de.timesnake.extension.bukkit.cmd.CmdFly;
-import de.timesnake.extension.bukkit.cmd.CmdGamemode;
-import de.timesnake.extension.bukkit.cmd.CmdGod;
-import de.timesnake.extension.bukkit.cmd.CmdInventory;
-import de.timesnake.extension.bukkit.cmd.CmdKill;
-import de.timesnake.extension.bukkit.cmd.CmdNightVision;
-import de.timesnake.extension.bukkit.cmd.CmdSpeed;
-import de.timesnake.extension.bukkit.cmd.CmdTeleport;
-import de.timesnake.extension.bukkit.cmd.CmdTime;
-import de.timesnake.extension.bukkit.cmd.CmdVanish;
-import de.timesnake.extension.bukkit.cmd.CmdWeather;
-import de.timesnake.extension.bukkit.cmd.CmdWorld;
-import de.timesnake.extension.bukkit.cmd.HealCmd;
-import de.timesnake.extension.bukkit.cmd.PreProcess;
-import java.util.List;
+import de.timesnake.extension.bukkit.cmd.*;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.List;
 
 public class ExBukkit extends JavaPlugin {
 
@@ -66,7 +52,7 @@ public class ExBukkit extends JavaPlugin {
         .addCommand(this, "teleportaskhere", List.of("tpahere", "tpaskhere", "tpaskh",
             "tpah"), new CmdTeleport(), Plugin.BUKKIT);
     //back
-    Server.getCommandManager().addCommand(this, "back", new CmdTeleport(), Plugin.BUKKIT);
+    Server.getCommandManager().addCommand(this, "tpback", new CmdTeleport(), Plugin.BUKKIT);
 
     //tpa settings
     Server.getCommandManager().addCommand(this, "tpaccept", new CmdTeleport(), Plugin.BUKKIT);
