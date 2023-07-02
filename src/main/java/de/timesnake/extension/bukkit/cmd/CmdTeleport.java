@@ -11,6 +11,7 @@ import de.timesnake.basic.bukkit.util.chat.Sender;
 import de.timesnake.library.extension.util.chat.Plugin;
 import de.timesnake.library.extension.util.cmd.Arguments;
 import de.timesnake.library.extension.util.cmd.ExCommand;
+
 import java.util.List;
 
 public class CmdTeleport implements CommandListener {
@@ -25,8 +26,7 @@ public class CmdTeleport implements CommandListener {
       case "tpa", "call", "tpask", "teleportask" -> Teleport.teleportAsk(sender, args);
 
       //tpahere
-      case "tpahere", "tpaskhere", "tpah", "tpaskh", "teleportaskhere" ->
-          Teleport.teleportHereAsk(sender, args);
+      case "tpahere", "tpaskhere", "tpah", "tpaskh", "teleportaskhere" -> Teleport.teleportHereAsk(sender, args);
 
       //tpa settings
       case "tpaccept" -> Teleport.accept(sender, args);
@@ -35,7 +35,7 @@ public class CmdTeleport implements CommandListener {
       //spawn
       case "spawn" -> Teleport.teleportSpawn(sender);
       case "setspawn" -> Teleport.setSpawn(sender, args);
-      case "back" -> Teleport.back(sender, args);
+      case "tpback" -> Teleport.back(sender, args);
 
       // tphall
       case "tphall", "tphereall" -> Teleport.teleportHereAll(sender);
