@@ -14,7 +14,7 @@ commands:
     aliases: [ tpa, teleporta, tpask, call ]
   teleportaskhere:
     aliases: [ tpahere, tpaskhere, tpaskh, tpah ]
-  back:
+  tpback:
   tpaccept:
   tpdeny:
   tpatoggle:
