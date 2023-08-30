@@ -164,7 +164,7 @@ public class Teleport implements Listener {
       user.sendPluginMessage(Plugin.BUKKIT,
           Component.text("Teleported to ", ExTextColor.PERSONAL)
               .append(Component.text(x + " " + y + " " + z, ExTextColor.VALUE)));
-      if (!sender.getName().equals(Server.getUser(user).getName())) {
+      if (!sender.getName().equals(user.getName())) {
         sender.sendPluginMessage(Component.text("Teleported ", ExTextColor.PERSONAL)
             .append(user.getChatNameComponent())
             .append(Component.text(" to ", ExTextColor.PERSONAL))
