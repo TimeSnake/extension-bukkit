@@ -6,7 +6,7 @@ plugins {
   id('com.github.johnrengelman.shadow')
 }
 group = project.group
-version = '1-1.1'
+version = '1.2'
 archivesBaseName = 'extension-bukkit'
 var projectId = 23
 
@@ -74,6 +74,13 @@ publishing {
         username = deploy_token_name
         password = deploy_token_key
       }
+
+    }
+  }
+
+  publications {
+    mavenJava(MavenPublication) {
+      from components.java
     }
   }
 }
