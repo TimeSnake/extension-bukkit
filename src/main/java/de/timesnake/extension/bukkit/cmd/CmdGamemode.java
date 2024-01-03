@@ -4,46 +4,39 @@
 
 package de.timesnake.extension.bukkit.cmd;
 
-import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.chat.Argument;
-import de.timesnake.basic.bukkit.util.chat.CommandListener;
-import de.timesnake.basic.bukkit.util.chat.Sender;
+import de.timesnake.basic.bukkit.util.chat.cmd.Argument;
+import de.timesnake.basic.bukkit.util.chat.cmd.CommandListener;
+import de.timesnake.basic.bukkit.util.chat.cmd.Completion;
+import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.chat.ExTextColor;
+import de.timesnake.library.commands.PluginCommand;
+import de.timesnake.library.commands.simple.Arguments;
 import de.timesnake.library.extension.util.chat.Code;
-import de.timesnake.library.extension.util.cmd.Arguments;
-import de.timesnake.library.extension.util.cmd.ExCommand;
-import java.util.List;
 import net.kyori.adventure.text.Component;
 import org.bukkit.GameMode;
 
 public class CmdGamemode implements CommandListener {
 
-  private Code perm;
-  private Code otherPerm;
+  private final Code perm = Plugin.BUKKIT.createPermssionCode("exbukkit.gamemode");
+  private final Code otherPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.gamemode.other");
 
   @Override
-  public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
-      Arguments<Argument> args) {
+  public void onCommand(Sender sender, PluginCommand cmd, Arguments<Argument> args) {
     this.handleCmdGamemode(sender, args);
   }
 
   @Override
-  public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
-      Arguments<Argument> args) {
-    if (args.getLength() == 1) {
-      return List.of("survival", "creative", "adventure", "spectator");
-    } else if (args.getLength() == 2) {
-      return Server.getCommandManager().getTabCompleter().getPlayerNames();
-    }
-    return null;
+  public Completion getTabCompletion() {
+    return new Completion(this.perm)
+        .addArgument(new Completion("survival", "creative", "adventure", "spectator")
+            .addArgument(Completion.ofPlayerNames().permission(this.otherPerm)));
   }
 
   @Override
-  public void loadCodes(de.timesnake.library.extension.util.chat.Plugin plugin) {
-    this.perm = plugin.createPermssionCode("exbukkit.gamemode");
-    this.otherPerm = plugin.createPermssionCode("exbukkit.gamemode.other");
+  public String getPermission() {
+    return this.perm.getPermission();
   }
 
   public void handleCmdGamemode(Sender sender, Arguments<Argument> args) {
@@ -109,8 +102,6 @@ public class CmdGamemode implements CommandListener {
 
     user.setGameMode(gameMode);
     user.sendPluginMessage(Plugin.BUKKIT,
-        Component.text("Updated gamemode to ", ExTextColor.PERSONAL)
-            .append(Component.text(name, ExTextColor.VALUE)));
-
+        Component.text("Updated gamemode to ", ExTextColor.PERSONAL).append(Component.text(name, ExTextColor.VALUE)));
   }
 }

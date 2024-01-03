@@ -4,30 +4,29 @@
 
 package de.timesnake.extension.bukkit.cmd;
 
-import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.chat.Argument;
-import de.timesnake.basic.bukkit.util.chat.CommandListener;
-import de.timesnake.basic.bukkit.util.chat.Sender;
+import de.timesnake.basic.bukkit.util.chat.cmd.Argument;
+import de.timesnake.basic.bukkit.util.chat.cmd.CommandListener;
+import de.timesnake.basic.bukkit.util.chat.cmd.Completion;
+import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
+import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.chat.ExTextColor;
+import de.timesnake.library.commands.PluginCommand;
+import de.timesnake.library.commands.simple.Arguments;
 import de.timesnake.library.extension.util.chat.Code;
-import de.timesnake.library.extension.util.chat.Plugin;
-import de.timesnake.library.extension.util.cmd.Arguments;
-import de.timesnake.library.extension.util.cmd.ExCommand;
-import java.util.List;
 import net.kyori.adventure.text.Component;
 import org.bukkit.World;
 
 public class CmdTime implements CommandListener {
 
-  private Code dayPerm;
-  private Code nightPerm;
-  private Code noonPerm;
-  private Code setPerm;
+  private final Code perm = Plugin.BUKKIT.createPermssionCode("exbukkit.time");
+  private final Code dayPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.time.day");
+  private final Code nightPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.time.noon");
+  private final Code noonPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.time.night");
+  private final Code setPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.time.set");
 
   @Override
-  public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
-      Arguments<Argument> args) {
+  public void onCommand(Sender sender, PluginCommand cmd, Arguments<Argument> args) {
     switch (cmd.getName()) {
       case "time" -> this.handleCmdTime(sender, args);
       case "day" -> {
@@ -176,28 +175,18 @@ public class CmdTime implements CommandListener {
   }
 
   @Override
-  public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
-      Arguments<Argument> args) {
-    if (cmd.getName().equalsIgnoreCase("time")) {
-      if (args.getLength() == 1) {
-        return List.of("set", "day", "night", "noon");
-      } else if (args.get(0).equalsIgnoreCase("set")) {
-        if (args.getLength() == 2) {
-          return List.of("day", "night", "noon");
-        } else if (args.getLength() == 3) {
-          return Server.getCommandManager().getTabCompleter().getWorldNames();
-        }
-      }
-    }
-    return null;
+  public Completion getTabCompletion() {
+    return new Completion()
+        .addArgument(new Completion(this.dayPerm, "day"))
+        .addArgument(new Completion(this.nightPerm, "night"))
+        .addArgument(new Completion(this.setPerm, "set")
+            .addArgument(new Completion("day", "night", "noon")
+                .addArgument(Completion.ofWorldNames())));
   }
 
   @Override
-  public void loadCodes(Plugin plugin) {
-    this.dayPerm = plugin.createPermssionCode("exbukkit.time.day");
-    this.noonPerm = plugin.createPermssionCode("exbukkit.time.noon");
-    this.nightPerm = plugin.createPermssionCode("exbukkit.time.night");
-    this.setPerm = plugin.createPermssionCode("exbukkit.time.set");
+  public String getPermission() {
+    return this.perm.getPermission();
   }
 
   public void set(Sender sender, Argument arg0, Argument arg1) {

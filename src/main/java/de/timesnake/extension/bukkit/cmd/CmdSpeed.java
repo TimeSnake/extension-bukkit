@@ -4,27 +4,25 @@
 
 package de.timesnake.extension.bukkit.cmd;
 
-import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.chat.Argument;
-import de.timesnake.basic.bukkit.util.chat.CommandListener;
-import de.timesnake.basic.bukkit.util.chat.Sender;
+import de.timesnake.basic.bukkit.util.chat.cmd.Argument;
+import de.timesnake.basic.bukkit.util.chat.cmd.CommandListener;
+import de.timesnake.basic.bukkit.util.chat.cmd.Completion;
+import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.chat.ExTextColor;
+import de.timesnake.library.commands.PluginCommand;
+import de.timesnake.library.commands.simple.Arguments;
 import de.timesnake.library.extension.util.chat.Code;
-import de.timesnake.library.extension.util.cmd.Arguments;
-import de.timesnake.library.extension.util.cmd.ExCommand;
-import java.util.List;
 import net.kyori.adventure.text.Component;
 
 public class CmdSpeed implements CommandListener {
 
-  private Code perm;
-  private Code otherPerm;
+  private final Code perm = Plugin.BUKKIT.createPermssionCode("exbukkit.speed.<mode>");
+  private final Code otherPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.speed.<mode>.other");
 
   @Override
-  public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
-      Arguments<Argument> args) {
+  public void onCommand(Sender sender, PluginCommand cmd, Arguments<Argument> args) {
     switch (cmd.getName().toLowerCase()) {
       case "speed" -> {
         if (args.isLengthHigherEquals(1, true)) {
@@ -86,20 +84,15 @@ public class CmdSpeed implements CommandListener {
   }
 
   @Override
-  public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
-      Arguments<Argument> args) {
-    if (args.getLength() == 1) {
-      return List.of("1", "2", "1.2", "0.5");
-    } else if (args.getLength() == 2) {
-      return Server.getCommandManager().getTabCompleter().getPlayerNames();
-    }
-    return null;
+  public Completion getTabCompletion() {
+    return new Completion(this.perm)
+        .addArgument(new Completion("1", "2", "1.2", "1.5")
+            .addArgument(Completion.ofPlayerNames().permission(this.otherPerm)));
   }
 
   @Override
-  public void loadCodes(de.timesnake.library.extension.util.chat.Plugin plugin) {
-    this.perm = plugin.createPermssionCode("exbukkit.speed.<mode>");
-    this.otherPerm = plugin.createPermssionCode("exbukkit.speed.<mode>.other");
+  public String getPermission() {
+    return this.perm.getPermission();
   }
 
   private void set(Sender sender, User user, float speed, Type mode) {

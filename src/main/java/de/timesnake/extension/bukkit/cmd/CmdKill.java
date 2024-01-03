@@ -4,21 +4,22 @@
 
 package de.timesnake.extension.bukkit.cmd;
 
-import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.chat.Argument;
-import de.timesnake.basic.bukkit.util.chat.CommandListener;
-import de.timesnake.basic.bukkit.util.chat.Sender;
+import de.timesnake.basic.bukkit.util.chat.cmd.Argument;
+import de.timesnake.basic.bukkit.util.chat.cmd.CommandListener;
+import de.timesnake.basic.bukkit.util.chat.cmd.Completion;
+import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
+import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.chat.ExTextColor;
+import de.timesnake.library.commands.PluginCommand;
+import de.timesnake.library.commands.simple.Arguments;
 import de.timesnake.library.extension.util.chat.Code;
-import de.timesnake.library.extension.util.chat.Plugin;
-import de.timesnake.library.extension.util.cmd.Arguments;
-import de.timesnake.library.extension.util.cmd.ExCommand;
-import java.util.List;
 import net.kyori.adventure.text.Component;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+
+import java.util.List;
 
 public class CmdKill implements CommandListener {
 
@@ -44,13 +45,13 @@ public class CmdKill implements CommandListener {
       EntityType.MINECART_MOB_SPAWNER,
       EntityType.MINECART_TNT);
 
-  private Code playerPerm;
-  private Code typePerm;
-  private Code allPerm;
+  private final Code perm = Plugin.BUKKIT.createPermssionCode("exbukkit.kill");
+  private final Code playerPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.kill.player");
+  private final Code typePerm = Plugin.BUKKIT.createPermssionCode("exbukkit.kill.type");
+  private final Code allPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.kill.all");
 
   @Override
-  public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
-      Arguments<Argument> args) {
+  public void onCommand(Sender sender, PluginCommand cmd, Arguments<Argument> args) {
     if (cmd.getName().equalsIgnoreCase("kill")) {
       this.killPlayer(sender, args);
     } else if (cmd.getName().equalsIgnoreCase("killall")) {
@@ -69,23 +70,16 @@ public class CmdKill implements CommandListener {
   }
 
   @Override
-  public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
-      Arguments<Argument> args) {
-    if (args.getLength() == 1) {
-      List<String> players = Server.getCommandManager().getTabCompleter().getPlayerNames();
-      players.addAll(
-          List.of("drops", "mobs", "monsters", "animals", "xps", "all", "<mobType>"));
-      return players;
-    }
-    return null;
-
+  public Completion getTabCompletion() {
+    return new Completion(this.perm)
+        .addArgument(Completion.ofPlayerNames().permission(this.playerPerm))
+        .addArgument(new Completion(this.allPerm, "all"))
+        .addArgument(new Completion(this.typePerm, "drops", "mobs", "monsters", "animals", "xps", "<mobType>"));
   }
 
   @Override
-  public void loadCodes(Plugin plugin) {
-    this.playerPerm = plugin.createPermssionCode("exbukkit.kill.player");
-    this.typePerm = plugin.createPermssionCode("exbukkit.kill.type");
-    this.allPerm = plugin.createPermssionCode("exbukkit.kill.all");
+  public String getPermission() {
+    return this.perm.getPermission();
   }
 
   public void killPlayer(Sender sender, Arguments<Argument> args) {
