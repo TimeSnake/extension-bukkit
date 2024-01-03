@@ -5,22 +5,19 @@
 package de.timesnake.extension.bukkit.cmd;
 
 import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.chat.Argument;
-import de.timesnake.basic.bukkit.util.chat.CommandListener;
-import de.timesnake.basic.bukkit.util.chat.Sender;
+import de.timesnake.basic.bukkit.util.chat.cmd.Argument;
+import de.timesnake.basic.bukkit.util.chat.cmd.CommandListener;
+import de.timesnake.basic.bukkit.util.chat.cmd.Completion;
+import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.inventory.ExInventory;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.user.inventory.ExcludedInventoryHolder;
 import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.chat.ExTextColor;
+import de.timesnake.library.commands.PluginCommand;
+import de.timesnake.library.commands.simple.Arguments;
 import de.timesnake.library.extension.util.chat.Code;
-import de.timesnake.library.extension.util.cmd.Arguments;
-import de.timesnake.library.extension.util.cmd.ExCommand;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -31,6 +28,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class CmdInventory implements CommandListener, Listener {
 
@@ -47,48 +48,40 @@ public class CmdInventory implements CommandListener, Listener {
     PLAYER_SEE_INV.put(40, 5); // off-hand
   }
 
-  private Code seePerm;
-  private Code modifyPerm;
-  private Code clearPerm;
+  private final Code seePerm = Plugin.BUKKIT.createPermssionCode("exbukkit.inventory.see");
+  private final Code modifyPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.inventory.modify");
+  private final Code clearPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.inventory.clear");
 
   @Override
-  public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
+  public void onCommand(Sender sender, PluginCommand cmd,
       Arguments<Argument> args) {
     switch (cmd.getName().toLowerCase()) {
-      case "inventory":
-      case "inv":
-      case "invsee":
+      case "inventory", "inv", "invsee" -> {
         if (args.isLengthEquals(1, true)) {
           this.see(sender, args.get(0));
         } else {
           sender.sendTDMessageCommandHelp("See inventory form player", "invsee <player>");
         }
-        break;
-      case "clear":
-      case "invclear":
+      }
+      case "clear", "invclear" -> {
         if (args.isLengthEquals(1, false)) {
           this.clear(sender, args.get(0));
         } else if (sender.isPlayer(true)) {
           this.clear(sender, new Argument(sender, sender.getPlayer().getName()));
         }
-        break;
+      }
     }
   }
 
   @Override
-  public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
-      Arguments<Argument> args) {
-    if (args.getLength() == 1) {
-      return Server.getCommandManager().getTabCompleter().getPlayerNames();
-    }
-    return List.of();
+  public Completion getTabCompletion() {
+    return new Completion(this.seePerm)
+        .addArgument(Completion.ofPlayerNames());
   }
 
   @Override
-  public void loadCodes(de.timesnake.library.extension.util.chat.Plugin plugin) {
-    this.seePerm = plugin.createPermssionCode("exbukkit.inventory.see");
-    this.modifyPerm = plugin.createPermssionCode("exbukkit.inventory.modify");
-    this.clearPerm = plugin.createPermssionCode("exbukkit.inventory.clear");
+  public String getPermission() {
+    return this.seePerm.getPermission();
   }
 
   public void see(Sender sender, Argument arg) {

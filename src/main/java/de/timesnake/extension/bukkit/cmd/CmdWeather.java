@@ -4,29 +4,28 @@
 
 package de.timesnake.extension.bukkit.cmd;
 
-import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.chat.Argument;
-import de.timesnake.basic.bukkit.util.chat.CommandListener;
-import de.timesnake.basic.bukkit.util.chat.Sender;
+import de.timesnake.basic.bukkit.util.chat.cmd.Argument;
+import de.timesnake.basic.bukkit.util.chat.cmd.CommandListener;
+import de.timesnake.basic.bukkit.util.chat.cmd.Completion;
+import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
+import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.chat.ExTextColor;
+import de.timesnake.library.commands.PluginCommand;
+import de.timesnake.library.commands.simple.Arguments;
 import de.timesnake.library.extension.util.chat.Code;
-import de.timesnake.library.extension.util.chat.Plugin;
-import de.timesnake.library.extension.util.cmd.Arguments;
-import de.timesnake.library.extension.util.cmd.ExCommand;
-import java.util.List;
 import net.kyori.adventure.text.Component;
 import org.bukkit.World;
 
 public class CmdWeather implements CommandListener {
 
-  private Code weatherPerm;
-  private Code sunPerm;
-  private Code rainPerm;
+  private final Code perm = Plugin.BUKKIT.createPermssionCode("exbukkit.weather");
+  private final Code weatherPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.weather.weather");
+  private final Code sunPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.weather.sun");
+  private final Code rainPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.weather.rain");
 
   @Override
-  public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
-      Arguments<Argument> args) {
+  public void onCommand(Sender sender, PluginCommand cmd, Arguments<Argument> args) {
     switch (cmd.getName()) {
       case "weather" -> this.handleCmdWeather(sender, args);
       case "sun" -> {
@@ -52,8 +51,7 @@ public class CmdWeather implements CommandListener {
 
   public void handleCmdWeather(Sender sender, Arguments<Argument> args) {
     if (!args.isLengthHigherEquals(1, true)) {
-      sender.sendTDMessageCommandHelp("Change weather in world",
-          "weather <clear/rain/sun> [world]");
+      sender.sendTDMessageCommandHelp("Change weather in world", "weather <clear/rain/sun> [world]");
       return;
     }
 
@@ -71,32 +69,23 @@ public class CmdWeather implements CommandListener {
       case "rain", "storm", "thunder" -> this.rain(sender, world);
       default -> {
         sender.sendMessageWeatherTypeNotExist(args.get(0).getString());
-        sender.sendTDMessageCommandHelp("Change weather in world",
-            "weather <clear/rain/sun> " + "[world]");
+        sender.sendTDMessageCommandHelp("Change weather in world", "weather <clear/rain/sun> " + "[world]");
       }
     }
   }
 
   @Override
-  public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
-      Arguments<Argument> args) {
-    if (cmd.getName().equalsIgnoreCase("weather")) {
-      return null;
-    }
-
-    if (args.getLength() == 1) {
-      return List.of("clear", "sun", "rain", "storm", "thunder");
-    } else if (args.getLength() == 2) {
-      return Server.getCommandManager().getTabCompleter().getWorldNames();
-    }
-    return null;
+  public Completion getTabCompletion() {
+    return new Completion(this.perm)
+        .addArgument(new Completion(this.rainPerm, "rain")
+            .addArgument(Completion.ofWorldNames()))
+        .addArgument(new Completion(this.sunPerm, "sun", "clear")
+            .addArgument(Completion.ofWorldNames()));
   }
 
   @Override
-  public void loadCodes(Plugin plugin) {
-    this.weatherPerm = plugin.createPermssionCode("exbukkit.weather.weather");
-    this.sunPerm = plugin.createPermssionCode("exbukkit.weather.sun");
-    this.rainPerm = plugin.createPermssionCode("exbukkit.weather.rain");
+  public String getPermission() {
+    return this.perm.getPermission();
   }
 
   public void sun(Sender sender, Argument arg) {

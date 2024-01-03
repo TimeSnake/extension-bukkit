@@ -5,9 +5,10 @@
 package de.timesnake.extension.bukkit.cmd;
 
 import de.timesnake.basic.bukkit.util.Server;
-import de.timesnake.basic.bukkit.util.chat.Argument;
-import de.timesnake.basic.bukkit.util.chat.ExCommandListener;
-import de.timesnake.basic.bukkit.util.chat.Sender;
+import de.timesnake.basic.bukkit.util.chat.cmd.Argument;
+import de.timesnake.basic.bukkit.util.chat.cmd.ExCommandListener;
+import de.timesnake.basic.bukkit.util.chat.cmd.ExCompletion;
+import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.basic.bukkit.util.world.ExWorldType;
@@ -16,19 +17,10 @@ import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.extension.bukkit.main.ExBukkit;
 import de.timesnake.library.basic.util.Tuple;
 import de.timesnake.library.chat.ExTextColor;
-import de.timesnake.library.extension.util.chat.Chat;
+import de.timesnake.library.commands.PluginCommand;
+import de.timesnake.library.commands.extended.CmdOption;
+import de.timesnake.library.commands.extended.ExArguments;
 import de.timesnake.library.extension.util.chat.Code;
-import de.timesnake.library.extension.util.cmd.CmdOption;
-import de.timesnake.library.extension.util.cmd.ExArguments;
-import de.timesnake.library.extension.util.cmd.ExCommand;
-import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -39,24 +31,28 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldLoadEvent;
 
+import java.io.File;
+import java.util.*;
+import java.util.stream.Collectors;
+
 public class CmdWorld implements ExCommandListener, Listener {
 
   private final Map<String, Sender> waitingWorldLoadedSenderByWorldName = new HashMap<>();
-  private Code listPerm;
-  private Code createPerm;
-  private Code clonePerm;
-  private Code deletePerm;
-  private Code unloadPerm;
-  private Code teleportPerm;
-  private Code renamePerm;
+
+  private final Code listPerm = Plugin.WORLDS.createPermssionCode("exbukkit.world.list");
+  private final Code createPerm = Plugin.WORLDS.createPermssionCode("exbukkit.world.create");
+  private final Code clonePerm = Plugin.WORLDS.createPermssionCode("exbukkit.world.clone");
+  private final Code deletePerm = Plugin.WORLDS.createPermssionCode("exbukkit.world.delete");
+  private final Code unloadPerm = Plugin.WORLDS.createPermssionCode("exbukkit.world.unload");
+  private final Code teleportPerm = Plugin.WORLDS.createPermssionCode("exbukkit.world.teleport");
+  private final Code renamePerm = Plugin.WORLDS.createPermssionCode("exbukkit.world.rename");
 
   public CmdWorld() {
     Server.registerListener(this, ExBukkit.getPlugin());
   }
 
   @Override
-  public void onCommand(Sender sender, ExCommand<Sender, Argument> cmd,
-      ExArguments<Argument> args) {
+  public void onCommand(Sender sender, PluginCommand cmd, ExArguments<Argument> args) {
     if (!args.isLengthHigherEquals(1, true)) {
       this.sendCmdMessages(sender);
       return;
@@ -68,9 +64,8 @@ public class CmdWorld implements ExCommandListener, Listener {
       }
 
       sender.sendPluginMessage(Component.text("Worlds: ", ExTextColor.PERSONAL)
-          .append(Chat.listToComponent(
-              Server.getCommandManager().getTabCompleter().getWorldNames(),
-              ExTextColor.VALUE, ExTextColor.PERSONAL)));
+          .append(Component.text(Server.getWorldManager().getWorlds().stream().map(ExWorld::getName)
+              .collect(Collectors.joining(", ")), ExTextColor.VALUE)));
       return;
     }
 
@@ -190,7 +185,7 @@ public class CmdWorld implements ExCommandListener, Listener {
   }
 
   private void handleWorldClone(Sender sender, ExArguments<Argument> args, ExWorld world,
-      String worldName) {
+                                String worldName) {
 
     sender.hasPermissionElseExit(this.clonePerm);
     sender.assertElseExitWith(world != null, s -> s.sendMessageWorldNotExist(worldName));
@@ -210,7 +205,7 @@ public class CmdWorld implements ExCommandListener, Listener {
   }
 
   private void handleWorldCreation(Sender sender, ExArguments<Argument> args, ExWorld world,
-      String worldName) {
+                                   String worldName) {
     sender.hasPermissionElseExit(this.createPerm);
 
     if (args.containsFlag('p')) {
@@ -487,104 +482,78 @@ public class CmdWorld implements ExCommandListener, Listener {
   }
 
   @Override
-  public List<String> getTabCompletion(ExCommand<Sender, Argument> cmd,
-      ExArguments<Argument> args) {
-    if (args.getLength() >= 1) {
-      if (args.getLength() == 1) {
-        return List.of("create", "tp", "delete", "clone", "list", "unload", "rename");
-      }
-      switch (args.getString(0).toLowerCase()) {
-        case "create" -> {
-          if (args.length() == 2) {
-            return List.of("<name>");
-          }
+  public ExCompletion getTabCompletion() {
+    return new ExCompletion(this.listPerm)
+        .addArgument(new ExCompletion(this.createPerm, "create")
+            .addArgument(new ExCompletion("<name>")
+                .addArgument(new ExCompletion(ExWorldType.getNames()))
+                .addArgument(new ExCompletion("custom_height", "custom_flat", "custom_island")
+                    .addArgument(new ExCompletion().endless().values((sender, cmd, args) -> {
+                      if (args.length() == 4 && args.getOptions().isEmpty() && args.getFlags().isEmpty()
+                          && args.get(2).equalsIgnoreCase("custom_height", "custom_flat", "custom_island")) {
 
-          if (args.getLength() == 3) {
-            return Stream.concat(ExWorldType.getNames().stream(),
-                    Stream.of("custom_height", "custom_flat", "custom_island"))
-                .collect(Collectors.toList());
-          }
+                        List<String> completion = new LinkedList<>();
 
-          if (args.length() == 4 && args.getOptions().isEmpty() && args.getFlags()
-              .isEmpty()
-              && args.get(2)
-              .equalsIgnoreCase("custom_height", "custom_flat", "custom_island")) {
+                        List<String> numbers = List.of("1#", "2#", "3#", "10#", "16#", "64#", "128#");
 
-            List<String> completion = new LinkedList<>();
+                        String materialString = args.getString(3);
+                        if (materialString.isEmpty() || materialString.endsWith(",")) {
+                          completion.addAll(numbers.stream().map(n -> materialString + n).toList());
+                          completion.addAll(Arrays.stream(Material.values())
+                              .map(m -> m.name().toLowerCase()).toList());
+                        } else if (materialString.endsWith("#")) {
+                          completion.addAll(Arrays.stream(Material.values())
+                              .map(m -> materialString + m.name().toLowerCase()).toList());
+                        } else {
+                          if (materialString.contains("#")
+                              && !Character.isDigit(materialString.charAt(materialString.length() - 1))) {
+                            String materialName = materialString
+                                .substring(materialString.lastIndexOf('#'))
+                                .replace("#", "");
 
-            List<String> numbers = List.of("1#", "2#", "3#", "10#", "16#", "64#",
-                "128#");
+                            completion.addAll(Arrays.stream(Material.values())
+                                .filter(m -> m.name().toLowerCase().startsWith(materialName) && !m.name().equalsIgnoreCase(materialString))
+                                .map(m -> materialString + m.name().toLowerCase())
+                                .toList());
 
-            String materialString = args.getString(3);
-            if (materialString.isEmpty() || materialString.endsWith(",")) {
-              completion.addAll(
-                  numbers.stream().map(n -> materialString + n).toList());
-              completion.addAll(Arrays.stream(Material.values())
-                  .map(m -> m.name().toLowerCase()).toList());
-            } else if (materialString.endsWith("#")) {
-              completion.addAll(Arrays.stream(Material.values())
-                  .map(m -> materialString + m.name().toLowerCase()).toList());
-            } else {
-              if (materialString.contains("#")
-                  && !Character.isDigit(
-                  materialString.charAt(materialString.length() - 1))) {
-                String materialName = materialString.substring(
-                        materialString.lastIndexOf('#'))
-                    .replace("#", "");
+                            if (Material.getMaterial(materialName.toUpperCase()) != null) {
+                              completion.add(materialString + ",");
+                            }
+                          } else {
+                            completion.add(materialString + "#");
+                          }
+                        }
+                        return completion;
+                      }
 
-                completion.addAll(Arrays.stream(Material.values())
-                    .filter(m -> m.name().toLowerCase().startsWith(materialName)
-                        && !m.name().equalsIgnoreCase(materialString))
-                    .map(m -> materialString + m.name().toLowerCase())
-                    .toList());
+                      if (args.length() > 4 && args.get(2).equalsIgnoreCase("custom_height")) {
+                        return List.of("--scale=", "--xScale=", "--yScale=", "--zScale=",
+                            "--frequency=", "--amplitude=", "-s");
+                      }
 
-                if (Material.getMaterial(materialName.toUpperCase()) != null) {
-                  completion.add(materialString + ",");
-                }
-              } else {
-                completion.add(materialString + "#");
-              }
-            }
-            return completion;
-          }
-
-          if (args.length() > 4 && args.get(2).equalsIgnoreCase("custom_height")) {
-            return List.of("--scale=", "--xScale=", "--yScale=", "--zScale=",
-                "--frequency=", "--amplitude=", "-s");
-          }
-
-          if (args.length() > 4 && args.get(2).equalsIgnoreCase("custom_island")) {
-            return List.of("--scale=", "--xScale=", "--yScale=", "--zScale=",
-                "--frequency=", "--amplitude=", "--density=");
-          }
-        }
-        case "tp", "teleport" -> {
-          if (args.getLength() == 2) {
-            return Server.getCommandManager().getTabCompleter().getWorldNames();
-          }
-          if (args.getLength() == 3) {
-            return Server.getCommandManager().getTabCompleter().getPlayerNames();
-          }
-        }
-        case "delete", "unload", "clone", "rename" -> {
-          if (args.getLength() == 2) {
-            return Server.getCommandManager().getTabCompleter().getWorldNames();
-          }
-        }
-      }
-    }
-    return List.of();
+                      if (args.length() > 4 && args.get(2).equalsIgnoreCase("custom_island")) {
+                        return List.of("--scale=", "--xScale=", "--yScale=", "--zScale=",
+                            "--frequency=", "--amplitude=", "--density=");
+                      }
+                      return List.of();
+                    })))))
+        .addArgument(new ExCompletion(this.teleportPerm, "tp", "teleport")
+            .addArgument(ExCompletion.ofWorldNames()
+                .addArgument(ExCompletion.ofPlayerNames())))
+        .addArgument(new ExCompletion(this.clonePerm, "clone")
+            .addArgument(ExCompletion.ofWorldNames()))
+        .addArgument(new ExCompletion(this.deletePerm, "delete")
+            .addArgument(ExCompletion.ofWorldNames()))
+        .addArgument(new ExCompletion(this.unloadPerm, "unload")
+            .addArgument(ExCompletion.ofWorldNames()))
+        .addArgument(new ExCompletion(this.renamePerm, "rename")
+            .addArgument(ExCompletion.ofWorldNames()))
+        .addArgument(new ExCompletion("list"));
   }
 
   @Override
-  public void loadCodes(de.timesnake.library.extension.util.chat.Plugin plugin) {
-    this.listPerm = plugin.createPermssionCode("exbukkit.world.list");
-    this.createPerm = plugin.createPermssionCode("exbukkit.world.create");
-    this.clonePerm = plugin.createPermssionCode("exbukkit.world.clone");
-    this.deletePerm = plugin.createPermssionCode("exbukkit.world.delete");
-    this.unloadPerm = plugin.createPermssionCode("exbukkit.world.unload");
-    this.teleportPerm = plugin.createPermssionCode("exbukkit.world.teleport");
-    this.renamePerm = plugin.createPermssionCode("exbukkit.world.rename");
+  public String getPermission() {
+    return this.listPerm.getPermission();
   }
 
   @EventHandler
