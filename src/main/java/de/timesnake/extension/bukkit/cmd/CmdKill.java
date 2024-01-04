@@ -10,10 +10,10 @@ import de.timesnake.basic.bukkit.util.chat.cmd.Completion;
 import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.extension.bukkit.chat.Plugin;
+import de.timesnake.library.chat.Code;
 import de.timesnake.library.chat.ExTextColor;
 import de.timesnake.library.commands.PluginCommand;
 import de.timesnake.library.commands.simple.Arguments;
-import de.timesnake.library.extension.util.chat.Code;
 import net.kyori.adventure.text.Component;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -97,7 +97,7 @@ public class CmdKill implements CommandListener {
     }
 
     User user = args.get(0).toUser();
-    if (!sender.hasGroupRankLowerEquals(user)) {
+    if (!sender.hasGroupRankLowerEquals(user.getPermGroup().getRank())) {
       return;
     }
 
