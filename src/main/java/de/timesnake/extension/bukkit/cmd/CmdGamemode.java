@@ -30,7 +30,7 @@ public class CmdGamemode implements CommandListener {
   @Override
   public Completion getTabCompletion() {
     return new Completion(this.perm)
-        .addArgument(new Completion("survival", "creative", "adventure", "spectator")
+        .addArgument(new Completion("survival", "creative", "adventure", "spectator", "1", "2", "3", "4")
             .addArgument(Completion.ofPlayerNames().permission(this.otherPerm)));
   }
 
