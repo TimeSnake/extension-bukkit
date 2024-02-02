@@ -75,8 +75,11 @@ public class CmdTeleport implements CommandListener, Listener {
   @Override
   public Completion getTabCompletion() {
     return new Completion()
-        .addArgument((sender, cmd, args) -> cmd.equalsIgnoreCase("tp"), Completion.ofPlayerNames().values("~", "0")
-            .addArgument((sender, cmd, args) -> args.get(0).isPlayerName(false), Completion.ofPlayerNames())
+        .addArgument((sender, cmd, args) -> List.of("tp", "teleport").contains(cmd.toLowerCase()),
+            Completion.ofPlayerNames()
+            .addArgument((sender, cmd, args) -> args.get(0).isPlayerName(false), Completion.ofPlayerNames()))
+        .addArgument((sender, cmd, args) -> List.of("tp", "teleport").contains(cmd.toLowerCase()), new Completion("~"
+            , "0")
             .addArgument((sender, cmd, args) -> !args.get(0).isPlayerName(false), new Completion("~", "0")
                 .addArgument(new Completion("~", "0"))))
         .addArgument((sender, cmd, args) -> List.of("tph", "tphere", "teleporthere", "tpahere", "tpahere",
@@ -261,7 +264,8 @@ public class CmdTeleport implements CommandListener, Listener {
           user.sendPluginTDMessage(Plugin.BUKKIT, "§sTeleported to §v" + world.getName() + "§s spawn");
 
           if (!sender.getName().equals(user.getName())) {
-            sender.sendPluginTDMessage("§sTeleported" + user.getTDChatName() + "§s to §v" + world.getName() + "§s spawn");
+            sender.sendPluginTDMessage("§sTeleported" + user.getTDChatName() + "§s to §v" + world.getName() + "§s " +
+                "spawn");
           }
         } else if (args.isLengthEquals(5, false)) {
           if (!(args.get(2).isInt(true) && args.get(3).isInt(true) && args.get(4).isInt(true))) {

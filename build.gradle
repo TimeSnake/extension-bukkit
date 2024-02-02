@@ -56,7 +56,7 @@ configurations.configureEach {
       substitute module("de.timesnake:channel-bukkit") using project(":channel-bukkit")
       substitute module("de.timesnake:channel-api") using project(":channel-api")
 
-      substitute module("de.timesnake:library-coammnds") using project(":library-commands")
+      substitute module("de.timesnake:library-commands") using project(":library-commands")
       substitute module("de.timesnake:library-permissions") using project(":library-permissions")
       substitute module("de.timesnake:library-basic") using project(":library-basic")
       substitute module("de.timesnake:library-chat") using project(":library-chat")
