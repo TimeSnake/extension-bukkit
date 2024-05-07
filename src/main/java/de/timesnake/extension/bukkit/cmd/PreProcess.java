@@ -34,7 +34,6 @@ public class PreProcess implements Listener {
 
   @EventHandler
   public void onCommandPreprocess(PlayerCommandPreprocessEvent e) {
-
     String[] message = e.getMessage().split(" ");
     Sender sender = Server.getUser(e.getPlayer()).asSender(Plugin.BUKKIT);
     switch (message[0]) {
