@@ -11,10 +11,8 @@ import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.chat.Code;
-import de.timesnake.library.chat.ExTextColor;
 import de.timesnake.library.commands.PluginCommand;
 import de.timesnake.library.commands.simple.Arguments;
-import net.kyori.adventure.text.Component;
 import org.bukkit.GameMode;
 
 public class CmdGamemode implements CommandListener {
@@ -87,21 +85,13 @@ public class CmdGamemode implements CommandListener {
       }
 
     } else {
-      if (!sender.hasPermission(this.otherPerm)) {
-        return;
-      }
+      sender.hasPermissionElseExit(this.otherPerm);
+      sender.hasGroupRankLowerElseExit(sender.getUser().getUniqueId(), true);
 
-      if (!sender.hasGroupRankLower(sender.getUser().getUniqueId())) {
-        return;
-      }
-      sender.sendPluginMessage(Component.text("Updated gamemode from ", ExTextColor.PERSONAL)
-          .append(user.getChatNameComponent())
-          .append(Component.text(" to ", ExTextColor.PERSONAL))
-          .append(Component.text(name, ExTextColor.VALUE)));
+      sender.sendPluginTDMessage("§sUpdated gamemode of " + user.getTDChatName() + "§s to §v" + name);
     }
 
     user.setGameMode(gameMode);
-    user.sendPluginMessage(Plugin.BUKKIT,
-        Component.text("Updated gamemode to ", ExTextColor.PERSONAL).append(Component.text(name, ExTextColor.VALUE)));
+    user.sendPluginTDMessage(Plugin.BUKKIT, "§sUpdated gamemode to §v" + name);
   }
 }

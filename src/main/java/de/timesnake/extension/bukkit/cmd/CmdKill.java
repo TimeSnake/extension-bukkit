@@ -11,10 +11,8 @@ import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.chat.Code;
-import de.timesnake.library.chat.ExTextColor;
 import de.timesnake.library.commands.PluginCommand;
 import de.timesnake.library.commands.simple.Arguments;
-import net.kyori.adventure.text.Component;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -62,8 +60,7 @@ public class CmdKill implements CommandListener {
           this.killTypeAll(sender);
         }
       } else {
-        sender.sendTDMessageCommandHelp("Kill all of a type (drops, mobs, ...)",
-            "killall <type>");
+        sender.sendTDMessageCommandHelp("Kill all of a type (drops, mobs, ...)", "killall <type>");
         sender.sendTDMessageCommandHelp("Kill all types", "killall all");
       }
     }
@@ -83,25 +80,16 @@ public class CmdKill implements CommandListener {
   }
 
   public void killPlayer(Sender sender, Arguments<Argument> args) {
-    if (!args.isLengthEquals(1, true)) {
-      sender.sendTDMessageCommandHelp("Kill a player", "kill <player>");
-      return;
-    }
+    args.isLengthEqualsElseExit(1, true);
 
-    if (!sender.hasPermission(this.playerPerm)) {
-      return;
-    }
-
-    if (!args.get(0).isPlayerName(true)) {
-      return;
-    }
+    sender.hasPermissionElseExit(this.playerPerm);
+    args.get(0).assertElseExit(a -> a.isPlayerName(true));
 
     User user = args.get(0).toUser();
-    if (!sender.hasGroupRankLowerEquals(user.getPermGroup().getRank())) {
-      return;
-    }
+    sender.hasGroupRankLowerElseExit(user.getPermGroup().getRank(), true);
 
-    user.getPlayer().setHealth(0);
+    user.kill();
+    sender.sendPluginTDMessage("§sKilled §v" + user.getTDChatName());
   }
 
   public void killType(Sender sender, Argument arg) {
@@ -109,71 +97,56 @@ public class CmdKill implements CommandListener {
       return;
     }
 
-    World w = sender.getUser().getPlayer().getWorld();
-    int i = 0;
+    World world = sender.getUser().getPlayer().getWorld();
+    int numberEntities = 0;
 
     switch (arg.toLowerCase()) {
       case "drops", "drop" -> {
-        for (Entity entity : w.getEntities()) {
+        for (Entity entity : world.getEntities()) {
           if (entity.getType().equals(EntityType.DROPPED_ITEM)) {
             entity.remove();
-            i++;
+            numberEntities++;
           }
         }
-        sender.sendPluginMessage(Component.text("Removed ", ExTextColor.PERSONAL)
-            .append(Component.text(i, ExTextColor.VALUE))
-            .append(Component.text(" drops from world ", ExTextColor.PERSONAL))
-            .append(Component.text(w.getName(), ExTextColor.VALUE)));
+        sender.sendPluginTDMessage("§sRemoved §v" + numberEntities + "§s drops from world §v" + world.getName());
       }
       case "mobs" -> {
-        for (Entity entity : w.getLivingEntities()) {
+        for (Entity entity : world.getLivingEntities()) {
           if (!entity.getType().equals(EntityType.PLAYER)) {
             entity.remove();
-            i++;
+            numberEntities++;
           }
         }
-        sender.sendPluginMessage(Component.text("Removed ", ExTextColor.PERSONAL)
-            .append(Component.text(i, ExTextColor.VALUE))
-            .append(Component.text(" mobs from world ", ExTextColor.PERSONAL))
-            .append(Component.text(w.getName(), ExTextColor.VALUE)));
+        sender.sendPluginTDMessage("§sRemoved §v" + numberEntities + "§s mobs from world §v" + world.getName());
       }
       case "monsters", "monster" -> {
-        for (Entity entity : w.getLivingEntities()) {
+        for (Entity entity : world.getLivingEntities()) {
           if (this.monsters.contains(entity.getType())) {
             entity.remove();
-            i++;
+            numberEntities++;
           }
         }
-        sender.sendPluginMessage(Component.text("Removed ", ExTextColor.PERSONAL)
-            .append(Component.text(i, ExTextColor.VALUE))
-            .append(Component.text(" monsters from world ", ExTextColor.PERSONAL))
-            .append(Component.text(w.getName(), ExTextColor.VALUE)));
+        sender.sendPluginTDMessage("§sRemoved §v" + numberEntities + "§s monsters from world §v" + world.getName());
       }
       case "xps", "xp" -> {
-        for (Entity entity : w.getEntities()) {
+        for (Entity entity : world.getEntities()) {
           if (entity.getType().equals(EntityType.THROWN_EXP_BOTTLE) || entity.getType()
               .equals(EntityType.EXPERIENCE_ORB)) {
             entity.remove();
-            i++;
+            numberEntities++;
           }
         }
-        sender.sendPluginMessage(Component.text("Removed ", ExTextColor.PERSONAL)
-            .append(Component.text(i, ExTextColor.VALUE))
-            .append(Component.text(" xps from world ", ExTextColor.PERSONAL))
-            .append(Component.text(w.getName(), ExTextColor.VALUE)));
+        sender.sendPluginTDMessage("§sRemoved §v" + numberEntities + "§s xps from world §v" + world.getName());
       }
       case "animals", "animal" -> {
-        for (Entity entity : w.getLivingEntities()) {
+        for (Entity entity : world.getLivingEntities()) {
           if (!entity.getType().equals(EntityType.PLAYER) && !this.monsters.contains(
               entity.getType())) {
             entity.remove();
-            i++;
+            numberEntities++;
           }
         }
-        sender.sendPluginMessage(Component.text("Removed ", ExTextColor.PERSONAL)
-            .append(Component.text(i, ExTextColor.VALUE))
-            .append(Component.text(" animals from world ", ExTextColor.PERSONAL))
-            .append(Component.text(w.getName(), ExTextColor.VALUE)));
+        sender.sendPluginTDMessage("§sRemoved §v" + numberEntities + "§s animals from world §v" + world.getName());
       }
       case "all" -> this.killTypeAll(sender);
       default -> {
@@ -181,25 +154,20 @@ public class CmdKill implements CommandListener {
         try {
           type = EntityType.valueOf(arg.toUpperCase());
         } catch (IllegalArgumentException e) {
-          sender.sendTDMessageCommandHelp("Kill all of a type (drops, mobs, ...)",
-              "killall <type>");
+          sender.sendTDMessageCommandHelp("Kill all of a type (drops, mobs, ...)", "killall <type>");
           sender.sendTDMessageCommandHelp("Kill all types", "killall all");
           sender.sendMessageKillAllTypeNotExist(arg.getString());
           return;
         }
 
-        for (Entity entity : w.getEntities()) {
+        for (Entity entity : world.getEntities()) {
           if (entity.getType().equals(type)) {
             entity.remove();
-            i++;
+            numberEntities++;
           }
         }
 
-        sender.sendPluginMessage(Component.text("Removed ", ExTextColor.PERSONAL)
-            .append(Component.text(i, ExTextColor.VALUE))
-            .append(Component.text(" " + arg.toLowerCase(), ExTextColor.VALUE))
-            .append(Component.text(" from world ", ExTextColor.PERSONAL))
-            .append(Component.text(w.getName(), ExTextColor.VALUE)));
+        sender.sendPluginTDMessage("§sRemoved §v" + numberEntities + " " + arg.toLowerCase() + "§s from world §v" + world.getName());
       }
     }
   }
@@ -209,19 +177,16 @@ public class CmdKill implements CommandListener {
       return;
     }
 
-    World w = sender.getUser().getPlayer().getWorld();
-    int i = 0;
-    for (Entity entity : w.getEntities()) {
+    World world = sender.getUser().getPlayer().getWorld();
+    int numberEntities = 0;
+    for (Entity entity : world.getEntities()) {
       if (!entity.getType().equals(EntityType.PLAYER) && !this.excluded.contains(
           entity.getType())) {
         entity.remove();
-        i++;
+        numberEntities++;
       }
     }
-    sender.sendPluginMessage(Component.text("Removed ", ExTextColor.PERSONAL)
-        .append(Component.text(i, ExTextColor.VALUE))
-        .append(Component.text(" entities from world ", ExTextColor.PERSONAL))
-        .append(Component.text(w.getName(), ExTextColor.VALUE)));
+    sender.sendPluginTDMessage("§sRemoved §v" + numberEntities + "§s entities from world §v" + world.getName());
   }
 
 }
