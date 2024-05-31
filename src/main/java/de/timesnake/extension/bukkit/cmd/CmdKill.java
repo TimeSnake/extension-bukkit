@@ -38,10 +38,10 @@ public class CmdKill implements CommandListener {
   private final List<EntityType> excluded = List.of(EntityType.ARMOR_STAND, EntityType.ITEM_FRAME,
       EntityType.GLOW_ITEM_FRAME,
       EntityType.PAINTING, EntityType.BOAT, EntityType.BOAT, EntityType.MINECART,
-      EntityType.MINECART_FURNACE,
-      EntityType.MINECART_CHEST, EntityType.MINECART_COMMAND, EntityType.MINECART_HOPPER,
-      EntityType.MINECART_MOB_SPAWNER,
-      EntityType.MINECART_TNT);
+      EntityType.FURNACE_MINECART,
+      EntityType.CHEST_MINECART, EntityType.COMMAND_BLOCK_MINECART, EntityType.HOPPER_MINECART,
+      EntityType.SPAWNER_MINECART,
+      EntityType.TNT_MINECART);
 
   private final Code perm = Plugin.BUKKIT.createPermssionCode("exbukkit.kill");
   private final Code playerPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.kill.player");
@@ -103,7 +103,7 @@ public class CmdKill implements CommandListener {
     switch (arg.toLowerCase()) {
       case "drops", "drop" -> {
         for (Entity entity : world.getEntities()) {
-          if (entity.getType().equals(EntityType.DROPPED_ITEM)) {
+          if (entity.getType().equals(EntityType.ITEM)) {
             entity.remove();
             numberEntities++;
           }
@@ -130,7 +130,7 @@ public class CmdKill implements CommandListener {
       }
       case "xps", "xp" -> {
         for (Entity entity : world.getEntities()) {
-          if (entity.getType().equals(EntityType.THROWN_EXP_BOTTLE) || entity.getType()
+          if (entity.getType().equals(EntityType.EXPERIENCE_ORB) || entity.getType()
               .equals(EntityType.EXPERIENCE_ORB)) {
             entity.remove();
             numberEntities++;
