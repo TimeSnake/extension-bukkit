@@ -78,12 +78,8 @@ public class CmdWorld implements ExCommandListener, Listener {
     ExWorld world = Server.getWorld(worldName);
 
     switch (args.getString(0)) {
-      case "create" -> {
-        this.handleWorldCreation(sender, args, world, worldName);
-      }
-      case "clone" -> {
-        this.handleWorldClone(sender, args, world, worldName);
-      }
+      case "create" -> this.handleWorldCreation(sender, args, world, worldName);
+      case "clone" -> this.handleWorldClone(sender, args, worldName);
       case "delete" -> {
         if (!sender.hasPermission(this.deletePerm)) {
           return;
@@ -134,7 +130,7 @@ public class CmdWorld implements ExCommandListener, Listener {
           user.teleport(world);
           user.sendPluginTDMessage(Plugin.BUKKIT, "§sTeleported to world §v" + worldName);
           sender.sendPluginTDMessage("§sTeleported " + user.getChatName()
-              + "§v to world §v" + worldName);
+                                     + "§v to world §v" + worldName);
         }
       }
       case "rename" -> {
@@ -175,32 +171,27 @@ public class CmdWorld implements ExCommandListener, Listener {
           return;
         }
 
-        worldFolder.renameTo(new File(Bukkit.getWorldContainer().getAbsolutePath()
-            + File.separator + newName));
-
+        worldFolder.renameTo(new File(Bukkit.getWorldContainer().getAbsolutePath() + File.separator + newName));
         Server.getWorldManager().createWorld(newName);
       }
       default -> this.sendCmdMessages(sender);
     }
   }
 
-  private void handleWorldClone(Sender sender, ExArguments<Argument> args, ExWorld world,
-                                String worldName) {
-
+  private void handleWorldClone(Sender sender, ExArguments<Argument> args, String cloneWorldName) {
     sender.hasPermissionElseExit(this.clonePerm);
-    sender.assertElseExitWith(world != null, s -> s.sendMessageWorldNotExist(worldName));
+    sender.assertElseExitWith(Server.getWorld(cloneWorldName) == null,
+        s -> s.sendMessageWorldAlreadyExist(cloneWorldName));
     args.assertElseExit(a -> a.isLengthEquals(3, true));
 
-    Argument clonedName = args.get(2);
-    if (clonedName.isWorldName(false)) {
-      sender.sendMessageWorldAlreadyExist(worldName);
-      return;
-    }
+    Argument originalWorldArg = args.get(2);
+    originalWorldArg.assertElseExit(a -> a.isWorldName(true));
 
-    sender.sendPluginTDMessage(
-        "§sCloning world §v" + worldName + "§s to §v" + clonedName.getString());
+    String originalWorldName = originalWorldArg.getString();
 
-    Server.getWorldManager().cloneWorld(clonedName.getString(), world);
+    sender.sendPluginTDMessage("§sCloning world §v" + originalWorldName + "§s to §v" + cloneWorldName);
+
+    Server.getWorldManager().cloneWorld(cloneWorldName, Server.getWorld(originalWorldName));
     sender.sendPluginTDMessage("§sComplete");
   }
 
@@ -541,7 +532,8 @@ public class CmdWorld implements ExCommandListener, Listener {
             .addArgument(ExCompletion.ofWorldNames()
                 .addArgument(ExCompletion.ofPlayerNames())))
         .addArgument(new ExCompletion(this.clonePerm, "clone")
-            .addArgument(ExCompletion.ofWorldNames()))
+            .addArgument(new ExCompletion("<name>")
+                .addArgument(ExCompletion.ofWorldNames())))
         .addArgument(new ExCompletion(this.deletePerm, "delete")
             .addArgument(ExCompletion.ofWorldNames()))
         .addArgument(new ExCompletion(this.unloadPerm, "unload")
