@@ -133,8 +133,8 @@ public class CmdSpeed implements CommandListener {
   }
 
   private boolean setWithPermission(Sender sender, User user, float speed, Type mode) {
-    if (!(speed <= 5 || speed > 0)) {
-      sender.sendPluginMessage(Component.text("Top speed is 5", ExTextColor.WARNING));
+    if (speed > 5 || speed <= 0) {
+      sender.sendPluginTDMessage("§Multiplier not in range (0-5)");
       return true;
     }
 
