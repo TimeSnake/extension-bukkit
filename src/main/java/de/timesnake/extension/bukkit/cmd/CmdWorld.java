@@ -129,7 +129,7 @@ public class CmdWorld implements ExCommandListener, Listener {
           User user = args.get(2).toUser();
           user.teleport(world);
           user.sendPluginTDMessage(Plugin.BUKKIT, "§sTeleported to world §v" + worldName);
-          sender.sendPluginTDMessage("§sTeleported " + user.getChatName()
+          sender.sendPluginTDMessage("§sTeleported " + user.getTDChatName()
                                      + "§v to world §v" + worldName);
         }
       }
