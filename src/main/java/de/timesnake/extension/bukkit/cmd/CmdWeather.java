@@ -9,9 +9,9 @@ import de.timesnake.basic.bukkit.util.chat.cmd.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.cmd.Completion;
 import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
-import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.chat.Code;
 import de.timesnake.library.chat.ExTextColor;
+import de.timesnake.library.chat.Plugin;
 import de.timesnake.library.commands.PluginCommand;
 import de.timesnake.library.commands.simple.Arguments;
 import net.kyori.adventure.text.Component;
@@ -19,10 +19,10 @@ import org.bukkit.World;
 
 public class CmdWeather implements CommandListener {
 
-  private final Code perm = Plugin.BUKKIT.createPermssionCode("exbukkit.weather");
-  private final Code weatherPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.weather.weather");
-  private final Code sunPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.weather.sun");
-  private final Code rainPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.weather.rain");
+  private final Code perm = Plugin.SERVER.createPermssionCode("exbukkit.weather");
+  private final Code weatherPerm = Plugin.SERVER.createPermssionCode("exbukkit.weather.weather");
+  private final Code sunPerm = Plugin.SERVER.createPermssionCode("exbukkit.weather.sun");
+  private final Code rainPerm = Plugin.SERVER.createPermssionCode("exbukkit.weather.rain");
 
   @Override
   public void onCommand(Sender sender, PluginCommand cmd, Arguments<Argument> args) {

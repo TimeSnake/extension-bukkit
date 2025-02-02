@@ -7,7 +7,7 @@ package de.timesnake.extension.bukkit.cmd;
 import de.timesnake.basic.bukkit.util.Server;
 import de.timesnake.basic.bukkit.util.chat.cmd.Argument;
 import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
-import de.timesnake.extension.bukkit.chat.Plugin;
+import de.timesnake.library.chat.Plugin;
 import de.timesnake.library.commands.simple.Arguments;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,7 +20,7 @@ public class PreProcess implements Listener {
   private static LinkedList<Argument> getArgs(PlayerCommandPreprocessEvent e) {
     int i = 0;
     LinkedList<Argument> args = new LinkedList<>();
-    Sender sender = Server.getUser(e.getPlayer()).asSender(Plugin.BUKKIT);
+    Sender sender = Server.getUser(e.getPlayer()).asSender(Plugin.SERVER);
     for (String arg : e.getMessage().split(" ")) {
       if (i == 0) {
         i++;
@@ -35,7 +35,7 @@ public class PreProcess implements Listener {
   @EventHandler
   public void onCommandPreprocess(PlayerCommandPreprocessEvent e) {
     String[] message = e.getMessage().split(" ");
-    Sender sender = Server.getUser(e.getPlayer()).asSender(Plugin.BUKKIT);
+    Sender sender = Server.getUser(e.getPlayer()).asSender(Plugin.SERVER);
     switch (message[0]) {
       case "time":
         e.setCancelled(true);

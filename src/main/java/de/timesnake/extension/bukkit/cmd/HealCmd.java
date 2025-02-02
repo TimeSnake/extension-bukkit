@@ -9,17 +9,17 @@ import de.timesnake.basic.bukkit.util.chat.cmd.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.cmd.Completion;
 import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
-import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.chat.Code;
 import de.timesnake.library.chat.ExTextColor;
+import de.timesnake.library.chat.Plugin;
 import de.timesnake.library.commands.PluginCommand;
 import de.timesnake.library.commands.simple.Arguments;
 import net.kyori.adventure.text.Component;
 
 public class HealCmd implements CommandListener {
 
-  private final Code perm = Plugin.BUKKIT.createPermssionCode("exbukkit.heal");
-  private final Code otherPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.heal.other");
+  private final Code perm = Plugin.SERVER.createPermssionCode("exbukkit.heal");
+  private final Code otherPerm = Plugin.SERVER.createPermssionCode("exbukkit.heal.other");
 
   @Override
   public void onCommand(Sender sender, PluginCommand cmd, Arguments<Argument> args) {
@@ -34,7 +34,7 @@ public class HealCmd implements CommandListener {
         other.heal();
         sender.sendPluginMessage(Component.text("Healed ", ExTextColor.PERSONAL)
             .append(other.getChatNameComponent()));
-        other.sendPluginMessage(Plugin.BUKKIT,
+        other.sendPluginMessage(Plugin.SERVER,
             Component.text("Healed", ExTextColor.PERSONAL));
       }
     }

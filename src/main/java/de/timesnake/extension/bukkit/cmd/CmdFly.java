@@ -9,17 +9,17 @@ import de.timesnake.basic.bukkit.util.chat.cmd.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.cmd.Completion;
 import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
-import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.chat.Code;
 import de.timesnake.library.chat.ExTextColor;
+import de.timesnake.library.chat.Plugin;
 import de.timesnake.library.commands.PluginCommand;
 import de.timesnake.library.commands.simple.Arguments;
 import net.kyori.adventure.text.Component;
 
 public class CmdFly implements CommandListener {
 
-  private final Code perm = Plugin.BUKKIT.createPermssionCode("exbukkit.fly");
-  private final Code otherPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.fly.other");
+  private final Code perm = Plugin.SERVER.createPermssionCode("exbukkit.fly");
+  private final Code otherPerm = Plugin.SERVER.createPermssionCode("exbukkit.fly.other");
 
   @Override
   public void onCommand(Sender sender, PluginCommand cmd, Arguments<Argument> args) {
@@ -51,7 +51,7 @@ public class CmdFly implements CommandListener {
     user.setFlying(fly);
 
     if (!sender.getUser().equals(user)) {
-      user.sendPluginMessage(Plugin.BUKKIT,
+      user.sendPluginMessage(Plugin.SERVER,
           Component.text((fly ? "Enabled" : "Disabled") + " flying by ",
                   ExTextColor.PERSONAL)
               .append(sender.getChatName()));

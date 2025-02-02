@@ -13,9 +13,9 @@ import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.inventory.ExInventory;
 import de.timesnake.basic.bukkit.util.user.inventory.ExItemStack;
 import de.timesnake.basic.bukkit.util.user.inventory.ExcludedInventoryHolder;
-import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.chat.Code;
 import de.timesnake.library.chat.ExTextColor;
+import de.timesnake.library.chat.Plugin;
 import de.timesnake.library.commands.PluginCommand;
 import de.timesnake.library.commands.simple.Arguments;
 import net.kyori.adventure.text.Component;
@@ -48,9 +48,9 @@ public class CmdInventory implements CommandListener, Listener {
     PLAYER_SEE_INV.put(40, 5); // off-hand
   }
 
-  private final Code seePerm = Plugin.BUKKIT.createPermssionCode("exbukkit.inventory.see");
-  private final Code modifyPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.inventory.modify");
-  private final Code clearPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.inventory.clear");
+  private final Code seePerm = Plugin.SERVER.createPermssionCode("exbukkit.inventory.see");
+  private final Code modifyPerm = Plugin.SERVER.createPermssionCode("exbukkit.inventory.modify");
+  private final Code clearPerm = Plugin.SERVER.createPermssionCode("exbukkit.inventory.clear");
 
   @Override
   public void onCommand(Sender sender, PluginCommand cmd,
@@ -133,7 +133,7 @@ public class CmdInventory implements CommandListener, Listener {
 
     User seeUser = vHolder.getUser();
 
-    Sender sender = Server.getUser((Player) e.getWhoClicked()).asSender(Plugin.BUKKIT);
+    Sender sender = Server.getUser((Player) e.getWhoClicked()).asSender(Plugin.SERVER);
     if (!sender.hasPermission(this.modifyPerm)) {
       e.setCancelled(true);
     }

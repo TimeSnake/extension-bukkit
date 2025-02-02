@@ -13,11 +13,11 @@ import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
 import de.timesnake.basic.bukkit.util.world.ExWorldType;
 import de.timesnake.basic.bukkit.util.world.WorldManager;
-import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.extension.bukkit.main.ExBukkit;
 import de.timesnake.library.basic.util.Tuple;
 import de.timesnake.library.chat.Code;
 import de.timesnake.library.chat.ExTextColor;
+import de.timesnake.library.chat.Plugin;
 import de.timesnake.library.commands.PluginCommand;
 import de.timesnake.library.commands.extended.CmdOption;
 import de.timesnake.library.commands.extended.ExArguments;
@@ -39,13 +39,13 @@ public class CmdWorld implements ExCommandListener, Listener {
 
   private final Map<String, Sender> waitingWorldLoadedSenderByWorldName = new HashMap<>();
 
-  private final Code listPerm = Plugin.WORLDS.createPermssionCode("exbukkit.world.list");
-  private final Code createPerm = Plugin.WORLDS.createPermssionCode("exbukkit.world.create");
-  private final Code clonePerm = Plugin.WORLDS.createPermssionCode("exbukkit.world.clone");
-  private final Code deletePerm = Plugin.WORLDS.createPermssionCode("exbukkit.world.delete");
-  private final Code unloadPerm = Plugin.WORLDS.createPermssionCode("exbukkit.world.unload");
-  private final Code teleportPerm = Plugin.WORLDS.createPermssionCode("exbukkit.world.teleport");
-  private final Code renamePerm = Plugin.WORLDS.createPermssionCode("exbukkit.world.rename");
+  private final Code listPerm = Plugin.SERVER.createPermssionCode("exbukkit.world.list");
+  private final Code createPerm = Plugin.SERVER.createPermssionCode("exbukkit.world.create");
+  private final Code clonePerm = Plugin.SERVER.createPermssionCode("exbukkit.world.clone");
+  private final Code deletePerm = Plugin.SERVER.createPermssionCode("exbukkit.world.delete");
+  private final Code unloadPerm = Plugin.SERVER.createPermssionCode("exbukkit.world.unload");
+  private final Code teleportPerm = Plugin.SERVER.createPermssionCode("exbukkit.world.teleport");
+  private final Code renamePerm = Plugin.SERVER.createPermssionCode("exbukkit.world.rename");
 
   public CmdWorld() {
     Server.registerListener(this, ExBukkit.getPlugin());
@@ -128,7 +128,7 @@ public class CmdWorld implements ExCommandListener, Listener {
           }
           User user = args.get(2).toUser();
           user.teleport(world);
-          user.sendPluginTDMessage(Plugin.BUKKIT, "§sTeleported to world §v" + worldName);
+          user.sendPluginTDMessage(Plugin.SERVER, "§sTeleported to world §v" + worldName);
           sender.sendPluginTDMessage("§sTeleported " + user.getTDChatName()
                                      + "§v to world §v" + worldName);
         }

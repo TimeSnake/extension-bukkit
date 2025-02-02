@@ -9,9 +9,9 @@ import de.timesnake.basic.bukkit.util.chat.cmd.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.cmd.Completion;
 import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
-import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.chat.Code;
 import de.timesnake.library.chat.ExTextColor;
+import de.timesnake.library.chat.Plugin;
 import de.timesnake.library.commands.PluginCommand;
 import de.timesnake.library.commands.simple.Arguments;
 import net.kyori.adventure.text.Component;
@@ -19,11 +19,11 @@ import org.bukkit.World;
 
 public class CmdTime implements CommandListener {
 
-  private final Code perm = Plugin.BUKKIT.createPermssionCode("exbukkit.time");
-  private final Code dayPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.time.day");
-  private final Code nightPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.time.noon");
-  private final Code noonPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.time.night");
-  private final Code setPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.time.set");
+  private final Code perm = Plugin.SERVER.createPermssionCode("exbukkit.time");
+  private final Code dayPerm = Plugin.SERVER.createPermssionCode("exbukkit.time.day");
+  private final Code nightPerm = Plugin.SERVER.createPermssionCode("exbukkit.time.noon");
+  private final Code noonPerm = Plugin.SERVER.createPermssionCode("exbukkit.time.night");
+  private final Code setPerm = Plugin.SERVER.createPermssionCode("exbukkit.time.set");
 
   @Override
   public void onCommand(Sender sender, PluginCommand cmd, Arguments<Argument> args) {

@@ -13,8 +13,8 @@ import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserQuitEvent;
 import de.timesnake.basic.bukkit.util.world.ExLocation;
 import de.timesnake.basic.bukkit.util.world.ExWorld;
-import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.chat.Code;
+import de.timesnake.library.chat.Plugin;
 import de.timesnake.library.commands.PluginCommand;
 import de.timesnake.library.commands.simple.Arguments;
 import org.bukkit.Location;
@@ -29,21 +29,21 @@ import java.util.Stack;
 
 public class CmdTeleport implements CommandListener, Listener {
 
-  private final Code perm = Plugin.BUKKIT.createPermssionCode("exbukkit.teleport");
-  private final Code teleportToOtherPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.teleport.toother");
-  private final Code teleportToOtherOtherPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.teleport.toother.other");
-  private final Code teleportLocationPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.teleport.location");
-  private final Code teleportLocationOtherPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.teleport.location.other");
-  private final Code teleportHerePerm = Plugin.BUKKIT.createPermssionCode("exbukkit.teleport.here");
-  private final Code teleportWorldPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.teleport.world");
-  private final Code teleportWorldOtherPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.teleport.world.other");
-  private final Code teleportSpawnPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.teleport.spawn");
-  private final Code teleportSetSpawnPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.teleport.setspawn");
-  private final Code teleportAskPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.teleport.ask");
-  private final Code teleportAskAcceptPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.teleport.ask.accept");
-  private final Code teleportAskDenyPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.teleport.ask.deny");
-  private final Code teleportBackPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.teleport.back");
-  private final Code teleportBackOtherPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.teleport.back.other");
+  private final Code perm = Plugin.SERVER.createPermssionCode("exbukkit.teleport");
+  private final Code teleportToOtherPerm = Plugin.SERVER.createPermssionCode("exbukkit.teleport.toother");
+  private final Code teleportToOtherOtherPerm = Plugin.SERVER.createPermssionCode("exbukkit.teleport.toother.other");
+  private final Code teleportLocationPerm = Plugin.SERVER.createPermssionCode("exbukkit.teleport.location");
+  private final Code teleportLocationOtherPerm = Plugin.SERVER.createPermssionCode("exbukkit.teleport.location.other");
+  private final Code teleportHerePerm = Plugin.SERVER.createPermssionCode("exbukkit.teleport.here");
+  private final Code teleportWorldPerm = Plugin.SERVER.createPermssionCode("exbukkit.teleport.world");
+  private final Code teleportWorldOtherPerm = Plugin.SERVER.createPermssionCode("exbukkit.teleport.world.other");
+  private final Code teleportSpawnPerm = Plugin.SERVER.createPermssionCode("exbukkit.teleport.spawn");
+  private final Code teleportSetSpawnPerm = Plugin.SERVER.createPermssionCode("exbukkit.teleport.setspawn");
+  private final Code teleportAskPerm = Plugin.SERVER.createPermssionCode("exbukkit.teleport.ask");
+  private final Code teleportAskAcceptPerm = Plugin.SERVER.createPermssionCode("exbukkit.teleport.ask.accept");
+  private final Code teleportAskDenyPerm = Plugin.SERVER.createPermssionCode("exbukkit.teleport.ask.deny");
+  private final Code teleportBackPerm = Plugin.SERVER.createPermssionCode("exbukkit.teleport.back");
+  private final Code teleportBackOtherPerm = Plugin.SERVER.createPermssionCode("exbukkit.teleport.back.other");
 
   @Override
   public void onCommand(Sender sender, PluginCommand cmd, Arguments<Argument> args) {
@@ -123,7 +123,7 @@ public class CmdTeleport implements CommandListener, Listener {
 
       user1.teleport(user2);
 
-      user1.sendPluginTDMessage(Plugin.BUKKIT, "§sTeleported to " + user2.getTDChatName());
+      user1.sendPluginTDMessage(Plugin.SERVER, "§sTeleported to " + user2.getTDChatName());
 
       if (!sender.getName().equals(user1.getName()) && !sender.getName().equals(user2.getName())) {
         sender.sendPluginTDMessage("§sTeleported " + user1.getTDChatName() + "§s to " + user2.getTDChatName());
@@ -206,7 +206,7 @@ public class CmdTeleport implements CommandListener, Listener {
       user.getWorld().loadChunk(loc.getChunk());
       user.teleport(loc);
 
-      user.sendPluginTDMessage(Plugin.BUKKIT, "§sTeleported to §v" + x + " " + y + " " + z);
+      user.sendPluginTDMessage(Plugin.SERVER, "§sTeleported to §v" + x + " " + y + " " + z);
 
       if (!sender.getName().equals(user.getName())) {
         sender.sendPluginTDMessage("§sTeleported " + user.getTDChatName() + "§s to §v" + x + " " + y + " " + z);
@@ -236,7 +236,7 @@ public class CmdTeleport implements CommandListener, Listener {
 
     other.teleport(user);
 
-    other.sendPluginTDMessage(Plugin.BUKKIT, "§sTeleported to " + user.getTDChatName());
+    other.sendPluginTDMessage(Plugin.SERVER, "§sTeleported to " + user.getTDChatName());
     sender.sendPluginTDMessage("§sTeleported " + other.getTDChatName());
   }
 
@@ -261,7 +261,7 @@ public class CmdTeleport implements CommandListener, Listener {
         if (args.isLengthEquals(2, false)) {
           user.teleport(world);
 
-          user.sendPluginTDMessage(Plugin.BUKKIT, "§sTeleported to §v" + world.getName() + "§s spawn");
+          user.sendPluginTDMessage(Plugin.SERVER, "§sTeleported to §v" + world.getName() + "§s spawn");
 
           if (!sender.getName().equals(user.getName())) {
             sender.sendPluginTDMessage("§sTeleported" + user.getTDChatName() + "§s to §v" + world.getName() + "§s " +
@@ -280,7 +280,7 @@ public class CmdTeleport implements CommandListener, Listener {
           world.loadChunk(loc.getChunk());
           user.teleport(loc);
 
-          user.sendPluginTDMessage(Plugin.BUKKIT, "§sTeleported to §v" + world.getName() + " " + x + " " + y + " " + z);
+          user.sendPluginTDMessage(Plugin.SERVER, "§sTeleported to §v" + world.getName() + " " + x + " " + y + " " + z);
           if (!sender.getName().equals(user.getName())) {
             sender.sendPluginTDMessage("§sTeleported" + user.getTDChatName() + "§s to §v" + world.getName() + " " + x + " " + y + " " + z);
           }
@@ -359,15 +359,16 @@ public class CmdTeleport implements CommandListener, Listener {
     this.ask.put(user, users);
 
     //user msg
-    user.sendPluginTDMessage(Plugin.BUKKIT, sender.getUser().getTDChatName() + "§s requests a teleport");
+    user.sendPluginTDMessage(Plugin.SERVER, sender.getUser().getTDChatName() + "§s requests a teleport");
+    ;
 
-    user.sendClickablePluginMessage(Plugin.BUKKIT, "§sUse §v§u/tpaccept " + sender.getUser().getTDChatName()
+    user.sendClickablePluginTDMessage(Plugin.SERVER, "§sUse §v§u/tpaccept " + sender.getUser().getTDChatName()
             + "§s to accept the teleport request",
         "/tpaccept ",
         "Click to accept the teleport request",
         net.kyori.adventure.text.event.ClickEvent.Action.RUN_COMMAND);
 
-    user.sendClickablePluginMessage(Plugin.BUKKIT, "§sUse §v§u/tpdeny " + sender.getUser().getTDChatName()
+    user.sendClickablePluginTDMessage(Plugin.SERVER, "§sUse §v§u/tpdeny " + sender.getUser().getTDChatName()
             + "§s to deny the teleport request",
         "/tpdeny ",
         "Click to deny the teleport request",
@@ -403,15 +404,15 @@ public class CmdTeleport implements CommandListener, Listener {
     this.askHere.put(user, users);
 
     //user msg
-    user.sendPluginTDMessage(Plugin.BUKKIT, sender.getUser().getTDChatName() + "§s requests a teleport-here");
+    user.sendPluginTDMessage(Plugin.SERVER, sender.getUser().getTDChatName() + "§s requests a teleport-here");
 
-    user.sendClickablePluginMessage(Plugin.BUKKIT, "§sUse §v§u/tpaccept " + sender.getUser().getTDChatName()
+    user.sendClickablePluginTDMessage(Plugin.SERVER, "§sUse §v§u/tpaccept " + sender.getUser().getTDChatName()
             + "§s to accept the teleport-here request",
         "/tpaccept ",
         "Click to accept the teleport-here request",
         net.kyori.adventure.text.event.ClickEvent.Action.RUN_COMMAND);
 
-    user.sendClickablePluginMessage(Plugin.BUKKIT, "§sUse §v§u/tpdeny " + sender.getUser().getTDChatName()
+    user.sendClickablePluginTDMessage(Plugin.SERVER, "§sUse §v§u/tpdeny " + sender.getUser().getTDChatName()
             + "§s to deny the teleport-here request",
         "/tpdeny ",
         "Click to deny the teleport-her request",
@@ -491,8 +492,8 @@ public class CmdTeleport implements CommandListener, Listener {
   private void teleportUserToUser(User user, User teleporter) {
     teleporter.teleport(user);
 
-    user.sendPluginTDMessage(Plugin.BUKKIT, "§sTeleported " + teleporter.getTDChatName());
-    teleporter.sendPluginTDMessage(Plugin.BUKKIT, "§sTeleported to " + user.getTDChatName());
+    user.sendPluginTDMessage(Plugin.SERVER, "§sTeleported " + teleporter.getTDChatName());
+    teleporter.sendPluginTDMessage(Plugin.SERVER, "§sTeleported to " + user.getTDChatName());
   }
 
   public void deny(Sender sender, Arguments<Argument> args) {
@@ -515,7 +516,7 @@ public class CmdTeleport implements CommandListener, Listener {
       if (args.isLengthEquals(0, false)) {
         User enquirer = users.pop();
         sender.sendPluginTDMessage("§sDenied teleport request by " + enquirer.getTDChatName());
-        enquirer.sendPluginTDMessage(Plugin.BUKKIT, user.getTDChatName() + "§s denied your teleport request");
+        enquirer.sendPluginTDMessage(Plugin.SERVER, user.getTDChatName() + "§s denied your teleport request");
         return;
       }
 
@@ -532,7 +533,7 @@ public class CmdTeleport implements CommandListener, Listener {
 
       users.pop();
       sender.sendPluginTDMessage("§sDenied teleport request by " + argUser.getTDChatName());
-      argUser.sendPluginTDMessage(Plugin.BUKKIT, user.getTDChatName() + "§s denied your teleport request");
+      argUser.sendPluginTDMessage(Plugin.SERVER, user.getTDChatName() + "§s denied your teleport request");
 
     } else if (this.askHere.containsKey(user)) {
       Stack<User> users = this.askHere.get(user);
@@ -544,7 +545,7 @@ public class CmdTeleport implements CommandListener, Listener {
       if (args.isLengthEquals(0, false)) {
         User enquirer = users.pop();
         sender.sendPluginTDMessage("§sDenied teleport-here request by " + enquirer.getTDChatName());
-        enquirer.sendPluginTDMessage(Plugin.BUKKIT, user.getTDChatName() + "§s denied your teleport-here request");
+        enquirer.sendPluginTDMessage(Plugin.SERVER, user.getTDChatName() + "§s denied your teleport-here request");
         return;
       }
 
@@ -561,7 +562,7 @@ public class CmdTeleport implements CommandListener, Listener {
 
       users.pop();
       sender.sendPluginTDMessage("§sDenied teleport-here request by " + argUser.getTDChatName());
-      argUser.sendPluginTDMessage(Plugin.BUKKIT, user.getTDChatName() + "§s denied your teleport-here request");
+      argUser.sendPluginTDMessage(Plugin.SERVER, user.getTDChatName() + "§s denied your teleport-here request");
 
     } else {
       sender.sendPluginTDMessage("§sYou have no open requests");
@@ -629,7 +630,7 @@ public class CmdTeleport implements CommandListener, Listener {
         User user = args.get(0).toUser();
         user.teleport(user.getLastLocation());
         sender.sendPluginTDMessage("§sTeleported" + user.getTDChatName() + "§s to last location");
-        user.sendPluginTDMessage(Plugin.BUKKIT, "§sTeleported to last location");
+        user.sendPluginTDMessage(Plugin.SERVER, "§sTeleported to last location");
       }
     }
   }
@@ -648,7 +649,7 @@ public class CmdTeleport implements CommandListener, Listener {
     for (User user : Server.getUsers()) {
       if (!user.equals(senderUser)) {
         user.teleport(senderUser);
-        user.sendPluginTDMessage(Plugin.BUKKIT, "§sTeleported to" + senderUser.getTDChatName());
+        user.sendPluginTDMessage(Plugin.SERVER, "§sTeleported to" + senderUser.getTDChatName());
       }
     }
 

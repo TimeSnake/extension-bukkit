@@ -9,9 +9,9 @@ import de.timesnake.basic.bukkit.util.chat.cmd.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.cmd.Completion;
 import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
-import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.chat.Code;
 import de.timesnake.library.chat.ExTextColor;
+import de.timesnake.library.chat.Plugin;
 import de.timesnake.library.commands.PluginCommand;
 import de.timesnake.library.commands.simple.Arguments;
 import net.kyori.adventure.text.Component;
@@ -19,8 +19,8 @@ import org.bukkit.potion.PotionEffectType;
 
 public class CmdNightVision implements CommandListener {
 
-  private final Code perm = Plugin.BUKKIT.createPermssionCode("exbukkit.nightvision");
-  private final Code otherPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.nightvision.other");
+  private final Code perm = Plugin.SERVER.createPermssionCode("exbukkit.nightvision");
+  private final Code otherPerm = Plugin.SERVER.createPermssionCode("exbukkit.nightvision.other");
 
   @Override
   public void onCommand(Sender sender, PluginCommand cmd,
@@ -58,14 +58,14 @@ public class CmdNightVision implements CommandListener {
 
       if (other.hasPotionEffect(PotionEffectType.NIGHT_VISION)) {
         other.removePotionEffect(PotionEffectType.NIGHT_VISION);
-        other.sendPluginMessage(Plugin.BUKKIT,
+        other.sendPluginMessage(Plugin.SERVER,
             Component.text("Disabled night vision", ExTextColor.PERSONAL));
         sender.sendPluginMessage(
             Component.text("Disabled night vision for ", ExTextColor.PERSONAL)
                 .append(other.getChatNameComponent()));
       } else {
         other.addPotionEffect(PotionEffectType.NIGHT_VISION, 1);
-        other.sendPluginMessage(Plugin.BUKKIT,
+        other.sendPluginMessage(Plugin.SERVER,
             Component.text("Enabled night vision", ExTextColor.PERSONAL));
         sender.sendPluginMessage(
             Component.text("Enabled night vision for ", ExTextColor.PERSONAL)

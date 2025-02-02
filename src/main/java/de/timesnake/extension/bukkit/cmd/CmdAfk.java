@@ -10,9 +10,9 @@ import de.timesnake.basic.bukkit.util.chat.cmd.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.cmd.Completion;
 import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
-import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.chat.Code;
 import de.timesnake.library.chat.ExTextColor;
+import de.timesnake.library.chat.Plugin;
 import de.timesnake.library.commands.PluginCommand;
 import de.timesnake.library.commands.simple.Arguments;
 import net.kyori.adventure.text.Component;
@@ -26,8 +26,8 @@ public class CmdAfk implements CommandListener {
   public Set<User> users = new HashSet<>();
   public Set<User> toggledUsers = new HashSet<>();
 
-  private final Code perm = Plugin.BUKKIT.createPermssionCode("exbukkit.afk");
-  private final Code togglePerm = Plugin.BUKKIT.createPermssionCode("exbukkit.afk.toggle");
+  private final Code perm = Plugin.SERVER.createPermssionCode("exbukkit.afk");
+  private final Code togglePerm = Plugin.SERVER.createPermssionCode("exbukkit.afk.toggle");
 
   @Override
   public void onCommand(Sender sender, PluginCommand cmd,
@@ -85,7 +85,7 @@ public class CmdAfk implements CommandListener {
     }
 
     this.users.add(user);
-    Server.broadcastMessage(Plugin.BUKKIT, user.getChatNameComponent()
+    Server.broadcastMessage(Plugin.SERVER, user.getChatNameComponent()
         .append(Component.text(" is now afk", ExTextColor.PUBLIC)));
 
   }
@@ -96,7 +96,7 @@ public class CmdAfk implements CommandListener {
     }
 
     this.users.remove(user);
-    Server.broadcastMessage(Plugin.BUKKIT, user.getChatNameComponent()
+    Server.broadcastMessage(Plugin.SERVER, user.getChatNameComponent()
         .append(Component.text(" is no longer afk", ExTextColor.PUBLIC)));
 
   }
@@ -107,7 +107,7 @@ public class CmdAfk implements CommandListener {
     }
 
     this.toggledUsers.add(user);
-    user.sendPluginMessage(Plugin.BUKKIT,
+    user.sendPluginMessage(Plugin.SERVER,
         Component.text(" disabled auto-afk", ExTextColor.PERSONAL));
   }
 
@@ -117,7 +117,7 @@ public class CmdAfk implements CommandListener {
     }
 
     this.toggledUsers.remove(user);
-    user.sendPluginMessage(Plugin.BUKKIT,
+    user.sendPluginMessage(Plugin.SERVER,
         Component.text(" enabled auto-afk", ExTextColor.PERSONAL));
   }
 }

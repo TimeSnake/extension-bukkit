@@ -9,8 +9,8 @@ import de.timesnake.basic.bukkit.util.chat.cmd.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.cmd.Completion;
 import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
-import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.chat.Code;
+import de.timesnake.library.chat.Plugin;
 import de.timesnake.library.commands.PluginCommand;
 import de.timesnake.library.commands.simple.Arguments;
 import org.bukkit.World;
@@ -43,10 +43,10 @@ public class CmdKill implements CommandListener {
       EntityType.SPAWNER_MINECART,
       EntityType.TNT_MINECART);
 
-  private final Code perm = Plugin.BUKKIT.createPermssionCode("exbukkit.kill");
-  private final Code playerPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.kill.player");
-  private final Code typePerm = Plugin.BUKKIT.createPermssionCode("exbukkit.kill.type");
-  private final Code allPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.kill.all");
+  private final Code perm = Plugin.SERVER.createPermssionCode("exbukkit.kill");
+  private final Code playerPerm = Plugin.SERVER.createPermssionCode("exbukkit.kill.player");
+  private final Code typePerm = Plugin.SERVER.createPermssionCode("exbukkit.kill.type");
+  private final Code allPerm = Plugin.SERVER.createPermssionCode("exbukkit.kill.all");
 
   @Override
   public void onCommand(Sender sender, PluginCommand cmd, Arguments<Argument> args) {

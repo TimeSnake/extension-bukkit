@@ -9,17 +9,17 @@ import de.timesnake.basic.bukkit.util.chat.cmd.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.cmd.Completion;
 import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
-import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.chat.Code;
 import de.timesnake.library.chat.ExTextColor;
+import de.timesnake.library.chat.Plugin;
 import de.timesnake.library.commands.PluginCommand;
 import de.timesnake.library.commands.simple.Arguments;
 import net.kyori.adventure.text.Component;
 
 public class CmdSpeed implements CommandListener {
 
-  private final Code perm = Plugin.BUKKIT.createPermssionCode("exbukkit.speed.<mode>");
-  private final Code otherPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.speed.<mode>.other");
+  private final Code perm = Plugin.SERVER.createPermssionCode("exbukkit.speed.<mode>");
+  private final Code otherPerm = Plugin.SERVER.createPermssionCode("exbukkit.speed.<mode>.other");
 
   @Override
   public void onCommand(Sender sender, PluginCommand cmd, Arguments<Argument> args) {
@@ -105,7 +105,7 @@ public class CmdSpeed implements CommandListener {
         return;
       }
 
-      user.sendPluginMessage(Plugin.BUKKIT,
+      user.sendPluginMessage(Plugin.SERVER,
           Component.text("Updated " + mode.name().toLowerCase() +
                   "speed to ", ExTextColor.PERSONAL)
               .append(Component.text(speed, ExTextColor.VALUE)));
@@ -121,7 +121,7 @@ public class CmdSpeed implements CommandListener {
                 .append(user.getChatNameComponent())
                 .append(Component.text(" to ", ExTextColor.PERSONAL))
                 .append(Component.text(speed, ExTextColor.VALUE)));
-        user.sendPluginMessage(Plugin.BUKKIT,
+        user.sendPluginMessage(Plugin.SERVER,
             Component.text("Updated " + mode.name().toLowerCase() +
                     "speed by ", ExTextColor.PERSONAL)
                 .append(sender.getChatName())

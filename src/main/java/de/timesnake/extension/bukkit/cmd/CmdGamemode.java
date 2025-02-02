@@ -9,16 +9,16 @@ import de.timesnake.basic.bukkit.util.chat.cmd.CommandListener;
 import de.timesnake.basic.bukkit.util.chat.cmd.Completion;
 import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
-import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.chat.Code;
+import de.timesnake.library.chat.Plugin;
 import de.timesnake.library.commands.PluginCommand;
 import de.timesnake.library.commands.simple.Arguments;
 import org.bukkit.GameMode;
 
 public class CmdGamemode implements CommandListener {
 
-  private final Code perm = Plugin.BUKKIT.createPermssionCode("exbukkit.gamemode");
-  private final Code otherPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.gamemode.other");
+  private final Code perm = Plugin.SERVER.createPermssionCode("exbukkit.gamemode");
+  private final Code otherPerm = Plugin.SERVER.createPermssionCode("exbukkit.gamemode.other");
 
   @Override
   public void onCommand(Sender sender, PluginCommand cmd, Arguments<Argument> args) {
@@ -92,6 +92,6 @@ public class CmdGamemode implements CommandListener {
     }
 
     user.setGameMode(gameMode);
-    user.sendPluginTDMessage(Plugin.BUKKIT, "§sUpdated gamemode to §v" + name);
+    user.sendPluginTDMessage(Plugin.SERVER, "§sUpdated gamemode to §v" + name);
   }
 }

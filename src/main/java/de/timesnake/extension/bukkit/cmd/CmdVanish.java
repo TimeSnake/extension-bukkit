@@ -11,9 +11,9 @@ import de.timesnake.basic.bukkit.util.chat.cmd.Completion;
 import de.timesnake.basic.bukkit.util.chat.cmd.Sender;
 import de.timesnake.basic.bukkit.util.user.User;
 import de.timesnake.basic.bukkit.util.user.event.UserJoinEvent;
-import de.timesnake.extension.bukkit.chat.Plugin;
 import de.timesnake.library.chat.Code;
 import de.timesnake.library.chat.ExTextColor;
+import de.timesnake.library.chat.Plugin;
 import de.timesnake.library.commands.PluginCommand;
 import de.timesnake.library.commands.simple.Arguments;
 import net.kyori.adventure.text.Component;
@@ -27,9 +27,9 @@ public class CmdVanish implements CommandListener, Listener {
 
   private final Set<User> users = new HashSet<>();
 
-  private final Code perm = Plugin.BUKKIT.createPermssionCode("exbukkit.vanish");
-  private final Code otherPerm = Plugin.BUKKIT.createPermssionCode("exbukkit.vanish.other");
-  private final Code seePerm = Plugin.BUKKIT.createPermssionCode("exbukkit.vanish.see");
+  private final Code perm = Plugin.SERVER.createPermssionCode("exbukkit.vanish");
+  private final Code otherPerm = Plugin.SERVER.createPermssionCode("exbukkit.vanish.other");
+  private final Code seePerm = Plugin.SERVER.createPermssionCode("exbukkit.vanish.see");
 
   @Override
   public void onCommand(Sender sender, PluginCommand cmd, Arguments<Argument> args) {
@@ -67,7 +67,7 @@ public class CmdVanish implements CommandListener, Listener {
         sender.sendPluginMessage(Component.text("Disabled vanish for ", ExTextColor.PERSONAL)
             .append(user.getChatNameComponent()));
       }
-      user.sendPluginMessage(Plugin.BUKKIT,
+      user.sendPluginMessage(Plugin.SERVER,
           Component.text("Disabled vanish", ExTextColor.PERSONAL));
     } else {
 
@@ -83,7 +83,7 @@ public class CmdVanish implements CommandListener, Listener {
         sender.sendPluginMessage(Component.text("Enabled vanish for ", ExTextColor.PERSONAL)
             .append(user.getChatNameComponent()));
       }
-      user.sendPluginMessage(Plugin.BUKKIT, Component.text("Enabled vanish", ExTextColor.PERSONAL));
+      user.sendPluginMessage(Plugin.SERVER, Component.text("Enabled vanish", ExTextColor.PERSONAL));
 
     }
   }
