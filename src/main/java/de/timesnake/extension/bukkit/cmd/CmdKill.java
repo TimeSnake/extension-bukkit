@@ -71,7 +71,7 @@ public class CmdKill implements CommandListener {
     return new Completion(this.perm)
         .addArgument(Completion.ofPlayerNames().permission(this.playerPerm))
         .addArgument(new Completion(this.allPerm, "all"))
-        .addArgument(new Completion(this.typePerm, "drops", "mobs", "monsters", "animals", "xps", "<mobType>"));
+        .addArgument(new Completion(this.typePerm, "drops", "mobs", "monsters", "animals", "xps", "<mobType>").allowAny());
   }
 
   @Override

@@ -476,7 +476,7 @@ public class CmdWorld implements ExCommandListener, Listener {
   public ExCompletion getTabCompletion() {
     return new ExCompletion(this.listPerm)
         .addArgument(new ExCompletion(this.createPerm, "create")
-            .addArgument(new ExCompletion("<name>")
+            .addArgument(new ExCompletion("<name>").allowAny()
                 .addArgument(new ExCompletion(ExWorldType.getNames()))
                 .addArgument(new ExCompletion("custom_height", "custom_flat", "custom_island")
                     .addArgument(new ExCompletion().endless().values((sender, cmd, args) -> {
@@ -532,7 +532,7 @@ public class CmdWorld implements ExCommandListener, Listener {
             .addArgument(ExCompletion.ofWorldNames()
                 .addArgument(ExCompletion.ofPlayerNames())))
         .addArgument(new ExCompletion(this.clonePerm, "clone")
-            .addArgument(new ExCompletion("<name>")
+            .addArgument(new ExCompletion("<name>").allowAny()
                 .addArgument(ExCompletion.ofWorldNames())))
         .addArgument(new ExCompletion(this.deletePerm, "delete")
             .addArgument(ExCompletion.ofWorldNames()))

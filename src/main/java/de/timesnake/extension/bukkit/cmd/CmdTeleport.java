@@ -79,15 +79,15 @@ public class CmdTeleport implements CommandListener, Listener {
             Completion.ofPlayerNames()
             .addArgument((sender, cmd, args) -> args.get(0).isPlayerName(false), Completion.ofPlayerNames()))
         .addArgument((sender, cmd, args) -> List.of("tp", "teleport").contains(cmd.toLowerCase()), new Completion("~"
-            , "0")
-            .addArgument((sender, cmd, args) -> !args.get(0).isPlayerName(false), new Completion("~", "0")
-                .addArgument(new Completion("~", "0"))))
+            , "0").allowAny()
+            .addArgument((sender, cmd, args) -> !args.get(0).isPlayerName(false), new Completion("~", "0").allowAny()
+                .addArgument(new Completion("~", "0").allowAny())))
         .addArgument((sender, cmd, args) -> List.of("tph", "tphere", "teleporthere", "tpahere", "tpahere",
                 "tpaskhere", "tpah", "tpaskh", "tpa", "call", "tpask", "teleportask").contains(cmd.toLowerCase()),
             Completion.ofPlayerNames())
         .addArgument((sender, cmd, args) -> cmd.equalsIgnoreCase("setspawn"), new Completion("~")
-            .addArgument(new Completion("~")
-                .addArgument(new Completion("~"))));
+            .addArgument(new Completion("~").allowAny()
+                .addArgument(new Completion("~").allowAny())));
   }
 
   @Override

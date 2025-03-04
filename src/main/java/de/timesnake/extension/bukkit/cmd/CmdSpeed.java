@@ -86,7 +86,7 @@ public class CmdSpeed implements CommandListener {
   @Override
   public Completion getTabCompletion() {
     return new Completion(this.perm)
-        .addArgument(new Completion("1", "2", "1.2", "1.5")
+        .addArgument(new Completion("1", "2", "1.2", "1.5").allowAny()
             .addArgument(Completion.ofPlayerNames().permission(this.otherPerm)));
   }
 

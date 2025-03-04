@@ -180,7 +180,7 @@ public class CmdTime implements CommandListener {
         .addArgument(new Completion(this.dayPerm, "day"))
         .addArgument(new Completion(this.nightPerm, "night"))
         .addArgument(new Completion(this.setPerm, "set")
-            .addArgument(new Completion("day", "night", "noon")
+            .addArgument(new Completion("day", "night", "noon").allowAny()
                 .addArgument(Completion.ofWorldNames())));
   }
 
